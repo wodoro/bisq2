@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.seed_node;
+package bisq.resilience_test;
 
 import bisq.bonded_roles.BondedRolesService;
 import bisq.common.observable.Pin;
@@ -31,30 +31,22 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-/**
- * Creates domain specific options from program arguments and application options.
- * Creates domain instance with options and optional dependency to other domain objects.
- * Initializes the domain instances according to the requirements of their dependencies either in sequence
- * or in parallel.
- * Provides the complete setup instances to other clients (Api)
- */
 @Getter
 @Slf4j
-public class SeedNodeApplicationService extends JavaSeApplicationService {
+public class ResilienceTestApplicationService extends JavaSeApplicationService {
     protected final NetworkService networkService;
     protected final IdentityService identityService;
     protected final SecurityService securityService;
-    private final SeedNodeService seedNodeService;
+    private final ResilienceTestService resilienceTestService;
     private final BondedRolesService bondedRolesService;
     @Nullable
     private Pin difficultyAdjustmentServicePin;
 
-    public SeedNodeApplicationService(String[] args) {
-        super("seed_node", args);
+    public ResilienceTestApplicationService(String[] args) {
+        super("resilience_test", args);
 
         securityService = new SecurityService(persistenceService, SecurityService.Config.from(getConfig("security")));
 
@@ -75,31 +67,29 @@ public class SeedNodeApplicationService extends JavaSeApplicationService {
                 persistenceService,
                 networkService);
 
-        Optional<SeedNodeService.Config> seedNodeConfig = hasConfig("seedNode") ? Optional.of(SeedNodeService.Config.from(getConfig("seedNode"))) : Optional.empty();
-        seedNodeService = new SeedNodeService(seedNodeConfig, networkService, identityService, securityService.getKeyBundleService());
+        Optional<com.typesafe.config.Config> resilienceTestConfig = hasConfig("resilienceTest") ? Optional.of(getConfig("resilienceTest")) : Optional.empty();
+        resilienceTestService = new ResilienceTestService(resilienceTestConfig, networkService, identityService);
     }
 
     @Override
     public CompletableFuture<Boolean> initialize() {
-        // Move initialization work off the current thread and use a ForkJoinPool.commonPool instead.
-        return supplyAsync(() -> memoryReportService.initialize()
+        return memoryReportService.initialize()
                 .thenCompose(result -> securityService.initialize())
                 .thenCompose(result -> networkService.initialize())
                 .thenCompose(result -> identityService.initialize())
                 .thenCompose(result -> bondedRolesService.initialize())
-                .thenCompose(result -> seedNodeService.initialize())
+                .thenCompose(result -> resilienceTestService.initialize())
                 .orTimeout(5, TimeUnit.MINUTES)
                 .whenComplete((success, throwable) -> {
                     if (success != null && success) {
                         difficultyAdjustmentServicePin = bondedRolesService.getDifficultyAdjustmentService().getMostRecentValueOrDefault().addObserver(mostRecentValueOrDefault ->
                                 networkService.getNetworkLoadServices().forEach(networkLoadService ->
                                         networkLoadService.setDifficultyAdjustmentFactor(mostRecentValueOrDefault)));
-                        log.info("SeedNodeApplicationService initialized");
+                        log.info("ResilienceTestApplicationService initialized");
                     } else {
-                        log.error("Initializing SeedNodeApplicationService failed", throwable);
+                        log.error("Initializing ResilienceTestApplicationService failed", throwable);
                     }
-                }))
-                .thenCompose(Function.identity()); // unwrap CompletableFuture
+                });
     }
 
     @Override
@@ -110,9 +100,9 @@ public class SeedNodeApplicationService extends JavaSeApplicationService {
             difficultyAdjustmentServicePin.unbind();
             difficultyAdjustmentServicePin = null;
         }
-        // Move shutdown work off the current thread and use a ForkJoinPool.commonPool instead.
+
         // We shut down services in opposite order as they are initialized
-        return supplyAsync(() -> seedNodeService.shutdown()
+        return supplyAsync(() -> resilienceTestService.shutdown()
                 .thenCompose(result -> bondedRolesService.shutdown())
                 .thenCompose(result -> identityService.shutdown())
                 .thenCompose(result -> networkService.shutdown())
@@ -128,7 +118,7 @@ public class SeedNodeApplicationService extends JavaSeApplicationService {
                         return false;
                     }
                     return true;
-                }))
-                .thenCompose(Function.identity()); // unwrap CompletableFuture
+                })
+                .join());
     }
 }
