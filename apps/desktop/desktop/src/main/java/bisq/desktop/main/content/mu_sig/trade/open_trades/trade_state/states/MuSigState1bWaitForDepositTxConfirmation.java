@@ -139,13 +139,10 @@ public class MuSigState1bWaitForDepositTxConfirmation extends MuSigBaseState {
         }
 
         public void openExplorer() {
-            ExplorerService.Provider provider = explorerService.getSelectedProvider().get();
-            if (provider == null) {
-                log.warn("SelectedProvider is null");
-                return;
-            }
-            String url = provider.getBaseUrl() + "/" + provider.getTxPath() + model.getTxId();
-            Browser.open(url);
+            explorerService.getExplorerServiceProvider().ifPresent(provider -> {
+                String url = provider.getBaseUrl() + "/" + provider.getTxPath() + model.getTxId();
+                Browser.open(url);
+            });
         }
 
         void onSkipWaitForConfirmation() {
