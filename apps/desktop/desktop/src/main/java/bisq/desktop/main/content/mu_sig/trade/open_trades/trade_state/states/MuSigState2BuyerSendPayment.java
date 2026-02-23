@@ -129,14 +129,14 @@ public class MuSigState2BuyerSendPayment extends MuSigBaseState {
             String formattedNonBtcAmount = model.getFormattedNonBtcAmount();
             if (model.getMarket().isBaseCurrencyBitcoin()) {
                 String paymentMethodName = trade.getContract().getNonBtcSidePaymentMethodSpec().getShortDisplayString();
-                model.setHeadline(Res.get("muSig.trade.state.fiat.phase2a.headline",
+                model.setHeadline(Res.get("muSig.trade.state.phase2a.headline.fiat",
                         formattedNonBtcAmount, paymentMethodName));
-                model.setPeersAccountDataDescription(Res.get("muSig.trade.state.fiat.phase2a.sellersAccount"));
+                model.setPeersAccountDataDescription(Res.get("muSig.trade.state.phase2a.sellersAccount.fiat"));
             } else {
                 String nonBtcCurrencyCode = model.getNonBtcCurrencyCode();
-                model.setHeadline(Res.get("muSig.trade.state.crypto.phase2a.headline",
+                model.setHeadline(Res.get("muSig.trade.state.phase2a.headline.crypto",
                         formattedNonBtcAmount, nonBtcCurrencyCode));
-                model.setPeersAccountDataDescription(Res.get("muSig.trade.state.crypto.phase2a.sellersAccount",
+                model.setPeersAccountDataDescription(Res.get("muSig.trade.state.phase2a.sellersAccount.crypto",
                         nonBtcCurrencyCode));
             }
         }

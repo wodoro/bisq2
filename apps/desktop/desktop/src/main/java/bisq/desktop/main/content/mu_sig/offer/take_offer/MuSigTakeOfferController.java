@@ -105,8 +105,8 @@ public class MuSigTakeOfferController extends NavigationController implements In
 
         boolean isBaseCurrencyBitcoin = muSigOffer.getMarket().isBaseCurrencyBitcoin();
         model.setPaymentMethodProgressLabel(isBaseCurrencyBitcoin
-                ? Res.get("muSig.offer.wizard.progress.fiat.account")
-                : Res.get("muSig.offer.wizard.progress.crypto.account"));
+                ? Res.get("muSig.offer.wizard.progress.account.fiat")
+                : Res.get("muSig.offer.wizard.progress.account.crypto"));
 
         model.setAmountVisible(muSigOffer.hasAmountRange());
         List<PaymentMethodSpec<?>> baseSidePaymentMethodSpecs = muSigOffer.getBaseSidePaymentMethodSpecs();

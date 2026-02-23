@@ -121,8 +121,8 @@ public class MuSigTradeDetailsController extends NavigationController implements
         model.setPaymentAccountDataEmpty(peersAccountPayload.isEmpty());
 
         model.setPeersPaymentAccountDataDescription(isBaseCurrencyBitcoin
-                ? Res.get("muSig.trade.details.fiat.paymentAccountData")
-                : Res.get("muSig.trade.details.crypto.paymentAccountData", market.getNonBtcCurrencyCode())
+                ? Res.get("muSig.trade.details.paymentAccountData.fiat")
+                : Res.get("muSig.trade.details.paymentAccountData.crypto", market.getNonBtcCurrencyCode())
         );
         model.setPeersPaymentAccountData(peersAccountPayload.isEmpty()
                 ? Res.get("muSig.trade.details.dataNotYetProvided")

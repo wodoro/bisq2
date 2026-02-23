@@ -74,13 +74,13 @@ public class MuSigState3aSellerConfirmPaymentReceipt extends MuSigBaseState {
 
             AccountPayload<?> peersAccountPayload = trade.getPeer().getAccountPayload().orElseThrow();
             if (peersAccountPayload instanceof CryptoAssetAccountPayload cryptoAssetAccountPayload) {
-                model.setInfo(Res.get("muSig.trade.state.crypto.phase3a.verifyReceipt.account",
+                model.setInfo(Res.get("muSig.trade.state.phase3a.verifyReceipt.account.crypto",
                         model.getNonBtcCurrencyCode(), cryptoAssetAccountPayload.getAddress()));
             } else {
                 String accountName = account
                         .map(Account::getAccountName)
                         .orElse(Res.get("data.na"));
-                model.setInfo(Res.get("muSig.trade.state.fiat.phase3a.verifyReceipt.account", accountName));
+                model.setInfo(Res.get("muSig.trade.state.phase3a.verifyReceipt.account.fiat", accountName));
             }
         }
 

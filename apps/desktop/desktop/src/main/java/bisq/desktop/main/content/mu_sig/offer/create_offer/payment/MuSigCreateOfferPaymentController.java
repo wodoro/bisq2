@@ -99,8 +99,8 @@ public class MuSigCreateOfferPaymentController implements Controller {
             model.getShouldShowNoPaymentMethodSelectedOverlay().set(true);
             model.getNoPaymentMethodSelectedOverlayText().set(
                     model.getMarket().get().isCrypto()
-                            ? Res.get("muSig.offer.create.paymentMethods.noPaymentMethodSelectedOverlay.cryptoAsset.subTitle")
-                            : Res.get("muSig.offer.create.paymentMethods.noPaymentMethodSelectedOverlay.fiat.subTitle"));
+                            ? Res.get("muSig.offer.create.paymentMethods.noPaymentMethodSelectedOverlay.subTitle.crypto")
+                            : Res.get("muSig.offer.create.paymentMethods.noPaymentMethodSelectedOverlay.subTitle.fiat"));
             return false;
         }
 
