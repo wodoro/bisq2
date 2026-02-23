@@ -391,7 +391,8 @@ public class MuSigOfferbookController implements Controller {
         updateActiveMarketPaymentsCount();
         settingsService.setCookie(CookieKey.MU_SIG_OFFER_PAYMENT_FILTERS, getCookieSubKey(),
                 Joiner.on(",").join(model.getSelectedPaymentMethods().stream()
-                        .map(payment -> payment.getPaymentRail().name()).collect(Collectors.toList())));
+                        .map(payment -> payment.getPaymentRail().name())
+                        .collect(Collectors.toList())));
     }
 
     void onClearPaymentFilters() {

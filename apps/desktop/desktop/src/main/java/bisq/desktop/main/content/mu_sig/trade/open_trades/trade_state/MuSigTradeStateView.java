@@ -149,13 +149,12 @@ public class MuSigTradeStateView extends View<VBox, MuSigTradeStateModel, MuSigT
                     if (status == null || status == MessageDeliveryStatus.ACK_RECEIVED || status == MessageDeliveryStatus.MAILBOX_MSG_RECEIVED) {
                         mediationBannerLabel.setText(Res.get("muSig.openTrades.inMediation.info"));
                     } else {
-                        String resendRequest = model.getShouldShowTryRequestMediationAgain().get()
-                                ? Res.get("muSig.tradeState.requestMediation.resendRequest")
-                                : "";
-                        String key = "muSig.tradeState.requestMediation.deliveryState." + status.name();
-                        String deliveryStatus = Res.get(key, resendRequest);
+                        String deliveryStatus = status.getDisplayString();
                         if (status == MessageDeliveryStatus.FAILED) {
-                            mediationBannerLabel.setText(deliveryStatus);
+                            String resendRequest = model.getShouldShowTryRequestMediationAgain().get()
+                                    ? " " + Res.get("muSig.tradeState.requestMediation.resendRequest")
+                                    : "";
+                            mediationBannerLabel.setText(deliveryStatus + resendRequest);
                         } else {
                             mediationBannerLabel.setText(Res.get("muSig.openTrades.inMediation.requestSent", deliveryStatus));
                         }
