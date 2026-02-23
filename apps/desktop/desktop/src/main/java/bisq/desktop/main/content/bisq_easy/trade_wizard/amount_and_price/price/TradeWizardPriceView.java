@@ -27,7 +27,7 @@ import bisq.desktop.components.controls.BisqTooltip;
 import bisq.desktop.components.controls.UnorderedList;
 import bisq.desktop.components.controls.validator.PercentageValidator;
 import bisq.desktop.main.content.bisq_easy.BisqEasyViewUtils;
-import bisq.desktop.main.content.bisq_easy.components.PriceInputBox;
+import bisq.desktop.main.content.bisq_easy.components.offer.PriceInputBox;
 import bisq.i18n.Res;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.geometry.Insets;
