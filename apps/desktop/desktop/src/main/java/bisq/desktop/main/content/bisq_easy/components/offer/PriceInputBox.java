@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.bisq_easy.components;
+package bisq.desktop.main.content.bisq_easy.components.offer;
 
 import bisq.desktop.components.controls.MaterialTextField;
 import javafx.beans.property.StringProperty;

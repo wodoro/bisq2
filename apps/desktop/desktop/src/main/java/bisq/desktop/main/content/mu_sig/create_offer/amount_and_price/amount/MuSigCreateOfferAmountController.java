@@ -28,7 +28,7 @@ import bisq.desktop.common.Browser;
 import bisq.desktop.common.utils.KeyHandlerUtil;
 import bisq.desktop.common.view.Controller;
 import bisq.desktop.components.overlay.Popup;
-import bisq.desktop.main.content.bisq_easy.components.amount_selection.AmountSelectionController;
+import bisq.desktop.main.content.bisq_easy.components.offer.amount_selection.AmountSelectionController;
 import bisq.desktop.navigation.NavigationTarget;
 import bisq.i18n.Res;
 import bisq.mu_sig.MuSigTradeAmountLimits;
