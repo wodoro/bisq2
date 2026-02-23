@@ -19,7 +19,7 @@ package bisq.desktop.main.content.mu_sig.offer.my_offers;
 
 import bisq.common.market.Market;
 import bisq.desktop.common.view.Model;
-import bisq.desktop.main.content.mu_sig.MuSigOfferListItem;
+import bisq.desktop.main.content.mu_sig.offer.MuSigOfferListItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
