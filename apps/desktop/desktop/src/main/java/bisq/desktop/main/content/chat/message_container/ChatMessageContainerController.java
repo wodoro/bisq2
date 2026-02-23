@@ -310,8 +310,8 @@ public class ChatMessageContainerController implements bisq.desktop.common.view.
             if (settingsService.getMuSigTradeRulesConfirmed().get() || ((MuSigOpenTradeChannel) chatChannel).isMediator()) {
                 chatService.getMuSigOpenTradeChannelService().sendTextMessage(text, citation, (MuSigOpenTradeChannel) chatChannel);
             } else {
-                new Popup().information(Res.get("muSig.tradeGuide.notConfirmed.warn"))
-                        .actionButtonText(Res.get("muSig.tradeGuide.open"))
+                new Popup().information(Res.get("muSig.trade.guide.notConfirmed.warn"))
+                        .actionButtonText(Res.get("muSig.trade.guide.open"))
                         .onAction(() -> Navigation.navigateTo(NavigationTarget.MU_SIG_GUIDE))
                         .show();
             }

@@ -98,7 +98,7 @@ public class MuSigState4TradeClosed extends MuSigBaseState {
             trade.setTradeCompletedDate(System.currentTimeMillis());
 
             MuSigContract contract = trade.getContract();
-            model.setPaymentProofDescription(Res.get("muSig.tradeState.paymentProof.MAIN_CHAIN"));
+            model.setPaymentProofDescription(Res.get("muSig.trade.state.phase4.txId"));
             model.setBlockExplorerLinkVisible(true);
             String paymentProof = trade.getDepositTxId();
             model.setPaymentProof(paymentProof);
@@ -207,9 +207,9 @@ public class MuSigState4TradeClosed extends MuSigBaseState {
             muSigTradeCompletedTable = new MuSigTradeCompletedTable();
             peerProfileDisplay = new UserProfileDisplay();
 
-            detailsButton = new Button(Res.get("muSig.tradeState.info.phase4.showDetails"));
-            exportButton = new Button(Res.get("muSig.tradeState.info.phase4.exportTrade"));
-            closeTradeButton = new Button(Res.get("muSig.tradeState.info.phase4.leaveChannel"));
+            detailsButton = new Button(Res.get("muSig.trade.state.phase4.showDetails"));
+            exportButton = new Button(Res.get("muSig.trade.state.phase4.exportTrade"));
+            closeTradeButton = new Button(Res.get("muSig.trade.state.phase4.leaveChannel"));
             closeTradeButton.setDefaultButton(true);
             HBox buttons = new HBox(20, detailsButton, exportButton, closeTradeButton);
             buttons.setAlignment(Pos.BOTTOM_RIGHT);

@@ -40,7 +40,7 @@ public class MuSigGuideWelcomeController implements Controller {
 
     @Override
     public void onActivate() {
-        String content = Res.get("muSig.tradeGuide.welcome.content");
+        String content = Res.get("muSig.trade.guide.welcome.content");
         model.getContentText().setValue(content);
       /*  model.getContentText().setValue(settingsService.getTradeRulesConfirmed().get() ?
                 content :

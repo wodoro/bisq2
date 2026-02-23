@@ -99,8 +99,8 @@ public class MuSigCreateOfferPaymentController implements Controller {
             model.getShouldShowNoPaymentMethodSelectedOverlay().set(true);
             model.getNoPaymentMethodSelectedOverlayText().set(
                     model.getMarket().get().isCrypto()
-                            ? Res.get("muSig.createOffer.paymentMethods.noPaymentMethodSelectedOverlay.cryptoAsset.subTitle")
-                            : Res.get("muSig.createOffer.paymentMethods.noPaymentMethodSelectedOverlay.fiat.subTitle"));
+                            ? Res.get("muSig.offer.create.paymentMethods.noPaymentMethodSelectedOverlay.cryptoAsset.subTitle")
+                            : Res.get("muSig.offer.create.paymentMethods.noPaymentMethodSelectedOverlay.fiat.subTitle"));
             return false;
         }
 
@@ -141,7 +141,7 @@ public class MuSigCreateOfferPaymentController implements Controller {
         paymentMethodWithoutAccountPin = EasyBind.subscribe(model.getPaymentMethodWithoutAccount(), paymentMethod -> {
             if (paymentMethod != null) {
                 model.getNoAccountOverlayHeadlineText().set(
-                        Res.get("muSig.createOffer.paymentMethod.noAccountOverlay.headline",
+                        Res.get("muSig.offer.create.paymentMethod.noAccountOverlay.headline",
                                 paymentMethod.getShortDisplayString()));
                 updateShouldShowNoAccountOverlay(true);
             }
@@ -149,7 +149,7 @@ public class MuSigCreateOfferPaymentController implements Controller {
         paymentMethodWithMultipleAccountsPin = EasyBind.subscribe(model.getPaymentMethodWithMultipleAccounts(), paymentMethod -> {
             if (paymentMethod != null) {
                 model.getMultipleAccountsOverlayHeadlineText().set(
-                        Res.get("muSig.createOffer.paymentMethod.multipleAccountOverlay.headline",
+                        Res.get("muSig.offer.create.paymentMethod.multipleAccountOverlay.headline",
                                 paymentMethod.getShortDisplayString()));
                 updateShouldShowMultipleAccountsOverlay(true);
             }
@@ -170,7 +170,7 @@ public class MuSigCreateOfferPaymentController implements Controller {
         if (button.isSelected()) {
             if (!model.getSelectedPaymentMethods().contains(paymentMethod)) {
                 if (model.getSelectedPaymentMethods().size() >= MAX_NUM_PAYMENT_METHODS) {
-                    new Popup().invalid(Res.get("muSig.createOffer.paymentMethods.warn.maxMethodsReached", MAX_NUM_PAYMENT_METHODS))
+                    new Popup().invalid(Res.get("muSig.offer.create.paymentMethods.warn.maxMethodsReached", MAX_NUM_PAYMENT_METHODS))
                             .owner(owner)
                             .onClose(() -> button.setSelected(false))
                             .show();

@@ -40,14 +40,14 @@ public enum MessageDeliveryStatus implements ProtoEnum {
 
     public String getDisplayString() {
         return switch (this) {
-            case CONNECTING -> Res.get("muSig.tradeState.requestMediation.deliveryState.CONNECTING");
-            case SENT -> Res.get("muSig.tradeState.requestMediation.deliveryState.SENT");
-            case ACK_RECEIVED -> Res.get("muSig.tradeState.requestMediation.deliveryState.ACK_RECEIVED");
-            case TRY_ADD_TO_MAILBOX -> Res.get("muSig.tradeState.requestMediation.deliveryState.TRY_ADD_TO_MAILBOX");
-            case ADDED_TO_MAILBOX -> Res.get("muSig.tradeState.requestMediation.deliveryState.ADDED_TO_MAILBOX");
+            case CONNECTING -> Res.get("muSig.trade.requestMediation.deliveryState.CONNECTING");
+            case SENT -> Res.get("muSig.trade.requestMediation.deliveryState.SENT");
+            case ACK_RECEIVED -> Res.get("muSig.trade.requestMediation.deliveryState.ACK_RECEIVED");
+            case TRY_ADD_TO_MAILBOX -> Res.get("muSig.trade.requestMediation.deliveryState.TRY_ADD_TO_MAILBOX");
+            case ADDED_TO_MAILBOX -> Res.get("muSig.trade.requestMediation.deliveryState.ADDED_TO_MAILBOX");
             case MAILBOX_MSG_RECEIVED ->
-                    Res.get("muSig.tradeState.requestMediation.deliveryState.MAILBOX_MSG_RECEIVED");
-            case FAILED -> Res.get("muSig.tradeState.requestMediation.deliveryState.FAILED");
+                    Res.get("muSig.trade.requestMediation.deliveryState.MAILBOX_MSG_RECEIVED");
+            case FAILED -> Res.get("muSig.trade.requestMediation.deliveryState.FAILED");
         };
     }
 }

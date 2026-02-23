@@ -245,8 +245,8 @@ public class MuSigCreateOfferAmountController implements Controller {
         areBaseAndQuoteCurrenciesInvertedPin = EasyBind.subscribe(amountSelectionController.getAreBaseAndQuoteCurrenciesInverted(), areInverted -> {
             String quoteCode = model.getPriceQuote().get().getMarket().getQuoteCurrencyCode();
             model.getPriceTooltip().set(amountSelectionController.isUsingInvertedBaseAndQuoteCurrencies()
-                    ? Res.get("muSig.component.amount.quoteSide.tooltip.fiatAmount.selectedPrice", quoteCode)
-                    : Res.get("muSig.component.amount.baseSide.tooltip.btcAmount.selectedPrice"));
+                    ? Res.get("muSig.offer.wizard.amount.quoteSide.tooltip.fiatAmount.selectedPrice", quoteCode)
+                    : Res.get("muSig.offer.wizard.amount.baseSide.tooltip.btcAmount.selectedPrice"));
         });
 
         priceTooltipPin = EasyBind.subscribe(model.getPriceTooltip(), priceTooltip -> {
@@ -392,36 +392,36 @@ public class MuSigCreateOfferAmountController implements Controller {
         model.getLearnMoreVisible().set(true);
         if (model.getIsRangeAmountEnabled().get()) {
             // At range amount we use the min amount
-            String numSellers = Res.getPluralization("muSig.tradeWizard.amount.buyer.numSellers", numPotentialTakersForMinAmount);
-            model.getAmountLimitInfo().set(Res.get("muSig.tradeWizard.amount.buyer.limitInfo", numSellers));
-            model.setAmountLimitInfoLink(Res.get("muSig.tradeWizard.amount.buyer.limitInfo.learnMore"));
+            String numSellers = Res.getPluralization("muSig.offer.create.amount.buyer.numSellers", numPotentialTakersForMinAmount);
+            model.getAmountLimitInfo().set(Res.get("muSig.offer.create.amount.buyer.limitInfo", numSellers));
+            model.setAmountLimitInfoLink(Res.get("muSig.offer.create.amount.buyer.limitInfo.learnMore"));
 
             String formattedMinAmount = formatQuoteAmountWithCode(minQuoteSideAmount);
-            String firstPart = Res.get("muSig.tradeWizard.amount.buyer.limitInfo.overlay.info.firstPart", formattedMinAmount, requiredReputationScoreForMinAmount);
+            String firstPart = Res.get("muSig.offer.create.amount.buyer.limitInfo.overlay.info.firstPart", formattedMinAmount, requiredReputationScoreForMinAmount);
             String secondPart;
             if (numPotentialTakersForMinAmount == 0) {
                 model.getShouldShowWarningIcon().set(true);
-                secondPart = Res.get("muSig.tradeWizard.amount.buyer.limitInfo.overlay.info.secondPart.noSellers");
+                secondPart = Res.get("muSig.offer.create.amount.buyer.limitInfo.overlay.info.secondPart.noSellers");
             } else {
                 secondPart = numPotentialTakersForMinAmount == 1
-                        ? Res.get("muSig.tradeWizard.amount.buyer.limitInfo.overlay.info.secondPart.singular", numSellers)
-                        : Res.get("muSig.tradeWizard.amount.buyer.limitInfo.overlay.info.secondPart.plural", numSellers);
+                        ? Res.get("muSig.offer.create.amount.buyer.limitInfo.overlay.info.secondPart.singular", numSellers)
+                        : Res.get("muSig.offer.create.amount.buyer.limitInfo.overlay.info.secondPart.plural", numSellers);
             }
             model.getAmountLimitInfoOverlayInfo().set(firstPart + "\n\n" + secondPart + "\n\n");
         } else {
             // Fixed amount
-            String numSellers = Res.getPluralization("muSig.tradeWizard.amount.buyer.numSellers", numPotentialTakersForMaxOrFixedAmount);
-            model.getAmountLimitInfo().set(Res.get("muSig.tradeWizard.amount.buyer.limitInfo", numSellers));
-            model.setAmountLimitInfoLink(Res.get("muSig.tradeWizard.amount.buyer.limitInfo.learnMore"));
-            String firstPart = Res.get("muSig.tradeWizard.amount.buyer.limitInfo.overlay.info.firstPart", formattedMaxOrFixedAmount, requiredReputationScoreForMaxOrFixedAmount);
+            String numSellers = Res.getPluralization("muSig.offer.create.amount.buyer.numSellers", numPotentialTakersForMaxOrFixedAmount);
+            model.getAmountLimitInfo().set(Res.get("muSig.offer.create.amount.buyer.limitInfo", numSellers));
+            model.setAmountLimitInfoLink(Res.get("muSig.offer.create.amount.buyer.limitInfo.learnMore"));
+            String firstPart = Res.get("muSig.offer.create.amount.buyer.limitInfo.overlay.info.firstPart", formattedMaxOrFixedAmount, requiredReputationScoreForMaxOrFixedAmount);
             String secondPart;
             if (numPotentialTakersForMaxOrFixedAmount == 0) {
                 model.getShouldShowWarningIcon().set(true);
-                secondPart = Res.get("muSig.tradeWizard.amount.buyer.limitInfo.overlay.info.secondPart.noSellers");
+                secondPart = Res.get("muSig.offer.create.amount.buyer.limitInfo.overlay.info.secondPart.noSellers");
             } else {
                 secondPart = numPotentialTakersForMaxOrFixedAmount == 1
-                        ? Res.get("muSig.tradeWizard.amount.buyer.limitInfo.overlay.info.secondPart.singular", numSellers)
-                        : Res.get("muSig.tradeWizard.amount.buyer.limitInfo.overlay.info.secondPart.plural", numSellers);
+                        ? Res.get("muSig.offer.create.amount.buyer.limitInfo.overlay.info.secondPart.singular", numSellers)
+                        : Res.get("muSig.offer.create.amount.buyer.limitInfo.overlay.info.secondPart.plural", numSellers);
             }
             model.getAmountLimitInfoOverlayInfo().set(firstPart + "\n\n" + secondPart + "\n\n");
         }
@@ -466,8 +466,8 @@ public class MuSigCreateOfferAmountController implements Controller {
 
         if (isBuyer) {
             // Buyer case
-            model.setLinkToWikiText(Res.get("muSig.tradeWizard.amount.buyer.limitInfo.overlay.linkToWikiText"));
-            model.setAmountLimitInfoLink(Res.get("muSig.tradeWizard.amount.buyer.limitInfo.learnMore"));
+            model.setLinkToWikiText(Res.get("muSig.offer.create.amount.buyer.limitInfo.overlay.linkToWikiText"));
+            model.setAmountLimitInfoLink(Res.get("muSig.offer.create.amount.buyer.limitInfo.learnMore"));
 
             long highestScore = reputationService.getScoreByUserProfileId().entrySet().stream()
                     .filter(e -> userIdentityService.findUserIdentity(e.getKey()).isEmpty())
@@ -482,13 +482,13 @@ public class MuSigCreateOfferAmountController implements Controller {
             }
         } else {
             // Seller case
-            model.setLinkToWikiText(Res.get("muSig.tradeWizard.amount.seller.limitInfo.overlay.linkToWikiText"));
-            model.setAmountLimitInfoLink(Res.get("muSig.tradeWizard.amount.seller.limitInfo.link"));
+            model.setLinkToWikiText(Res.get("muSig.offer.create.amount.seller.limitInfo.overlay.linkToWikiText"));
+            model.setAmountLimitInfoLink(Res.get("muSig.offer.create.amount.seller.limitInfo.link"));
             Monetary reputationBasedQuoteSideAmount = model.getReputationBasedMaxAmount();
             long myReputationScore = model.getMyReputationScore();
             String formattedAmount = formatQuoteAmountWithCode(reputationBasedQuoteSideAmount.round(0));
-            model.getAmountLimitInfo().set(Res.get("muSig.tradeWizard.amount.seller.limitInfo", formattedAmount));
-            model.getAmountLimitInfoOverlayInfo().set(Res.get("muSig.tradeWizard.amount.seller.limitInfo.overlay", myReputationScore, formattedAmount));
+            model.getAmountLimitInfo().set(Res.get("muSig.offer.create.amount.seller.limitInfo", formattedAmount));
+            model.getAmountLimitInfoOverlayInfo().set(Res.get("muSig.offer.create.amount.seller.limitInfo.overlay", myReputationScore, formattedAmount));
             amountSelectionController.setRightMarkerQuoteSideValue(reputationBasedQuoteSideAmount);
             applyReputationBasedQuoteSideAmount();
         }

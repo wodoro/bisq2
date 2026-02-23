@@ -95,7 +95,7 @@ public class MuSigOpenTradesWelcome {
             HBox line2 = getIconAndText(Res.get("muSig.openTrades.welcome.line2"), "trading-in-circle-green");
             HBox line3 = getIconAndText(Res.get("muSig.openTrades.welcome.line3"), "learn-in-circle-green");
 
-            button = new Button(Res.get("muSig.tradeGuide.open"));
+            button = new Button(Res.get("muSig.trade.guide.open"));
             button.setDefaultButton(true);
             button.getStyleClass().add("medium-large-button");
             button.setMaxWidth(Double.MAX_VALUE);

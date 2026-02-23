@@ -66,11 +66,11 @@ public class MuSigState3bSellerWaitForBuyerToCloseTrade extends MuSigBaseState {
             boolean isBaseCurrencyBitcoin = model.getTrade().getMarket().isBaseCurrencyBitcoin();
 
             model.setHeadline(isBaseCurrencyBitcoin
-                    ? Res.get("muSig.tradeState.info.fiat.phase3b.waitForTradeClose.headline")
-                    : Res.get("muSig.tradeState.info.crypto.phase3b.waitForTradeClose.headline"));
+                    ? Res.get("muSig.trade.state.fiat.phase3b.waitForTradeClose.headline")
+                    : Res.get("muSig.trade.state.crypto.phase3b.waitForTradeClose.headline"));
             model.setInfo(isBaseCurrencyBitcoin
-                    ? Res.get("muSig.tradeState.info.fiat.phase3b.waitForTradeClose.info")
-                    : Res.get("muSig.tradeState.info.crypto.phase3b.waitForTradeClose.info"));
+                    ? Res.get("muSig.trade.state.fiat.phase3b.waitForTradeClose.info")
+                    : Res.get("muSig.trade.state.crypto.phase3b.waitForTradeClose.info"));
         }
 
         @Override

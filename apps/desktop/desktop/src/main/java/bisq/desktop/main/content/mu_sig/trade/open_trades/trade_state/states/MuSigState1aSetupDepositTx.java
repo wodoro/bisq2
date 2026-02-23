@@ -84,8 +84,8 @@ public class MuSigState1aSetupDepositTx extends MuSigBaseState {
         private View(Model model, Controller controller) {
             super(model, controller);
 
-            WrappingText headline = MuSigFormUtils.getHeadline(Res.get("muSig.tradeState.info.phase1a.headline"));
-            WrappingText info = MuSigFormUtils.getInfo(Res.get("muSig.tradeState.info.phase1a.info"));
+            WrappingText headline = MuSigFormUtils.getHeadline(Res.get("muSig.trade.state.phase1a.headline"));
+            WrappingText info = MuSigFormUtils.getInfo(Res.get("muSig.trade.state.phase1a.info"));
             waitingAnimation = new MuSigWaitingAnimation(MuSigWaitingState.BITCOIN_CONFIRMATION);
             HBox waitingInfo = createWaitingInfo(waitingAnimation, headline, info);
 

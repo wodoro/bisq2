@@ -206,8 +206,8 @@ public final class MuSigOpenTradesController extends ChatController<MuSigOpenTra
 
     void onShowTradeRulesAcceptedWarning() {
         if (!model.getFilteredList().isEmpty() && !settingsService.getMuSigTradeRulesConfirmed().get()) {
-            new Popup().information(Res.get("muSig.tradeGuide.notConfirmed.warn"))
-                    .actionButtonText(Res.get("muSig.tradeGuide.open"))
+            new Popup().information(Res.get("muSig.trade.guide.notConfirmed.warn"))
+                    .actionButtonText(Res.get("muSig.trade.guide.open"))
                     .onAction(() -> Navigation.navigateTo(NavigationTarget.MU_SIG_GUIDE))
                     .show();
         }

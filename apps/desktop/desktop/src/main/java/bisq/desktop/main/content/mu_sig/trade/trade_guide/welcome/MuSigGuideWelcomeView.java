@@ -38,7 +38,7 @@ public class MuSigGuideWelcomeView extends View<VBox, MuSigGuideWelcomeModel, Mu
         root.setFillWidth(true);
         root.setAlignment(Pos.TOP_LEFT);
 
-        Label headline = new Label(Res.get("muSig.tradeGuide.welcome.headline"));
+        Label headline = new Label(Res.get("muSig.trade.guide.welcome.headline"));
         headline.getStyleClass().add("musig-trade-guide-headline");
 
         content = new Label();

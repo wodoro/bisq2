@@ -121,7 +121,7 @@ public class MuSigCreateOfferAmountAndPriceController implements Controller {
     private String getHeadline() {
         String baseCurrencyCode = model.getMarket().getBaseCurrencyCode();
         return model.getDisplayDirection().isBuy()
-                ? Res.get("muSig.offerWizard.amountAtPrice.buy.headline", baseCurrencyCode)
-                : Res.get("muSig.offerWizard.amountAtPrice.sell.headline", baseCurrencyCode);
+                ? Res.get("muSig.offer.wizard.amountAtPrice.buy.headline", baseCurrencyCode)
+                : Res.get("muSig.offer.wizard.amountAtPrice.sell.headline", baseCurrencyCode);
     }
 }

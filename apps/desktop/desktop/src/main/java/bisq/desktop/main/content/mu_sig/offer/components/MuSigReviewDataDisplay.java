@@ -187,7 +187,7 @@ public class MuSigReviewDataDisplay {
             toReceiveDashLabel.getStyleClass().add("bisq-easy-trade-wizard-review-header-code");
             toReceiveDashLabel.setAlignment(Pos.CENTER);
 
-            direction = getElements(Res.get("muSig.tradeState.header.direction"));
+            direction = getElements(Res.get("muSig.trade.state.header.direction"));
             toSendMaxOrFixedAmount = getElements();
             toReceiveMaxOrFixedAmount = getElements();
             price = getElements();

@@ -107,8 +107,8 @@ public class MuSigCreateOfferController extends NavigationController implements 
 
         boolean isBaseCurrencyBitcoin = market.isBaseCurrencyBitcoin();
         model.setPaymentMethodProgressLabel(isBaseCurrencyBitcoin
-                ? Res.get("muSig.offerWizard.progress.fiat.account")
-                : Res.get("muSig.offerWizard.progress.crypto.account"));
+                ? Res.get("muSig.offer.wizard.progress.fiat.account")
+                : Res.get("muSig.offer.wizard.progress.crypto.account"));
     }
 
     @Override
@@ -193,7 +193,7 @@ public class MuSigCreateOfferController extends NavigationController implements 
                     muSigCreateOfferAmountAndPriceController.getBaseSideAmountSpec().get(),
                     muSigCreateOfferAmountAndPriceController.getPriceSpec().get()
             );
-            model.getNextButtonText().set(Res.get("muSig.tradeWizard.review.nextButton.createOffer"));
+            model.getNextButtonText().set(Res.get("muSig.offer.create.review.nextButton.createOffer"));
         } else {
             model.getNextButtonText().set(Res.get("action.next"));
         }

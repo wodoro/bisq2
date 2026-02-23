@@ -73,8 +73,8 @@ public class MuSigTakeOfferAmountController implements Controller {
 
         Direction takersDisplayDirection = muSigOffer.getTakersDisplayDirection();
         model.setHeadline(takersDisplayDirection.isBuy()
-                ? Res.get("muSig.takeOffer.amount.headline.buyer")
-                : Res.get("muSig.takeOffer.amount.headline.seller"));
+                ? Res.get("muSig.offer.take.amount.headline.buyer")
+                : Res.get("muSig.offer.take.amount.headline.seller"));
         amountSelectionController.setDirection(takersDisplayDirection);
         Market market = muSigOffer.getMarket();
         amountSelectionController.setMarket(market);
@@ -85,10 +85,10 @@ public class MuSigTakeOfferAmountController implements Controller {
         applyQuoteSideMinMaxRange();
 
         String btcAmount = takersDisplayDirection.isBuy()
-                ? Res.get("muSig.component.amount.baseSide.tooltip.buyer.btcAmount")
-                : Res.get("muSig.component.amount.baseSide.tooltip.seller.btcAmount");
+                ? Res.get("muSig.offer.wizard.amount.baseSide.tooltip.buyer.btcAmount")
+                : Res.get("muSig.offer.wizard.amount.baseSide.tooltip.seller.btcAmount");
         Optional<String> priceQuoteOptional = PriceUtil.findQuote(marketPriceService, model.getMuSigOffer())
-                .map(priceQuote -> "\n" + Res.get("muSig.component.amount.baseSide.tooltip.taker.offerPrice", PriceFormatter.formatWithCode(priceQuote)));
+                .map(priceQuote -> "\n" + Res.get("muSig.offer.wizard.amount.baseSide.tooltip.taker.offerPrice", PriceFormatter.formatWithCode(priceQuote)));
         priceQuoteOptional.ifPresent(priceQuote -> amountSelectionController.setTooltip(String.format("%s%s", btcAmount, priceQuote)));
     }
 
@@ -194,22 +194,22 @@ public class MuSigTakeOfferAmountController implements Controller {
         boolean isBuyer = muSigOffer.getTakersDisplayDirection().isBuy();
         if (isBuyer) {
             // Buyer case
-            model.setAmountLimitInfoLink(Res.get("muSig.takeOffer.amount.buyer.limitInfo.learnMore"));
-            model.setLinkToWikiText(Res.get("muSig.takeOffer.amount.buyer.limitInfo.overlay.linkToWikiText"));
+            model.setAmountLimitInfoLink(Res.get("muSig.offer.take.amount.buyer.limitInfo.learnMore"));
+            model.setLinkToWikiText(Res.get("muSig.offer.take.amount.buyer.limitInfo.overlay.linkToWikiText"));
 
             if (reputationBasedQuoteSideAmount.isLessThan(offersQuoteSideMaxOrFixedAmount)) {
                 // Max amount not covered by security from reputation score
                 model.getIsAmountLimitInfoVisible().set(true);
-                model.getAmountLimitInfo().set(Res.get("muSig.takeOffer.amount.buyer.limitInfo.minAmountCovered", sellersReputationScore));
+                model.getAmountLimitInfo().set(Res.get("muSig.offer.take.amount.buyer.limitInfo.minAmountCovered", sellersReputationScore));
                 String formattedAmount = AmountFormatter.formatQuoteAmountWithCode(reputationBasedQuoteSideAmount);
-                model.getAmountLimitInfoAmount().set(Res.get("muSig.takeOffer.amount.buyer.limitInfoAmount", formattedAmount));
-                model.getAmountLimitInfoOverlayInfo().set(Res.get("muSig.takeOffer.amount.buyer.limitInfo.minAmountCovered.overlay.info", sellersReputationScore, formattedAmount) + "\n\n");
+                model.getAmountLimitInfoAmount().set(Res.get("muSig.offer.take.amount.buyer.limitInfoAmount", formattedAmount));
+                model.getAmountLimitInfoOverlayInfo().set(Res.get("muSig.offer.take.amount.buyer.limitInfo.minAmountCovered.overlay.info", sellersReputationScore, formattedAmount) + "\n\n");
             } else {
                 model.getIsAmountLimitInfoVisible().set(false);
             }
         } else {
             // Seller case
-            model.setLinkToWikiText(Res.get("muSig.tradeWizard.amount.seller.limitInfo.overlay.linkToWikiText"));
+            model.setLinkToWikiText(Res.get("muSig.offer.create.amount.seller.limitInfo.overlay.linkToWikiText"));
             long myReputationScore = reputationService.getReputationScore(myProfileId).getTotalScore();
             BisqEasyTradeAmountLimits.getReputationBasedQuoteSideAmount(marketPriceService, market, myReputationScore)
                     .ifPresent(myReputationBasedQuoteSideAmount -> {
@@ -218,12 +218,12 @@ public class MuSigTakeOfferAmountController implements Controller {
                         amountSelectionController.setRightMarkerQuoteSideValue(myReputationBasedQuoteSideAmount);
                         model.getIsAmountLimitInfoVisible().set(false);
                         String formattedAmount = AmountFormatter.formatQuoteAmountWithCode(myReputationBasedQuoteSideAmount);
-                        model.getAmountLimitInfoAmount().set(Res.get("muSig.tradeWizard.amount.seller.limitInfoAmount", formattedAmount));
-                        model.setAmountLimitInfoLink(Res.get("muSig.tradeWizard.amount.seller.limitInfo.link"));
+                        model.getAmountLimitInfoAmount().set(Res.get("muSig.offer.create.amount.seller.limitInfoAmount", formattedAmount));
+                        model.setAmountLimitInfoLink(Res.get("muSig.offer.create.amount.seller.limitInfo.link"));
                         if (myReputationBasedQuoteSideAmount.isLessThan(offersQuoteSideMaxOrFixedAmount)) {
                             model.getIsAmountLimitInfoVisible().set(true);
-                            model.getAmountLimitInfo().set(Res.get("muSig.tradeWizard.amount.seller.limitInfo.insufficientScore", myReputationScore));
-                            model.getAmountLimitInfoOverlayInfo().set(Res.get("muSig.tradeWizard.amount.seller.limitInfo.overlay.info.insufficientScore", myReputationScore, formattedAmount) + "\n\n");
+                            model.getAmountLimitInfo().set(Res.get("muSig.offer.create.amount.seller.limitInfo.insufficientScore", myReputationScore));
+                            model.getAmountLimitInfoOverlayInfo().set(Res.get("muSig.offer.create.amount.seller.limitInfo.overlay.info.insufficientScore", myReputationScore, formattedAmount) + "\n\n");
                         }
                     });
             applyReputationBasedQuoteSideAmount();

@@ -56,7 +56,7 @@ public class MuSigTradeStateView extends View<VBox, MuSigTradeStateModel, MuSigT
 
         this.tradePhaseBox = tradePhaseBox;
 
-        tradeDetailsButton = new Button(Res.get("muSig.openTrades.tradeDetails.button"));
+        tradeDetailsButton = new Button(Res.get("muSig.trade.details.button"));
         tradeDetailsButton.getStyleClass().addAll("grey-transparent-outlined-button");
         tradeDetailsButton.setMinWidth(160);
 
@@ -72,7 +72,7 @@ public class MuSigTradeStateView extends View<VBox, MuSigTradeStateModel, MuSigT
 
         tryAgainMenuItem = new BisqMenuItem("try-again-dark", "try-again-white");
         tryAgainMenuItem.useIconOnly(22);
-        tryAgainMenuItem.setTooltip(new BisqTooltip(Res.get("muSig.tradeState.requestMediation.resendRequest.tooltip")));
+        tryAgainMenuItem.setTooltip(new BisqTooltip(Res.get("muSig.trade.requestMediation.resendRequest.tooltip")));
         isInMediationIcon.getStyleClass().add("bisq-easy-trade-isInMediation-headline");
 
         isInMediationHBox = new HBox(10, isInMediationIcon, mediationBannerLabel, tryAgainMenuItem);
@@ -152,7 +152,7 @@ public class MuSigTradeStateView extends View<VBox, MuSigTradeStateModel, MuSigT
                         String deliveryStatus = status.getDisplayString();
                         if (status == MessageDeliveryStatus.FAILED) {
                             String resendRequest = model.getShouldShowTryRequestMediationAgain().get()
-                                    ? " " + Res.get("muSig.tradeState.requestMediation.resendRequest")
+                                    ? " " + Res.get("muSig.trade.requestMediation.resendRequest")
                                     : "";
                             mediationBannerLabel.setText(deliveryStatus + resendRequest);
                         } else {

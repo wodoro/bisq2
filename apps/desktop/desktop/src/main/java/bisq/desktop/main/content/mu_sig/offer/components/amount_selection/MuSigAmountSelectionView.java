@@ -133,7 +133,7 @@ public class MuSigAmountSelectionView extends View<VBox, MuSigAmountSelectionMod
         baseAmountSelectionHBox.getStyleClass().add("base-amount");
 
         flipCurrenciesButton = new BisqMenuItem("flip-fields-arrows-green", "flip-fields-arrows-white");
-        flipCurrenciesButton.setTooltip(Res.get("muSig.tradeWizard.amount.selection.flipCurrenciesButton.tooltip"));
+        flipCurrenciesButton.setTooltip(Res.get("muSig.offer.create.amount.selection.flipCurrenciesButton.tooltip"));
         HBox baseAmountAndFlippingButtonHBox = new HBox(baseAmountSelectionHBox, Spacer.fillHBox(), flipCurrenciesButton);
         baseAmountAndFlippingButtonHBox.setLayoutY(70);
         baseAmountAndFlippingButtonHBox.setPadding(new Insets(0, 10, 0, 20));

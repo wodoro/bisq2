@@ -102,11 +102,11 @@ public class MuSigTakeOfferPaymentController implements Controller {
             checkNotNull(accountsForPaymentMethod, "There must be a account list for paymentMethod " + paymentMethod);
             model.getAccountsForPaymentMethod().setAll(accountsForPaymentMethod);
 
-            model.setSubtitle(Res.get("muSig.takeOffer.paymentMethods.subtitle.account", paymentMethod.getShortDisplayString()));
-            model.setSinglePaymentMethodAccountSelectionDescription(Res.get("muSig.takeOffer.paymentMethods.singlePaymentMethod.accountSelection.prompt",
+            model.setSubtitle(Res.get("muSig.offer.take.paymentMethods.subtitle.account", paymentMethod.getShortDisplayString()));
+            model.setSinglePaymentMethodAccountSelectionDescription(Res.get("muSig.offer.take.paymentMethods.singlePaymentMethod.accountSelection.prompt",
                     paymentMethod.getShortDisplayString()));
         } else {
-            model.setSubtitle(Res.get("muSig.takeOffer.paymentMethods.subtitle.paymentMethod"));
+            model.setSubtitle(Res.get("muSig.offer.take.paymentMethods.subtitle.paymentMethod"));
         }
 
         List<? extends PaymentMethod<?>> offeredPaymentMethods = offeredPaymentMethodSpecs.stream()
@@ -145,7 +145,7 @@ public class MuSigTakeOfferPaymentController implements Controller {
         paymentMethodWithoutAccountPin = EasyBind.subscribe(model.getPaymentMethodWithoutAccount(), paymentMethod -> {
             if (paymentMethod != null) {
                 model.getNoAccountOverlayHeadlineText().set(
-                        Res.get("muSig.takeOffer.paymentMethod.noAccountOverlay.title",
+                        Res.get("muSig.offer.take.paymentMethod.noAccountOverlay.title",
                                 paymentMethod.getShortDisplayString()));
                 updateShouldShowNoAccountOverlay(true);
             }
@@ -154,7 +154,7 @@ public class MuSigTakeOfferPaymentController implements Controller {
                 paymentMethod -> {
                     if (paymentMethod != null) {
                         model.getMultipleAccountsOverlayHeadlineText().set(
-                                Res.get("muSig.takeOffer.paymentMethod.multipleAccountOverlay.title",
+                                Res.get("muSig.offer.take.paymentMethod.multipleAccountOverlay.title",
                                         paymentMethod.getShortDisplayString()));
                         updateShouldShowMultipleAccountsOverlay(true);
                     }
@@ -266,12 +266,12 @@ public class MuSigTakeOfferPaymentController implements Controller {
         String currencyCode = model.getPaymentMethodCurrencyCode();
         if (model.getMarket().isCrypto()) {
             return isBuyer
-                    ? Res.get("muSig.takeOffer.paymentMethods.cryptoMarket.headline.buyer", currencyCode)
-                    : Res.get("muSig.takeOffer.paymentMethods.cryptoMarket.headline.seller", currencyCode);
+                    ? Res.get("muSig.offer.take.paymentMethods.cryptoMarket.headline.buyer", currencyCode)
+                    : Res.get("muSig.offer.take.paymentMethods.cryptoMarket.headline.seller", currencyCode);
         } else {
             return isBuyer
-                    ? Res.get("muSig.takeOffer.paymentMethods.fiatMarket.headline.buyer", currencyCode)
-                    : Res.get("muSig.takeOffer.paymentMethods.fiatMarket.headline.seller", currencyCode);
+                    ? Res.get("muSig.offer.take.paymentMethods.fiatMarket.headline.buyer", currencyCode)
+                    : Res.get("muSig.offer.take.paymentMethods.fiatMarket.headline.seller", currencyCode);
         }
     }
 }

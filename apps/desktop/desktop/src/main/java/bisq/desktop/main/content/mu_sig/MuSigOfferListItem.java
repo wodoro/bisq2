@@ -123,8 +123,8 @@ public class MuSigOfferListItem {
                 ? Res.get("muSig.offerbook.table.cell.offer.intent.sell", market.getBaseCurrencyName())
                 : Res.get("muSig.offerbook.table.cell.offer.intent.buy", market.getBaseCurrencyName());
         offerIntentText = displayDirection.isBuy()
-                ? Res.get("muSig.myOffers.table.cell.offerType.buying")
-                : Res.get("muSig.myOffers.table.cell.offerType.selling");
+                ? Res.get("muSig.offer.mine.table.cell.offerType.buying")
+                : Res.get("muSig.offer.mine.table.cell.offerType.selling");
         offerId = offer.getShortId().toUpperCase(Locale.ROOT);
         offerDate = offer.getDate();
         offerDateString = DateFormatter.formatDateTime(offerDate);

@@ -42,16 +42,16 @@ public class MuSigGuideView extends TabView<MuSigGuideModel, MuSigGuideControlle
         VBox.setMargin(scrollPane, new Insets(10, 0, 0, 0));
 
         Styles styles = new Styles("bisq-text-grey-9", "bisq-text-white", "bisq-text-green", "bisq-text-grey-9");
-        addTab(Res.get("muSig.tradeGuide.welcome"),
+        addTab(Res.get("muSig.trade.guide.welcome"),
                 NavigationTarget.MU_SIG_GUIDE_WELCOME,
                 styles);
-        addTab(Res.get("muSig.tradeGuide.security"),
+        addTab(Res.get("muSig.trade.guide.security"),
                 NavigationTarget.MU_SIG_GUIDE_SECURITY,
                 styles);
-        addTab(Res.get("muSig.tradeGuide.process"),
+        addTab(Res.get("muSig.trade.guide.process"),
                 NavigationTarget.MU_SIG_GUIDE_PROCESS,
                 styles);
-        addTab(Res.get("muSig.tradeGuide.rules"),
+        addTab(Res.get("muSig.trade.guide.rules"),
                 NavigationTarget.MU_SIG_GUIDE_RULES,
                 styles);
     }
@@ -81,7 +81,7 @@ public class MuSigGuideView extends TabView<MuSigGuideModel, MuSigGuideControlle
     @Override
     protected void setupTopBox() {
         headline = new Label();
-        headline.setText(Res.get("muSig.tradeGuide.tabs.headline"));
+        headline.setText(Res.get("muSig.trade.guide.tabs.headline"));
         headline.getStyleClass().add("tab-view");
 
         closeIconButton = BisqIconButton.createIconButton("close");

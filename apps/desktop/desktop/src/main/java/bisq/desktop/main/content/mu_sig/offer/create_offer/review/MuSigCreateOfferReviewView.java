@@ -118,7 +118,7 @@ class MuSigCreateOfferReviewView extends View<StackPane, MuSigCreateOfferReviewM
         gridPane.add(paymentMethodDetails, 2, rowIndex, 2, 1);
 
         rowIndex++;
-        Label securityDepositDescription = new Label(Res.get("muSig.tradeWizard.review.securityDeposit.description"));
+        Label securityDepositDescription = new Label(Res.get("muSig.offer.create.review.securityDeposit.description"));
         securityDepositDescription.getStyleClass().add(DESCRIPTION_STYLE);
 
         securityDepositInfoIcon = Icons.getIcon(AwesomeIcon.INFO_SIGN, "1.1em");
@@ -137,7 +137,7 @@ class MuSigCreateOfferReviewView extends View<StackPane, MuSigCreateOfferReviewM
         gridPane.add(securityDepositDetails, 2, rowIndex, 2, 1);
 
         rowIndex++;
-        Label feeInfoDescription = new Label(Res.get("muSig.tradeWizard.review.feeDescription"));
+        Label feeInfoDescription = new Label(Res.get("muSig.offer.create.review.feeDescription"));
         feeInfoDescription.getStyleClass().add(DESCRIPTION_STYLE);
         gridPane.add(feeInfoDescription, 0, rowIndex);
 
@@ -154,12 +154,12 @@ class MuSigCreateOfferReviewView extends View<StackPane, MuSigCreateOfferReviewM
         gridPane.add(line3, 0, rowIndex, 4, 1);
 
         // Feedback overlays
-        createOfferSuccessButton = new Button(Res.get("muSig.tradeWizard.review.createOfferSuccessButton"));
+        createOfferSuccessButton = new Button(Res.get("muSig.offer.create.review.createOfferSuccessButton"));
         createOfferSuccessButton.setDefaultButton(true);
         createOfferSuccessOverlay = new WizardOverlay(root)
                 .info()
-                .headline("muSig.tradeWizard.review.createOfferSuccess.headline")
-                .descriptionFromI18nKey("muSig.tradeWizard.review.createOfferSuccess.subTitle")
+                .headline("muSig.offer.create.review.createOfferSuccess.headline")
+                .descriptionFromI18nKey("muSig.offer.create.review.createOfferSuccess.subTitle")
                 .buttons(createOfferSuccessButton)
                 .build();
 
@@ -188,7 +188,7 @@ class MuSigCreateOfferReviewView extends View<StackPane, MuSigCreateOfferReviewM
             paymentMethodDetails.setTooltip(new BisqTooltip(paymentMethodDetailsValue));
         }
 
-        securityDepositInfoIcon.setTooltip(new BisqTooltip(Res.get("muSig.tradeWizard.review.securityDeposit.info")));
+        securityDepositInfoIcon.setTooltip(new BisqTooltip(Res.get("muSig.offer.create.review.securityDeposit.info")));
 
         securityDeposit.setText(model.getFormattedSecurityDepositAsPercent());
         securityDepositDetails.setText(model.getSecurityDepositAsBtc());

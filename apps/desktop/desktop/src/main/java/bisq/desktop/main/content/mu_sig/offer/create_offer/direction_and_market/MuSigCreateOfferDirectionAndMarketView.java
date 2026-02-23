@@ -80,7 +80,7 @@ public class MuSigCreateOfferDirectionAndMarketView extends View<StackPane, MuSi
         marketsTableView.setPrefSize(TABLE_WIDTH, TABLE_HEIGHT);
         marketsTableView.setFixedCellSize(50);
         configMarketTableView();
-        paymentCurrencySearchBox = createAndGetSearchBox("muSig.createOffer.directionAndMarket.marketsPopup.search.payment");
+        paymentCurrencySearchBox = createAndGetSearchBox("muSig.offer.create.directionAndMarket.marketsPopup.search.payment");
         StackPane marketsTableViewWithSearchBox = createAndGetTableViewWithSearchBox(marketsTableView, paymentCurrencySearchBox);
         marketsTableViewWithSearchBox.getStyleClass().add("markets-table-view-box");
 
@@ -88,7 +88,7 @@ public class MuSigCreateOfferDirectionAndMarketView extends View<StackPane, MuSi
         baseCryptoAssetsTableView.setPrefSize(TABLE_WIDTH, TABLE_HEIGHT);
         baseCryptoAssetsTableView.setFixedCellSize(50);
         configBaseCryptoAssetsTableView();
-        cryptoCurrencySearchBox = createAndGetSearchBox("muSig.createOffer.directionAndMarket.marketsPopup.search.crypto");
+        cryptoCurrencySearchBox = createAndGetSearchBox("muSig.offer.create.directionAndMarket.marketsPopup.search.crypto");
         StackPane baseCryptoAssetsTableViewWithSearchBox = createAndGetTableViewWithSearchBox(baseCryptoAssetsTableView, cryptoCurrencySearchBox);
 
         marketSelectionPopup = new BisqPopup();
@@ -226,7 +226,7 @@ public class MuSigCreateOfferDirectionAndMarketView extends View<StackPane, MuSi
                 .setCellFactory(getMarketNameCellFactory())
                 .build());
         marketsTableView.getColumns().add(new BisqTableColumn.Builder<MarketListItem>()
-                .title(Res.get("muSig.createOffer.directionAndMarket.marketsPopup.numOffers"))
+                .title(Res.get("muSig.offer.create.directionAndMarket.marketsPopup.numOffers"))
                 .fixWidth(70)
                 .valueSupplier(MarketListItem::getNumOffers)
                 .comparator(Comparator.comparing(MarketListItem::getNumOffersAsInteger))
@@ -241,7 +241,7 @@ public class MuSigCreateOfferDirectionAndMarketView extends View<StackPane, MuSi
                 .setCellFactory(getBaseCryptoAssetNameCellFactory())
                 .build());
         baseCryptoAssetsTableView.getColumns().add(new BisqTableColumn.Builder<BaseCryptoAssetListItem>()
-                .title(Res.get("muSig.createOffer.directionAndMarket.marketsPopup.numOffers"))
+                .title(Res.get("muSig.offer.create.directionAndMarket.marketsPopup.numOffers"))
                 .fixWidth(70)
                 .valueSupplier(BaseCryptoAssetListItem::getNumOffers)
                 .comparator(Comparator.comparing(BaseCryptoAssetListItem::getNumOffersAsInteger))

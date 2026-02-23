@@ -72,12 +72,12 @@ public class MuSigCreateOfferPriceView extends View<VBox, MuSigCreateOfferPriceM
         this.priceInputBox = priceInputBox;
 
         // Pricing model selection
-        percentagePriceButton = new Button(Res.get("muSig.price.percentage.title"));
+        percentagePriceButton = new Button(Res.get("muSig.offer.create.price.percentage.title"));
         percentagePriceButton.getStyleClass().add("model-selection-item");
         percentagePriceButton.setGraphicTextGap(8);
         percentagePriceIconGreen = ImageUtil.getImageViewById("chart-icon-green");
         percentagePriceIconGrey = ImageUtil.getImageViewById("chart-icon-grey");
-        fixedPriceButton = new Button(Res.get("muSig.price.tradePrice.title"));
+        fixedPriceButton = new Button(Res.get("muSig.offer.create.price.tradePrice.title"));
         fixedPriceButton.getStyleClass().add("model-selection-item");
         fixedPriceButton.setGraphicTextGap(8);
         fixedPriceIconGreen = ImageUtil.getImageViewById("lock-icon-green");
@@ -95,7 +95,7 @@ public class MuSigCreateOfferPriceView extends View<VBox, MuSigCreateOfferPriceM
         pricingModels.getStyleClass().addAll("selection-models", "bisq-text-3");
 
         // Input box
-        percentageInputBox = new MuSigPriceInputBox(Res.get("muSig.price.percentage.inputBoxText"),
+        percentageInputBox = new MuSigPriceInputBox(Res.get("muSig.offer.create.price.percentage.inputBoxText"),
                 BisqEasyViewUtils.NUMERIC_WITH_DECIMAL_REGEX);
         percentageInputBox.setValidator(new PercentageValidator());
         percentageInputBox.textInputSymbolTextProperty().set("%");
@@ -132,7 +132,7 @@ public class MuSigCreateOfferPriceView extends View<VBox, MuSigCreateOfferPriceM
         feedbackSentence = new Label();
         feedbackSentence.getStyleClass().add("trade-wizard-amount-limit-info");
 
-        showLearnWhyButton = new Hyperlink(Res.get("muSig.price.feedback.learnWhySection.openButton"));
+        showLearnWhyButton = new Hyperlink(Res.get("muSig.offer.create.price.feedback.learnWhySection.openButton"));
         showLearnWhyButton.getStyleClass().add("trade-wizard-amount-limit-info-overlay-link");
         showLearnWhyButton.setMinWidth(Hyperlink.USE_PREF_SIZE);
 
@@ -140,16 +140,16 @@ public class MuSigCreateOfferPriceView extends View<VBox, MuSigCreateOfferPriceM
         feedbackBox.setAlignment(Pos.CENTER);
 
         // Overlay
-        Label learnWhyIntroLabel = new Label(Res.get("muSig.price.feedback.learnWhySection.description.intro"));
+        Label learnWhyIntroLabel = new Label(Res.get("muSig.offer.create.price.feedback.learnWhySection.description.intro"));
         learnWhyIntroLabel.getStyleClass().addAll("learn-why-text", "wrap-text");
         learnWhyIntroLabel.setPadding(WizardOverlay.TEXT_CONTENT_PADDING);
-        UnorderedList learnWhyExpositionList = new UnorderedList(Res.get("muSig.price.feedback.learnWhySection.description.exposition"),
+        UnorderedList learnWhyExpositionList = new UnorderedList(Res.get("muSig.offer.create.price.feedback.learnWhySection.description.exposition"),
                 "learn-why-text", 7, 10, "- ", "- ");
         learnWhyExpositionList.setPadding(WizardOverlay.TEXT_CONTENT_PADDING);
-        closeOverlayButton = new Button(Res.get("muSig.price.feedback.learnWhySection.closeButton"));
+        closeOverlayButton = new Button(Res.get("muSig.offer.create.price.feedback.learnWhySection.closeButton"));
         overlay = new WizardOverlay(root)
                 .info()
-                .headline("muSig.price.feedback.learnWhySection.title")
+                .headline("muSig.offer.create.price.feedback.learnWhySection.title")
                 .description(new VBox(40, learnWhyIntroLabel, learnWhyExpositionList))
                 .buttons(closeOverlayButton)
                 .build();

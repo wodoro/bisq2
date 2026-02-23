@@ -291,12 +291,12 @@ public class TradeLimitsPreview {
             int rowIndex = 0;
 
             deposit = new SliderWithValue(0.25, 0.25, 1,
-                    "muSig.tradeLimits.tab2.preview.deposit",
+                    "muSig.trade.limits.tab2.preview.deposit",
                     e -> PercentageFormatter.formatToPercentWithSymbol(e, 0),
                     new PercentageStringConverter(0.3, 2),
                     0.01);
             accountAge = new SliderWithValue(0, 0, 60,
-                    "muSig.tradeLimits.tab2.preview.accountAge",
+                    "muSig.trade.limits.tab2.preview.accountAge",
                     value -> String.valueOf(MathUtils.roundDouble(value, 0)),
                     new LongStringConverter(0),
                     1);
@@ -306,12 +306,12 @@ public class TradeLimitsPreview {
             root.add(accountAge.getViewRoot(), 1, rowIndex, 1, 1);
 
             accountAgeWitnessScore = new SliderWithValue(0, 0, 180,
-                    "muSig.tradeLimits.tab2.preview.accountAgeWitnessScore",
+                    "muSig.trade.limits.tab2.preview.accountAgeWitnessScore",
                     value -> String.valueOf(MathUtils.roundDouble(value, 0)),
                     new LongStringConverter(0),
                     1);
             reputationScore = new SliderWithValue(0, 0, 100000,
-                    "muSig.tradeLimits.tab2.preview.reputationScore",
+                    "muSig.trade.limits.tab2.preview.reputationScore",
                     value -> String.valueOf(MathUtils.roundDouble(value, 0)),
                     new LongStringConverter(0),
                     1);
@@ -321,13 +321,13 @@ public class TradeLimitsPreview {
             root.add(reputationScore.getViewRoot(), 1, rowIndex, 1, 1);
 
             signedFiatReceiptAge = new SliderWithValue(0, 0, 60,
-                    "muSig.tradeLimits.tab2.preview.signedFiatReceiptAge",
+                    "muSig.trade.limits.tab2.preview.signedFiatReceiptAge",
                     value -> String.valueOf(MathUtils.roundDouble(value, 0)),
                     new LongStringConverter(0),
                     1);
 
             dualAccountVerificationAge = new SliderWithValue(0, 0, 30,
-                    "muSig.tradeLimits.tab2.preview.dualAccountVerificationAge",
+                    "muSig.trade.limits.tab2.preview.dualAccountVerificationAge",
                     value -> String.valueOf(MathUtils.roundDouble(value, 0)),
                     new LongStringConverter(0),
                     1);
@@ -337,9 +337,9 @@ public class TradeLimitsPreview {
             root.add(dualAccountVerificationAge.getViewRoot(), 1, rowIndex, 1, 1);
 
 
-            tradeLimit = new MaterialTextField(Res.get("muSig.tradeLimits.tab2.preview.tradeLimit"));
+            tradeLimit = new MaterialTextField(Res.get("muSig.trade.limits.tab2.preview.tradeLimit"));
             tradeLimit.setEditable(false);
-            rateLimit = new MaterialTextField(Res.get("muSig.tradeLimits.tab2.preview.rateLimit"));
+            rateLimit = new MaterialTextField(Res.get("muSig.trade.limits.tab2.preview.rateLimit"));
             rateLimit.setEditable(false);
 
             root.add(tradeLimit, 0, ++rowIndex, 1, 1);

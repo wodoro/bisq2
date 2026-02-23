@@ -92,7 +92,7 @@ public class MuSigTradeStateController implements Controller {
         resendMessageService = serviceProvider.getNetworkService().getResendMessageService();
 
         muSigTradePhaseBox = new MuSigTradePhaseBox(serviceProvider);
-        muSigTradeDataHeader = new MuSigTradeDataHeader(serviceProvider, Res.get("muSig.tradeState.header.peer").toUpperCase());
+        muSigTradeDataHeader = new MuSigTradeDataHeader(serviceProvider, Res.get("muSig.trade.state.header.peer").toUpperCase());
         model = new MuSigTradeStateModel();
         view = new MuSigTradeStateView(model, this,
                 muSigTradePhaseBox.getRoot(),

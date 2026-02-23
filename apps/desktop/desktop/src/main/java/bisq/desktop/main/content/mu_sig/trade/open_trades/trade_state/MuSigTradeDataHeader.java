@@ -119,18 +119,18 @@ public class MuSigTradeDataHeader {
                 String quoteAmountString = AmountFormatter.formatQuoteAmount(quoteAmount);
                 if (trade.isSellerInDisplayContext()) {
                     model.getDirection().set(Res.get("offer.sell").toUpperCase());
-                    model.getLeftAmountDescription().set(Res.get("muSig.tradeState.header.send").toUpperCase());
+                    model.getLeftAmountDescription().set(Res.get("muSig.trade.state.header.send").toUpperCase());
                     model.getLeftAmount().set(baseAmountString);
                     model.getLeftCode().set(baseAmount.getCode());
-                    model.getRightAmountDescription().set(Res.get("muSig.tradeState.header.receive").toUpperCase());
+                    model.getRightAmountDescription().set(Res.get("muSig.trade.state.header.receive").toUpperCase());
                     model.getRightAmount().set(quoteAmountString);
                     model.getRightCode().set(quoteAmount.getCode());
                 } else {
                     model.getDirection().set(Res.get("offer.buy").toUpperCase());
-                    model.getLeftAmountDescription().set(Res.get("muSig.tradeState.header.pay").toUpperCase());
+                    model.getLeftAmountDescription().set(Res.get("muSig.trade.state.header.pay").toUpperCase());
                     model.getLeftAmount().set(quoteAmountString);
                     model.getLeftCode().set(quoteAmount.getCode());
-                    model.getRightAmountDescription().set(Res.get("muSig.tradeState.header.receive").toUpperCase());
+                    model.getRightAmountDescription().set(Res.get("muSig.trade.state.header.receive").toUpperCase());
                     model.getRightAmount().set(baseAmountString);
                     model.getRightCode().set(baseAmount.getCode());
                 }
@@ -196,10 +196,10 @@ public class MuSigTradeDataHeader {
             VBox peerVBox = new VBox(2, peerDescription, peersUserProfileDisplay);
             peerVBox.setAlignment(Pos.CENTER_LEFT);
 
-            direction = getElements(Res.get("muSig.tradeState.header.direction"));
+            direction = getElements(Res.get("muSig.trade.state.header.direction"));
             leftAmount = getAmountElements();
             rightAmount = getAmountElements();
-            tradeId = getElements(Res.get("muSig.tradeState.header.tradeId"));
+            tradeId = getElements(Res.get("muSig.trade.state.header.tradeId"));
 
             VBox directionVBox = direction.getThird();
             directionVBox.setTranslateY(8);
