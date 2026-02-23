@@ -149,7 +149,7 @@ public class MuSigTradeStateView extends View<VBox, MuSigTradeStateModel, MuSigT
                     if (status == null || status == MessageDeliveryStatus.ACK_RECEIVED || status == MessageDeliveryStatus.MAILBOX_MSG_RECEIVED) {
                         mediationBannerLabel.setText(Res.get("muSig.trade.pending.inMediation.info"));
                     } else {
-                        String deliveryStatus = status.getDisplayString();
+                        String deliveryStatus = getMessageDeliveryStatusDisplayString(status);
                         if (status == MessageDeliveryStatus.FAILED) {
                             String resendRequest = model.getShouldShowTryRequestMediationAgain().get()
                                     ? " " + Res.get("muSig.trade.requestMediation.resendRequest")
@@ -198,5 +198,17 @@ public class MuSigTradeStateView extends View<VBox, MuSigTradeStateModel, MuSigT
         if (phaseAndInfoHBox.getChildren().size() == 2) {
             phaseAndInfoHBox.getChildren().remove(1);
         }
+    }
+
+    private static String getMessageDeliveryStatusDisplayString(MessageDeliveryStatus status) {
+        return switch (status) {
+            case CONNECTING -> Res.get("muSig.trade.requestMediation.deliveryState.CONNECTING");
+            case SENT -> Res.get("muSig.trade.requestMediation.deliveryState.SENT");
+            case ACK_RECEIVED -> Res.get("muSig.trade.requestMediation.deliveryState.ACK_RECEIVED");
+            case TRY_ADD_TO_MAILBOX -> Res.get("muSig.trade.requestMediation.deliveryState.TRY_ADD_TO_MAILBOX");
+            case ADDED_TO_MAILBOX -> Res.get("muSig.trade.requestMediation.deliveryState.ADDED_TO_MAILBOX");
+            case MAILBOX_MSG_RECEIVED -> Res.get("muSig.trade.requestMediation.deliveryState.MAILBOX_MSG_RECEIVED");
+            case FAILED -> Res.get("muSig.trade.requestMediation.deliveryState.FAILED");
+        };
     }
 }
