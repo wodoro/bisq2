@@ -88,10 +88,10 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
     private static final Map<String, StackPane> MARKET_HEADER_ICON_CACHE = new HashMap<>();
 
     private final RichTableView<MuSigOfferListItem> muSigOfferListView;
-    private final BisqTableView<MarketItem> marketListView, favouritesListView;
+    private final BisqTableView<MuSigMarketItem> marketListView, favouritesListView;
     private final HBox headerHBox;
     private final VBox offersVBox;
-    private final ListChangeListener<MarketItem> favouriteItemsChangeListener;
+    private final ListChangeListener<MuSigMarketItem> favouriteItemsChangeListener;
     private final ChangeListener<Toggle> toggleChangeListener;
     private final ListChangeListener<FiatPaymentMethod> availablePaymentsChangeListener;
     private final SetChangeListener<FiatPaymentMethod> selectedPaymentsChangeListener;
@@ -103,7 +103,7 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
     private SearchBox marketsSearchBox;
     private DropdownMenu sortAndFilterMarketsMenu, paymentsFilterMenu, baseCurrencySelectionMenu;
     private SelectableMenuItem<CryptoAsset> btcMarketsMenuItem, xmrMarketsMenuItem;
-    private SortAndFilterDropdownMenuItem<MarketSortType> sortByMostOffers, sortByNameAZ, sortByNameZA;
+    private SortAndFilterDropdownMenuItem<MuSigMarketSortType> sortByMostOffers, sortByNameAZ, sortByNameZA;
     private SortAndFilterDropdownMenuItem<MuSigFilters.MarketFilter> filterShowAll, filterWithOffers, filterFavourites;
     private ToggleGroup offerFiltersToggleGroup;
     private ToggleButton allOffersToggleButton, buyToggleButton, sellToggleButton, myOffersToggleButton;
@@ -225,9 +225,9 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
 
         selectedMuSigOfferPin = EasyBind.subscribe(model.getSelectedMuSigOfferListItem(), this::trySelectingMuSigOfferListItem);
 
-        sortByMostOffers.setOnAction(e -> controller.onSortMarkets(MarketSortType.NUM_OFFERS));
-        sortByNameAZ.setOnAction(e -> controller.onSortMarkets(MarketSortType.ASC));
-        sortByNameZA.setOnAction(e -> controller.onSortMarkets(MarketSortType.DESC));
+        sortByMostOffers.setOnAction(e -> controller.onSortMarkets(MuSigMarketSortType.NUM_OFFERS));
+        sortByNameAZ.setOnAction(e -> controller.onSortMarkets(MuSigMarketSortType.ASC));
+        sortByNameZA.setOnAction(e -> controller.onSortMarkets(MuSigMarketSortType.DESC));
 
         filterWithOffers.setOnAction(e -> model.getSelectedMarketsFilter().set(MuSigFilters.MarketFilter.WITH_OFFERS));
         filterShowAll.setOnAction(e -> model.getSelectedMarketsFilter().set(MuSigFilters.MarketFilter.ALL));
@@ -410,14 +410,14 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
         marketListVBox.getStyleClass().add("chat-container");
     }
 
-    private void configMarketListView(BisqTableView<MarketItem> tableView) {
-        BisqTableColumn<MarketItem> marketLogoTableColumn = new BisqTableColumn.Builder<MarketItem>()
+    private void configMarketListView(BisqTableView<MuSigMarketItem> tableView) {
+        BisqTableColumn<MuSigMarketItem> marketLogoTableColumn = new BisqTableColumn.Builder<MuSigMarketItem>()
                 .fixWidth(55)
                 .setCellFactory(getMarketLogoCellFactory())
                 .isSortable(false)
                 .build();
 
-        BisqTableColumn<MarketItem> marketLabelTableColumn = new BisqTableColumn.Builder<MarketItem>()
+        BisqTableColumn<MuSigMarketItem> marketLabelTableColumn = new BisqTableColumn.Builder<MuSigMarketItem>()
                 .minWidth(100)
                 .left()
                 .setCellFactory(getMarketLabelCellFactory(tableView.equals(favouritesListView)))
@@ -428,8 +428,8 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
         tableView.getColumns().add(marketLabelTableColumn);
     }
 
-    private static Callback<TableColumn<MarketItem, MarketItem>,
-            TableCell<MarketItem, MarketItem>> getMarketLogoCellFactory() {
+    private static Callback<TableColumn<MuSigMarketItem, MuSigMarketItem>,
+            TableCell<MuSigMarketItem, MuSigMarketItem>> getMarketLogoCellFactory() {
         return column -> new TableCell<>() {
             private final Badge numMessagesBadge = new Badge(Pos.CENTER);
             private Subscription selectedPin;
@@ -441,7 +441,7 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
             }
 
             @Override
-            protected void updateItem(MarketItem item, boolean empty) {
+            protected void updateItem(MuSigMarketItem item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item != null && !empty) {
@@ -450,12 +450,12 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
                     Node marketLogo = MarketImageComposition.createMarketLogo(item.getMarket().getQuoteCurrencyCode());
                     marketLogo.setCache(true);
                     marketLogo.setCacheHint(CacheHint.SPEED);
-                    marketLogo.setEffect(MarketItem.DIMMED);
+                    marketLogo.setEffect(MuSigMarketItem.DIMMED);
 
-                    TableRow<MarketItem> tableRow = getTableRow();
+                    TableRow<MuSigMarketItem> tableRow = getTableRow();
                     if (tableRow != null) {
                         selectedPin = EasyBind.subscribe(tableRow.selectedProperty(), isSelectedMarket ->
-                                marketLogo.setEffect(isSelectedMarket ? MarketItem.SELECTED : MarketItem.DIMMED));
+                                marketLogo.setEffect(isSelectedMarket ? MuSigMarketItem.SELECTED : MuSigMarketItem.DIMMED));
                     }
 
                     StackPane pane = new StackPane(marketLogo, numMessagesBadge);
@@ -474,8 +474,8 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
         };
     }
 
-    private static Callback<TableColumn<MarketItem, MarketItem>,
-            TableCell<MarketItem, MarketItem>> getMarketLabelCellFactory(boolean isFavouritesTableView) {
+    private static Callback<TableColumn<MuSigMarketItem, MuSigMarketItem>,
+            TableCell<MuSigMarketItem, MuSigMarketItem>> getMarketLabelCellFactory(boolean isFavouritesTableView) {
         return column -> new TableCell<>() {
             private final Label marketName = new Label();
             private final Label marketCode = new Label();
@@ -511,7 +511,7 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
             }
 
             @Override
-            protected void updateItem(MarketItem item, boolean empty) {
+            protected void updateItem(MuSigMarketItem item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item != null && !empty) {
@@ -711,7 +711,7 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
         };
     }
 
-    private void selectedMarketItemChanged(MarketItem selectedItem) {
+    private void selectedMarketItemChanged(MuSigMarketItem selectedItem) {
         marketListView.getSelectionModel().clearSelection();
         marketListView.getSelectionModel().select(selectedItem);
         favouritesListView.getSelectionModel().clearSelection();
@@ -866,11 +866,11 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
         DropdownTitleMenuItem sortTitle = new DropdownTitleMenuItem(
                 Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.sortTitle"));
         sortByMostOffers = new SortAndFilterDropdownMenuItem<>("check-white", "check-white",
-                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.mostOffers"), MarketSortType.NUM_OFFERS);
+                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.mostOffers"), MuSigMarketSortType.NUM_OFFERS);
         sortByNameAZ = new SortAndFilterDropdownMenuItem<>("check-white", "check-white",
-                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.nameAZ"), MarketSortType.ASC);
+                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.nameAZ"), MuSigMarketSortType.ASC);
         sortByNameZA = new SortAndFilterDropdownMenuItem<>("check-white", "check-white",
-                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.nameZA"), MarketSortType.DESC);
+                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.nameZA"), MuSigMarketSortType.DESC);
 
         // Separator
         SeparatorMenuItem separator = new SeparatorMenuItem();
@@ -905,7 +905,7 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
         marketListView.getSelectionModel().select(model.getSelectedMarketItem().get());
     }
 
-    private void updateMarketSortType(MarketSortType marketSortType) {
+    private void updateMarketSortType(MuSigMarketSortType marketSortType) {
         if (marketSortType == null) {
             return;
         }
@@ -913,8 +913,8 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
         //noinspection unchecked
         sortAndFilterMarketsMenu.getMenuItems().stream()
                 .filter(menuItem -> menuItem instanceof SortAndFilterDropdownMenuItem &&
-                        ((SortAndFilterDropdownMenuItem<?>) menuItem).getMenuItem() instanceof MarketSortType)
-                .map(menuItem -> (SortAndFilterDropdownMenuItem<MarketSortType>) menuItem)
+                        ((SortAndFilterDropdownMenuItem<?>) menuItem).getMenuItem() instanceof MuSigMarketSortType)
+                .map(menuItem -> (SortAndFilterDropdownMenuItem<MuSigMarketSortType>) menuItem)
                 .forEach(menuItem -> menuItem.updateSelection(marketSortType == menuItem.getMenuItem()));
     }
 
