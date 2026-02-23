@@ -482,8 +482,8 @@ public class MuSigCreateOfferAmountController implements Controller {
             }
         } else {
             // Seller case
-            model.setLinkToWikiText(Res.get("muSig.offer.create.amount.limitInfo.overlay.linkToWikiText.seller"));
-            model.setAmountLimitInfoLink(Res.get("muSig.offer.create.amount.limitInfo.link.seller"));
+            model.setLinkToWikiText(Res.get("muSig.offer.wizard.amount.limitInfo.overlay.linkToWikiText.seller"));
+            model.setAmountLimitInfoLink(Res.get("muSig.offer.wizard.amount.limitInfo.link.seller"));
             Monetary reputationBasedQuoteSideAmount = model.getReputationBasedMaxAmount();
             long myReputationScore = model.getMyReputationScore();
             String formattedAmount = formatQuoteAmountWithCode(reputationBasedQuoteSideAmount.round(0));

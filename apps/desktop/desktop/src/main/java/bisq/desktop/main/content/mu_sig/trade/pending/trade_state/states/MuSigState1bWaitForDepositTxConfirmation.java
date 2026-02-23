@@ -249,7 +249,6 @@ public class MuSigState1bWaitForDepositTxConfirmation extends MuSigBaseState {
             HBox waitingInfo = createWaitingInfo(waitingAnimation, headline, info);
 
             txId = MuSigFormUtils.getTextField(Res.get("muSig.trade.state.phase1b.txId"), "", false);
-            txId.setHelpText(Res.get("muSig.trade.state.phase3b.balance.help.explorerLookup"));
             txId.setPromptText(Res.get("muSig.trade.state.phase1b.txId.prompt"));
             txId.setIcon(AwesomeIcon.EXTERNAL_LINK);
             txId.setIconTooltip(Res.get("muSig.trade.state.phase1b.txId.tooltip"));
@@ -258,8 +257,6 @@ public class MuSigState1bWaitForDepositTxConfirmation extends MuSigBaseState {
 
             button = new Button();
             VBox.setMargin(txId, new Insets(10, 0, 5, 0));
-            //  VBox.setMargin(button, new Insets(5, 0, 5, 0));
-
             root.getChildren().addAll(waitingInfo, txId, button);
         }
 

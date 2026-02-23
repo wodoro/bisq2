@@ -303,8 +303,8 @@ public class MuSigTakeOfferReviewController implements Controller {
         String formattedQuoteAmount = AmountFormatter.formatQuoteAmount(fixQuoteSideAmount);
         Direction takersDirection = model.getMuSigOffer().getTakersDisplayDirection();
         if (takersDirection.isSell()) {
-            toSendAmountDescription = Res.get("muSig.offer.create.review.toSend");
-            toReceiveAmountDescription = Res.get("muSig.offer.create.review.toReceive");
+            toSendAmountDescription = Res.get("muSig.offer.wizard.review.toSend");
+            toReceiveAmountDescription = Res.get("muSig.offer.wizard.review.toReceive");
             toSendAmount = formattedBaseAmount;
             toSendCode = fixBaseSideAmount.getCode();
             toReceiveAmount = formattedQuoteAmount;
@@ -313,8 +313,8 @@ public class MuSigTakeOfferReviewController implements Controller {
             model.setFee(Res.get("muSig.offer.taker.review.sellerPaysMinerFee"));
             model.setFeeDetails(Res.get("muSig.offer.taker.review.noTradeFeesLong"));
         } else {
-            toSendAmountDescription = Res.get("muSig.offer.create.review.toPay");
-            toReceiveAmountDescription = Res.get("muSig.offer.create.review.toReceive");
+            toSendAmountDescription = Res.get("muSig.offer.wizard.review.toPay");
+            toReceiveAmountDescription = Res.get("muSig.offer.wizard.review.toReceive");
             toSendAmount = formattedQuoteAmount;
             toSendCode = fixQuoteSideAmount.getCode();
             toReceiveAmount = formattedBaseAmount;
@@ -366,20 +366,20 @@ public class MuSigTakeOfferReviewController implements Controller {
         Optional<Double> percentFromMarketPrice = PriceUtil.findPercentFromMarketPrice(marketPriceService, priceSpec, market);
         double percent = percentFromMarketPrice.orElse(0d);
         if ((priceSpec instanceof FloatPriceSpec || priceSpec instanceof MarketPriceSpec) && percent == 0) {
-            model.setPriceDetails(Res.get("muSig.offer.create.review.priceDetails", marketPriceAsString));
+            model.setPriceDetails(Res.get("muSig.offer.wizard.review.priceDetails", marketPriceAsString));
         } else {
             String aboveOrBelow = percent > 0 ? Res.get("offer.price.above") : Res.get("offer.price.below");
             String percentAsString = percentFromMarketPrice.map(Math::abs).map(PercentageFormatter::formatToPercentWithSymbol)
                     .orElseGet(() -> Res.get("data.na"));
             if (priceSpec instanceof FloatPriceSpec) {
-                model.setPriceDetails(Res.get("muSig.offer.create.review.priceDetails.float",
+                model.setPriceDetails(Res.get("muSig.offer.wizard.review.priceDetails.float",
                         percentAsString, aboveOrBelow, marketPriceAsString));
             } else {
                 if (percent == 0) {
-                    model.setPriceDetails(Res.get("muSig.offer.create.review.priceDetails.fix.atMarket",
+                    model.setPriceDetails(Res.get("muSig.offer.wizard.review.priceDetails.fix.atMarket",
                             marketPriceAsString));
                 } else {
-                    model.setPriceDetails(Res.get("muSig.offer.create.review.priceDetails.fix",
+                    model.setPriceDetails(Res.get("muSig.offer.wizard.review.priceDetails.fix",
                             percentAsString, aboveOrBelow, marketPriceAsString));
                 }
             }
@@ -391,7 +391,7 @@ public class MuSigTakeOfferReviewController implements Controller {
                 .map(PriceFormatter::format)
                 .orElse("");
         String codes = priceQuote.map(e -> e.getMarket().getMarketCodes()).orElse("");
-        model.setPriceWithCode(Res.get("muSig.offer.create.review.price", formattedPrice, codes));
+        model.setPriceWithCode(Res.get("muSig.offer.wizard.review.price", formattedPrice, codes));
         model.setPrice(formattedPrice);
         model.setPriceCode(codes);
     }

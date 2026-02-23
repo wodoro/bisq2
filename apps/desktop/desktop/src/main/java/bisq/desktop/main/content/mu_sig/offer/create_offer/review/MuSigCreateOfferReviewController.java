@@ -227,7 +227,7 @@ public class MuSigCreateOfferReviewController implements Controller {
                 .map(PriceFormatter::format)
                 .orElse("");
         String codes = priceQuote.map(e -> e.getMarket().getMarketCodes()).orElse("");
-        model.setPriceWithCode(Res.get("muSig.offer.create.review.price", formattedPrice, codes));
+        model.setPriceWithCode(Res.get("muSig.offer.wizard.review.price", formattedPrice, codes));
         model.setPrice(formattedPrice);
         model.setPriceCode(codes);
 
@@ -307,11 +307,11 @@ public class MuSigCreateOfferReviewController implements Controller {
 
         model.setPriceDescription(Res.get("muSig.offer.create.review.priceDescription.maker"));
         if (displayDirection.isSell()) {
-            toSendAmountDescription = Res.get("muSig.offer.create.review.toSend");
+            toSendAmountDescription = Res.get("muSig.offer.wizard.review.toSend");
         } else {
-            toSendAmountDescription = Res.get("muSig.offer.create.review.toPay");
+            toSendAmountDescription = Res.get("muSig.offer.wizard.review.toPay");
         }
-        toReceiveAmountDescription = Res.get("muSig.offer.create.review.toReceive");
+        toReceiveAmountDescription = Res.get("muSig.offer.wizard.review.toReceive");
 
         String directionString = String.format("%s %s",
                 Res.get(displayDirection.isSell() ? "offer.sell" : "offer.buy").toUpperCase(),
@@ -396,20 +396,20 @@ public class MuSigCreateOfferReviewController implements Controller {
         Optional<Double> percentFromMarketPrice = PriceUtil.findPercentFromMarketPrice(marketPriceService, priceSpec, market);
         double percent = percentFromMarketPrice.orElse(0d);
         if ((priceSpec instanceof FloatPriceSpec || priceSpec instanceof MarketPriceSpec) && percent == 0) {
-            model.setPriceDetails(Res.get("muSig.offer.create.review.priceDetails"));
+            model.setPriceDetails(Res.get("muSig.offer.wizard.review.priceDetails"));
         } else {
             String aboveOrBelow = percent > 0 ? Res.get("offer.price.above") : Res.get("offer.price.below");
             String percentAsString = percentFromMarketPrice.map(Math::abs).map(PercentageFormatter::formatToPercentWithSymbol)
                     .orElseGet(() -> Res.get("data.na"));
             if (priceSpec instanceof FloatPriceSpec) {
-                model.setPriceDetails(Res.get("muSig.offer.create.review.priceDetails.float",
+                model.setPriceDetails(Res.get("muSig.offer.wizard.review.priceDetails.float",
                         percentAsString, aboveOrBelow, marketPriceAsString));
             } else {
                 if (percent == 0) {
-                    model.setPriceDetails(Res.get("muSig.offer.create.review.priceDetails.fix.atMarket",
+                    model.setPriceDetails(Res.get("muSig.offer.wizard.review.priceDetails.fix.atMarket",
                             marketPriceAsString));
                 } else {
-                    model.setPriceDetails(Res.get("muSig.offer.create.review.priceDetails.fix",
+                    model.setPriceDetails(Res.get("muSig.offer.wizard.review.priceDetails.fix",
                             percentAsString, aboveOrBelow, marketPriceAsString));
                 }
             }

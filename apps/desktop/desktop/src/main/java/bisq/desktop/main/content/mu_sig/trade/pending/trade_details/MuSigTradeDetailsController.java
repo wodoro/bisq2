@@ -98,7 +98,7 @@ public class MuSigTradeDetailsController extends NavigationController implements
         model.setOfferType(trade.getOffer().getDisplayDirection().isBuy()
                 ? Res.get("muSig.trade.details.offerTypeAndMarket.buyOffer")
                 : Res.get("muSig.trade.details.offerTypeAndMarket.sellOffer"));
-        model.setMarket(Res.get("muSig.trade.details.offerTypeAndMarket.fiatMarket",
+        model.setMarket(Res.get("muSig.trade.details.offerTypeAndMarket.nonBtcMarket",
                 trade.getOffer().getMarket().getNonBtcCurrencyCode()));
 
         model.setNonBtcAmount(MuSigTradeFormatter.formatNonBtcSideAmount(trade));

@@ -130,7 +130,7 @@ class MuSigTakeOfferReviewView extends View<StackPane, MuSigTakeOfferReviewModel
         gridPane.add(paymentMethodDetails, 2, rowIndex, 2, 1);
 
         rowIndex++;
-        Label securityDepositDescription = new Label(Res.get("muSig.offer.create.review.securityDeposit.description"));
+        Label securityDepositDescription = new Label(Res.get("muSig.offer.wizard.review.securityDeposit.description"));
         securityDepositDescription.getStyleClass().add(DESCRIPTION_STYLE);
 
         securityDepositInfoIcon = Icons.getIcon(AwesomeIcon.INFO_SIGN, "1.1em");
@@ -149,7 +149,7 @@ class MuSigTakeOfferReviewView extends View<StackPane, MuSigTakeOfferReviewModel
         gridPane.add(securityDepositDetails, 2, rowIndex, 2, 1);
 
         rowIndex++;
-        Label feeInfoDescription = new Label(Res.get("muSig.offer.create.review.feeDescription"));
+        Label feeInfoDescription = new Label(Res.get("muSig.offer.wizard.review.feeDescription"));
         feeInfoDescription.getStyleClass().add(DESCRIPTION_STYLE);
         gridPane.add(feeInfoDescription, 0, rowIndex);
 
@@ -199,7 +199,7 @@ class MuSigTakeOfferReviewView extends View<StackPane, MuSigTakeOfferReviewModel
             paymentMethodDetails.setTooltip(new BisqTooltip(paymentMethodDetailsValue));
         }
 
-        securityDepositInfoIcon.setTooltip(new BisqTooltip(Res.get("muSig.offer.create.review.securityDeposit.info")));
+        securityDepositInfoIcon.setTooltip(new BisqTooltip(Res.get("muSig.offer.wizard.review.securityDeposit.info")));
 
         securityDeposit.setText(model.getFormattedSecurityDepositAsPercent());
         securityDepositDetails.setText(model.getSecurityDepositAsBtc());
