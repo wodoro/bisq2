@@ -24,7 +24,7 @@ import bisq.desktop.ServiceProvider;
 import bisq.desktop.common.utils.KeyHandlerUtil;
 import bisq.desktop.common.view.Controller;
 import bisq.desktop.components.overlay.Popup;
-import bisq.desktop.main.content.mu_sig.components.offer.MuSigPriceInput;
+import bisq.desktop.main.content.mu_sig.offer.components.MuSigPriceInput;
 import bisq.i18n.Res;
 import bisq.offer.Direction;
 import bisq.offer.price.PriceUtil;

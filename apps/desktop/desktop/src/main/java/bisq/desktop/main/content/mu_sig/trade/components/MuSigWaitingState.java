@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.components.trade;
+package bisq.desktop.main.content.mu_sig.trade.components;
 
 public enum MuSigWaitingState {
     PAYMENT,

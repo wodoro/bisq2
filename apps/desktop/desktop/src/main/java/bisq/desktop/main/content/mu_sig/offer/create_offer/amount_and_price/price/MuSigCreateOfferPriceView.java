@@ -26,7 +26,7 @@ import bisq.desktop.components.containers.WizardOverlay;
 import bisq.desktop.components.controls.UnorderedList;
 import bisq.desktop.components.controls.validator.PercentageValidator;
 import bisq.desktop.main.content.bisq_easy.BisqEasyViewUtils;
-import bisq.desktop.main.content.mu_sig.components.offer.MuSigPriceInputBox;
+import bisq.desktop.main.content.mu_sig.offer.components.MuSigPriceInputBox;
 import bisq.i18n.Res;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.geometry.Insets;

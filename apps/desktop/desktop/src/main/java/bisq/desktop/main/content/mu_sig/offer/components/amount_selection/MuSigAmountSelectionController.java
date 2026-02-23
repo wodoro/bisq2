@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.components.offer.amount_selection;
+package bisq.desktop.main.content.mu_sig.offer.components.amount_selection;
 
 import bisq.bonded_roles.market_price.MarketPriceService;
 import bisq.common.asset.Asset;
@@ -28,7 +28,7 @@ import bisq.desktop.ServiceProvider;
 import bisq.desktop.common.threading.UIScheduler;
 import bisq.desktop.common.threading.UIThread;
 import bisq.desktop.common.view.Controller;
-import bisq.desktop.main.content.mu_sig.components.offer.MuSigPriceInput;
+import bisq.desktop.main.content.mu_sig.offer.components.MuSigPriceInput;
 import bisq.i18n.Res;
 import bisq.offer.Direction;
 import bisq.presentation.formatters.AmountFormatter;

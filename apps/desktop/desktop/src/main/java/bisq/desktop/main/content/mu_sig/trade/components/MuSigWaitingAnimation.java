@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.components.trade;
+package bisq.desktop.main.content.mu_sig.trade.components;
 
 import bisq.desktop.common.ManagedDuration;
 import bisq.desktop.common.threading.UIScheduler;
@@ -33,12 +33,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class MuSigProtocolWaitingAnimation extends StackPane {
+public class MuSigWaitingAnimation extends StackPane {
     public static final int INTERVAL = 1000;
 
     private final ImageView spinningCircle;
     private ImageView waitingStateIcon;
-    private MuSigProtocolWaitingState muSigProtocolWaitingState;
+    private MuSigWaitingState waitingState;
     private final RotateTransition rotate;
     private final FadeTransition fadeTransition;
     private Scene scene;
@@ -46,12 +46,12 @@ public class MuSigProtocolWaitingAnimation extends StackPane {
     private ChangeListener<Boolean> focusListener;
     private UIScheduler uiScheduler;
 
-    public MuSigProtocolWaitingAnimation(MuSigProtocolWaitingState muSigProtocolWaitingState) {
-        setState(muSigProtocolWaitingState);
+    public MuSigWaitingAnimation(MuSigWaitingState waitingState) {
+        setState(waitingState);
 
         setAlignment(Pos.CENTER);
 
-        spinningCircle = ImageUtil.getImageViewById(getSpinningCircleIconId(muSigProtocolWaitingState));
+        spinningCircle = ImageUtil.getImageViewById(getSpinningCircleIconId(waitingState));
         spinningCircle.setFitHeight(78);
         spinningCircle.setFitWidth(78);
         spinningCircle.setPreserveRatio(true);
@@ -69,9 +69,7 @@ public class MuSigProtocolWaitingAnimation extends StackPane {
             if (newValue != null) {
                 focusListener = new ChangeListener<>() {
                     @Override
-                    public void changed(ObservableValue<? extends Boolean> observable,
-                                        Boolean oldValue,
-                                        Boolean newValue) {
+                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                         if (newValue) {
                             rotate.playFromStart();
                             spinningCircle.setOpacity(0);
@@ -92,9 +90,9 @@ public class MuSigProtocolWaitingAnimation extends StackPane {
         sceneProperty().addListener(sceneListener);
     }
 
-    public void setState(MuSigProtocolWaitingState state) {
-        if (muSigProtocolWaitingState != state) {
-            muSigProtocolWaitingState = state;
+    public void setState(MuSigWaitingState state) {
+        if (waitingState != state) {
+            waitingState = state;
             updateWaitingStateIcon();
             if (spinningCircle != null) {
                 spinningCircle.setImage(ImageUtil.getImageViewById(getSpinningCircleIconId(state)).getImage());
@@ -108,28 +106,24 @@ public class MuSigProtocolWaitingAnimation extends StackPane {
             waitingStateIcon = null;
         }
 
-        if (muSigProtocolWaitingState != null) {
-            waitingStateIcon = ImageUtil.getImageViewById(getWaitingStateIconId(muSigProtocolWaitingState));
+        if (waitingState != null) {
+            waitingStateIcon = ImageUtil.getImageViewById(getWaitingStateIconId(waitingState));
             getChildren().add(waitingStateIcon);
         }
     }
 
-    private String getWaitingStateIconId(MuSigProtocolWaitingState muSigProtocolWaitingState) {
-        return switch (muSigProtocolWaitingState) {
-            case TAKE_OFFER -> "take-bisq-easy-offer";
-            case ACCOUNT_DATA -> "account-data";
-            case FIAT_PAYMENT -> "fiat-payment";
-            case FIAT_PAYMENT_CONFIRMATION -> "fiat-payment-confirmation";
-            case BITCOIN_ADDRESS -> "bitcoin-address";
-            case BITCOIN_PAYMENT -> "bitcoin-payment";
+    private String getWaitingStateIconId(MuSigWaitingState waitingState) {
+        return switch (waitingState) {
+            case PAYMENT -> "fiat-payment";
+            case PAYMENT_CONFIRMATION -> "fiat-payment-confirmation";
             case BITCOIN_CONFIRMATION -> "bitcoin-confirmation";
             case SCAN_WITH_CAMERA -> "scan-with-camera";
             case TRADE_COMPLETED -> "take-bisq-easy-offer";
         };
     }
 
-    private String getSpinningCircleIconId(MuSigProtocolWaitingState state) {
-        return state == MuSigProtocolWaitingState.TAKE_OFFER ? "take-bisq-easy-offer-circle" : "spinning-circle";
+    private String getSpinningCircleIconId(MuSigWaitingState state) {
+        return "spinning-circle";
     }
 
     public void play() {

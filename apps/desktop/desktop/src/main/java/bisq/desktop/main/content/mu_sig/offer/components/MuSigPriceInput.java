@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.components.offer;
+package bisq.desktop.main.content.mu_sig.offer.components;
 
 import bisq.bonded_roles.market_price.MarketPriceService;
 import bisq.common.market.Market;

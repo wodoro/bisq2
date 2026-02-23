@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.components.offer.amount_selection;
+package bisq.desktop.main.content.mu_sig.offer.components.amount_selection;
 
 import bisq.common.asset.Asset;
 import bisq.common.market.Market;

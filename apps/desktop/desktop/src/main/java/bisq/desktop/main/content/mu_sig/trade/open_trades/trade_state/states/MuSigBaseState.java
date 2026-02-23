@@ -26,7 +26,7 @@ import bisq.chat.priv.LeavePrivateChatManager;
 import bisq.common.market.Market;
 import bisq.desktop.ServiceProvider;
 import bisq.desktop.components.controls.WrappingText;
-import bisq.desktop.main.content.mu_sig.components.trade.MuSigWaitingAnimation;
+import bisq.desktop.main.content.mu_sig.trade.components.MuSigWaitingAnimation;
 import bisq.mu_sig.MuSigService;
 import bisq.offer.mu_sig.MuSigOffer;
 import bisq.trade.mu_sig.MuSigTrade;
