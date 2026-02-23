@@ -209,7 +209,7 @@ public class MuSigTakeOfferAmountController implements Controller {
             }
         } else {
             // Seller case
-            model.setLinkToWikiText(Res.get("muSig.offer.create.amount.limitInfo.overlay.linkToWikiText.seller"));
+            model.setLinkToWikiText(Res.get("muSig.offer.wizard.amount.limitInfo.overlay.linkToWikiText.seller"));
             long myReputationScore = reputationService.getReputationScore(myProfileId).getTotalScore();
             BisqEasyTradeAmountLimits.getReputationBasedQuoteSideAmount(marketPriceService, market, myReputationScore)
                     .ifPresent(myReputationBasedQuoteSideAmount -> {
@@ -218,12 +218,12 @@ public class MuSigTakeOfferAmountController implements Controller {
                         amountSelectionController.setRightMarkerQuoteSideValue(myReputationBasedQuoteSideAmount);
                         model.getIsAmountLimitInfoVisible().set(false);
                         String formattedAmount = AmountFormatter.formatQuoteAmountWithCode(myReputationBasedQuoteSideAmount);
-                        model.getAmountLimitInfoAmount().set(Res.get("muSig.offer.create.amount.limitInfoAmount.seller", formattedAmount));
-                        model.setAmountLimitInfoLink(Res.get("muSig.offer.create.amount.limitInfo.link.seller"));
+                        model.getAmountLimitInfoAmount().set(Res.get("muSig.offer.wizard.amount.limitInfoAmount.seller", formattedAmount));
+                        model.setAmountLimitInfoLink(Res.get("muSig.offer.wizard.amount.limitInfo.link.seller"));
                         if (myReputationBasedQuoteSideAmount.isLessThan(offersQuoteSideMaxOrFixedAmount)) {
                             model.getIsAmountLimitInfoVisible().set(true);
-                            model.getAmountLimitInfo().set(Res.get("muSig.offer.create.amount.limitInfo.insufficientScore.seller", myReputationScore));
-                            model.getAmountLimitInfoOverlayInfo().set(Res.get("muSig.offer.create.amount.limitInfo.overlay.info.insufficientScore.seller", myReputationScore, formattedAmount) + "\n\n");
+                            model.getAmountLimitInfo().set(Res.get("muSig.offer.wizard.amount.limitInfo.insufficientScore.seller", myReputationScore));
+                            model.getAmountLimitInfoOverlayInfo().set(Res.get("muSig.offer.wizard.amount.limitInfo.overlay.info.insufficientScore.seller", myReputationScore, formattedAmount) + "\n\n");
                         }
                     });
             applyReputationBasedQuoteSideAmount();

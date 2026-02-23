@@ -92,7 +92,7 @@ public class MuSigCreateOfferAmountView extends View<VBox, MuSigCreateOfferAmoun
         amountModelsBox.getStyleClass().addAll("selection-models", "bisq-text-3");
 
         amountLimitInfoOverlayInfo = new Label();
-        closeOverlayButton = new Button(Res.get("muSig.offer.create.amount.limitInfo.overlay.close"));
+        closeOverlayButton = new Button(Res.get("muSig.offer.wizard.amount.limitInfo.overlay.close"));
         learnHowToBuildReputation = new Button(Res.get("muSig.offer.create.amount.limitInfo.overlay.learnHowToBuildReputation"));
         learnHowToBuildReputation.getStyleClass().add("outlined-button");
         learnHowToBuildReputationBox = new HBox(learnHowToBuildReputation);
@@ -100,7 +100,7 @@ public class MuSigCreateOfferAmountView extends View<VBox, MuSigCreateOfferAmoun
         linkToWiki = new Hyperlink("https://bisq.wiki/Reputation");
         overlay = new WizardOverlay(root)
                 .warning()
-                .headline("muSig.offer.create.amount.limitInfo.overlay.headline")
+                .headline("muSig.offer.wizard.amount.limitInfo.overlay.headline")
                 .description(createAndGetOverlayContent(amountLimitInfoOverlayInfo, linkToWikiText, linkToWiki, learnHowToBuildReputationBox))
                 .buttons(closeOverlayButton)
                 .build();
