@@ -27,9 +27,9 @@ enum MarketSortType {
     ASC(MarketItemUtil.sortByMarketNameAsc()),
     DESC(MarketItemUtil.sortByMarketNameDesc());
 
-    private final Comparator<MarketItem> comparator;
+    private final Comparator<MusigMarketItem> comparator;
 
-    MarketSortType(Comparator<MarketItem> comparator) {
+    MarketSortType(Comparator<MusigMarketItem> comparator) {
         this.comparator = comparator;
     }
 }
