@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public final class MuSigPendingTTradesModel extends ChatModel {
+public final class MuSigPendingTradesModel extends ChatModel {
     private final BooleanProperty noOpenTrades = new SimpleBooleanProperty();
     private final BooleanProperty tradeWelcomeVisible = new SimpleBooleanProperty();
     private final BooleanProperty tradeRulesAccepted = new SimpleBooleanProperty();
@@ -44,12 +44,12 @@ public final class MuSigPendingTTradesModel extends ChatModel {
     private final BooleanProperty isAnyTradeInMediation = new SimpleBooleanProperty();
     private final StringProperty chatWindowTitle = new SimpleStringProperty();
     private final ObjectProperty<Stage> chatWindow = new SimpleObjectProperty<>();
-    private final ObjectProperty<MuSigPendingTTradeListItem> selectedItem = new SimpleObjectProperty<>();
-    private final ObservableList<MuSigPendingTTradeListItem> listItems = FXCollections.observableArrayList();
-    private final FilteredList<MuSigPendingTTradeListItem> filteredList = new FilteredList<>(listItems);
-    private final SortedList<MuSigPendingTTradeListItem> sortedList = new SortedList<>(filteredList);
+    private final ObjectProperty<MuSigPendingTradeListItem> selectedItem = new SimpleObjectProperty<>();
+    private final ObservableList<MuSigPendingTradeListItem> listItems = FXCollections.observableArrayList();
+    private final FilteredList<MuSigPendingTradeListItem> filteredList = new FilteredList<>(listItems);
+    private final SortedList<MuSigPendingTradeListItem> sortedList = new SortedList<>(filteredList);
 
-    public MuSigPendingTTradesModel(ChatChannelDomain chatChannelDomain) {
+    public MuSigPendingTradesModel(ChatChannelDomain chatChannelDomain) {
         super(chatChannelDomain);
     }
 
@@ -66,7 +66,7 @@ public final class MuSigPendingTTradesModel extends ChatModel {
         }
         chatWindowTitle.set(null);
         selectedItem.set(null);
-        listItems.forEach(MuSigPendingTTradeListItem::dispose);
+        listItems.forEach(MuSigPendingTradeListItem::dispose);
         listItems.clear();
     }
 }

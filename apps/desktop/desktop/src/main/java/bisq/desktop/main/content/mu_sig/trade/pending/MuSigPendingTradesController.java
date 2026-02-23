@@ -48,7 +48,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
-public final class MuSigPendingTradesController extends ChatController<MuSigPendingTTradesView, MuSigPendingTTradesModel> {
+public final class MuSigPendingTradesController extends ChatController<MuSigPendingTradesView, MuSigPendingTradesModel> {
     private final MuSigOpenTradeChannelService channelService;
     private final MuSigTradeService tradeService;
     private final SettingsService settingsService;
@@ -78,13 +78,13 @@ public final class MuSigPendingTradesController extends ChatController<MuSigPend
     }
 
     @Override
-    public MuSigPendingTTradesModel createAndGetModel(ChatChannelDomain chatChannelDomain) {
-        return new MuSigPendingTTradesModel(chatChannelDomain);
+    public MuSigPendingTradesModel createAndGetModel(ChatChannelDomain chatChannelDomain) {
+        return new MuSigPendingTradesModel(chatChannelDomain);
     }
 
     @Override
-    public MuSigPendingTTradesView createAndGetView() {
-        return new MuSigPendingTTradesView(model,
+    public MuSigPendingTradesView createAndGetView() {
+        return new MuSigPendingTradesView(model,
                 this,
                 muSigTradeDataHeader.getRoot(),
                 chatMessageContainerController.getView().getRoot(),
@@ -193,7 +193,7 @@ public final class MuSigPendingTradesController extends ChatController<MuSigPend
         });
     }
 
-    void onSelectItem(MuSigPendingTTradeListItem item) {
+    void onSelectItem(MuSigPendingTradeListItem item) {
         if (item == null || !hasTradeForChannel(item.getChannel())) {
             selectionService.selectChannel(null);
         } else {
@@ -271,7 +271,7 @@ public final class MuSigPendingTradesController extends ChatController<MuSigPend
         tradeService.findTrade(tradeId)
                 .ifPresentOrElse(this::handleTradeAndChannelRemoved,
                         () -> {
-                            Optional<MuSigPendingTTradeListItem> listItem = findListItem(tradeId);
+                            Optional<MuSigPendingTradeListItem> listItem = findListItem(tradeId);
                             if (listItem.isEmpty()) {
                                 log.debug("Channel with tradeId {} was removed but associated trade and the listItem is not found. " +
                                         "This is expected as we first remove the trade and then the channel.", tradeId);
@@ -296,7 +296,7 @@ public final class MuSigPendingTradesController extends ChatController<MuSigPend
                 return;
             }
 
-            model.getListItems().add(new MuSigPendingTTradeListItem(channel,
+            model.getListItems().add(new MuSigPendingTradeListItem(channel,
                     trade,
                     reputationService,
                     chatNotificationService,
@@ -327,7 +327,7 @@ public final class MuSigPendingTradesController extends ChatController<MuSigPend
                 return;
             }
 
-            MuSigPendingTTradeListItem item = findListItem(trade).get();
+            MuSigPendingTradeListItem item = findListItem(trade).get();
             item.dispose();
             model.getListItems().remove(item);
 
@@ -345,7 +345,7 @@ public final class MuSigPendingTradesController extends ChatController<MuSigPend
 
     private void handleClearTradesAndChannels() {
         UIThread.run(() -> {
-            model.getListItems().forEach(MuSigPendingTTradeListItem::dispose);
+            model.getListItems().forEach(MuSigPendingTradeListItem::dispose);
             model.getListItems().clear();
 
             isInMediationPinMap.values().forEach(Pin::unbind);
@@ -388,11 +388,11 @@ public final class MuSigPendingTradesController extends ChatController<MuSigPend
         });
     }
 
-    private Optional<MuSigPendingTTradeListItem> findListItem(MuSigTrade trade) {
+    private Optional<MuSigPendingTradeListItem> findListItem(MuSigTrade trade) {
         return findListItem(trade.getId());
     }
 
-    private Optional<MuSigPendingTTradeListItem> findListItem(String tradeId) {
+    private Optional<MuSigPendingTradeListItem> findListItem(String tradeId) {
         return model.getListItems().stream()
                 .filter(item -> item.getTrade().getId().equals(tradeId))
                 .findAny();
