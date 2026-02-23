@@ -22,7 +22,7 @@ import bisq.desktop.common.view.Model;
 import bisq.desktop.common.view.View;
 import bisq.desktop.main.content.ContentTabView;
 import bisq.desktop.main.content.mu_sig.offer.my_offers.MuSigMyOffersView;
-import bisq.desktop.main.content.mu_sig.offer.offerbook.MuSigOfferbookView;
+import bisq.desktop.main.content.mu_sig.offer.listing.MuSigOfferbookView;
 import bisq.desktop.navigation.NavigationTarget;
 import bisq.i18n.Res;
 import javafx.scene.Parent;

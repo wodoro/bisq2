@@ -36,7 +36,7 @@ import bisq.desktop.main.content.bisq_easy.wallet_guide.WalletGuideController;
 import bisq.desktop.main.content.components.AddToContactsListWindow;
 import bisq.desktop.main.content.components.ReportToModeratorWindow;
 import bisq.desktop.main.content.mu_sig.offer.create_offer.MuSigCreateOfferController;
-import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_details.MuSigTradeDetailsController;
+import bisq.desktop.main.content.mu_sig.trade.pending.trade_details.MuSigTradeDetailsController;
 import bisq.desktop.main.content.mu_sig.offer.take_offer.MuSigTakeOfferController;
 import bisq.desktop.main.content.mu_sig.trade.trade_guide.MuSigGuideController;
 import bisq.desktop.main.content.mu_sig.trade.trade_limits.TradeLimitsController;

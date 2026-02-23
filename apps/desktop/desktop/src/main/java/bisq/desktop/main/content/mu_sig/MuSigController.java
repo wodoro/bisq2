@@ -22,9 +22,9 @@ import bisq.desktop.common.view.Controller;
 import bisq.desktop.main.content.ContentTabController;
 import bisq.desktop.main.content.mu_sig.trade.history.MuSigHistoryController;
 import bisq.desktop.main.content.mu_sig.offer.my_offers.MuSigMyOffersController;
-import bisq.desktop.main.content.mu_sig.offer.offerbook.MuSigOfferbookController;
+import bisq.desktop.main.content.mu_sig.offer.listing.MuSigOfferbookController;
 import bisq.desktop.main.content.mu_sig.onboarding.MuSigDashboardController;
-import bisq.desktop.main.content.mu_sig.trade.open_trades.MuSigOpenTradesController;
+import bisq.desktop.main.content.mu_sig.trade.pending.MuSigOpenTradesController;
 import bisq.desktop.navigation.NavigationTarget;
 import lombok.Getter;
 

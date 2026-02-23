@@ -1,0 +1,142 @@
+/*
+ * This file is part of Bisq.
+ *
+ * Bisq is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at
+ * your option) any later version.
+ *
+ * Bisq is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package bisq.desktop.main.content.mu_sig.trade.pending.trade_state.states;
+
+import bisq.account.accounts.Account;
+import bisq.account.accounts.AccountPayload;
+import bisq.account.accounts.crypto.CryptoAssetAccountPayload;
+import bisq.account.payment_method.PaymentMethod;
+import bisq.chat.mu_sig.open_trades.MuSigOpenTradeChannel;
+import bisq.desktop.ServiceProvider;
+import bisq.desktop.components.controls.WrappingText;
+import bisq.i18n.Res;
+import bisq.trade.mu_sig.MuSigTrade;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
+
+@Slf4j
+public class MuSigState3aSellerConfirmPaymentReceipt extends MuSigBaseState {
+    private final Controller controller;
+
+    public MuSigState3aSellerConfirmPaymentReceipt(ServiceProvider serviceProvider,
+                                                   MuSigTrade trade,
+                                                   MuSigOpenTradeChannel channel) {
+        controller = new Controller(serviceProvider, trade, channel);
+    }
+
+    public VBox getRoot() {
+        return controller.getView().getRoot();
+    }
+
+    private static class Controller extends MuSigBaseState.Controller<Model, View> {
+        private Controller(ServiceProvider serviceProvider, MuSigTrade trade, MuSigOpenTradeChannel channel) {
+            super(serviceProvider, trade, channel);
+        }
+
+        @Override
+        protected Model createModel(MuSigTrade trade, MuSigOpenTradeChannel channel) {
+            return new Model(trade, channel);
+        }
+
+        @Override
+        protected View createView() {
+            return new View(model, this);
+        }
+
+        @Override
+        public void onActivate() {
+            super.onActivate();
+            MuSigTrade trade = model.getTrade();
+
+            Optional<AccountPayload<?>> accountPayload = trade.getMyself().getAccountPayload();
+            Optional<Account<? extends PaymentMethod<?>, ?>> account = accountService.findAccount(accountPayload.orElseThrow());
+
+            AccountPayload<?> peersAccountPayload = trade.getPeer().getAccountPayload().orElseThrow();
+            if (peersAccountPayload instanceof CryptoAssetAccountPayload cryptoAssetAccountPayload) {
+                model.setInfo(Res.get("muSig.trade.state.phase3a.verifyReceipt.account.crypto",
+                        model.getNonBtcCurrencyCode(), cryptoAssetAccountPayload.getAddress()));
+            } else {
+                String accountName = account
+                        .map(Account::getAccountName)
+                        .orElse(Res.get("data.na"));
+                model.setInfo(Res.get("muSig.trade.state.phase3a.verifyReceipt.account.fiat", accountName));
+            }
+        }
+
+        @Override
+        public void onDeactivate() {
+            super.onDeactivate();
+        }
+
+        private void onPaymentReceiptConfirmed() {
+            sendTradeLogMessage(Res.encode("muSig.trade.state.phase2b.logMessage",
+                    model.getChannel().getMyUserIdentity().getUserName(), model.getFormattedNonBtcAmount()));
+            muSigTradeService.paymentReceiptConfirmed(model.getTrade());
+        }
+    }
+
+    @Getter
+    private static class Model extends MuSigBaseState.Model {
+        @Setter
+        private String info;
+
+        protected Model(MuSigTrade trade, MuSigOpenTradeChannel channel) {
+            super(trade, channel);
+        }
+    }
+
+    public static class View extends MuSigBaseState.View<Model, Controller> {
+        private final WrappingText headline;
+        private final Button confirmPaymentReceiptButton;
+        private final WrappingText info;
+
+        private View(Model model, Controller controller) {
+            super(model, controller);
+
+            headline = MuSigFormUtils.getHeadline();
+            info = MuSigFormUtils.getInfo();
+            confirmPaymentReceiptButton = new Button();
+            confirmPaymentReceiptButton.setDefaultButton(true);
+            VBox.setMargin(confirmPaymentReceiptButton, new Insets(5, 0, 10, 0));
+            root.getChildren().addAll(headline, info, confirmPaymentReceiptButton);
+        }
+
+        @Override
+        protected void onViewAttached() {
+            super.onViewAttached();
+
+            headline.setText(Res.get("muSig.trade.state.phase3a.headline", model.getFormattedNonBtcAmount()));
+            info.setText(model.getInfo());
+            confirmPaymentReceiptButton.setText(Res.get("muSig.trade.state.phase3a.fiatReceivedButton"));
+            confirmPaymentReceiptButton.setOnAction(e -> controller.onPaymentReceiptConfirmed());
+        }
+
+        @Override
+        protected void onViewDetached() {
+            super.onViewDetached();
+
+            confirmPaymentReceiptButton.setOnAction(null);
+        }
+    }
+}
