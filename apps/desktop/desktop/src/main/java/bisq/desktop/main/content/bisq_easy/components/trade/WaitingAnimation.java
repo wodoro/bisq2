@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.bisq_easy.components;
+package bisq.desktop.main.content.bisq_easy.components.trade;
 
 import bisq.desktop.common.ManagedDuration;
 import bisq.desktop.common.threading.UIScheduler;

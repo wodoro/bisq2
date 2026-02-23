@@ -19,8 +19,8 @@ package bisq.desktop.main.content.bisq_easy.open_trades.trade_state.states;
 
 import bisq.chat.bisq_easy.open_trades.BisqEasyOpenTradeChannel;
 import bisq.desktop.ServiceProvider;
-import bisq.desktop.main.content.bisq_easy.components.WaitingAnimation;
-import bisq.desktop.main.content.bisq_easy.components.WaitingState;
+import bisq.desktop.main.content.bisq_easy.components.trade.WaitingAnimation;
+import bisq.desktop.main.content.bisq_easy.components.trade.WaitingState;
 import bisq.desktop.components.controls.WrappingText;
 import bisq.i18n.Res;
 import bisq.trade.bisq_easy.BisqEasyTrade;
