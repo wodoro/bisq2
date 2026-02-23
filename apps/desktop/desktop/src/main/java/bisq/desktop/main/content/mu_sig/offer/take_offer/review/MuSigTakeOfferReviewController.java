@@ -32,7 +32,7 @@ import bisq.desktop.common.threading.UIScheduler;
 import bisq.desktop.common.threading.UIThread;
 import bisq.desktop.common.view.Controller;
 import bisq.desktop.components.overlay.Popup;
-import bisq.desktop.main.content.bisq_easy.components.offer.PriceInput;
+import bisq.desktop.main.content.mu_sig.components.offer.MuSigPriceInput;
 import bisq.desktop.main.content.mu_sig.components.offer.MuSigReviewDataDisplay;
 import bisq.desktop.navigation.NavigationTarget;
 import bisq.i18n.Res;
@@ -75,7 +75,7 @@ public class MuSigTakeOfferReviewController implements Controller {
     private final MuSigTakeOfferReviewView view;
     private final Consumer<NavigationTarget> closeAndNavigateToHandler;
     private final Consumer<Boolean> mainButtonsVisibleHandler;
-    private final PriceInput priceInput;
+    private final MuSigPriceInput priceInput;
     private final MarketPriceService marketPriceService;
     private final UserIdentityService userIdentityService;
     private final BannedUserService bannedUserService;
@@ -94,7 +94,7 @@ public class MuSigTakeOfferReviewController implements Controller {
         muSigService = serviceProvider.getMuSigService();
         bannedUserService = serviceProvider.getUserService().getBannedUserService();
 
-        priceInput = new PriceInput(serviceProvider.getBondedRolesService().getMarketPriceService());
+        priceInput = new MuSigPriceInput(serviceProvider.getBondedRolesService().getMarketPriceService());
         muSigReviewDataDisplay = new MuSigReviewDataDisplay();
 
         model = new MuSigTakeOfferReviewModel();

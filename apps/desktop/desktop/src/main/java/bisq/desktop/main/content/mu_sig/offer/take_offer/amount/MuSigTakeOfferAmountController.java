@@ -25,7 +25,7 @@ import bisq.desktop.ServiceProvider;
 import bisq.desktop.common.Browser;
 import bisq.desktop.common.utils.KeyHandlerUtil;
 import bisq.desktop.common.view.Controller;
-import bisq.desktop.main.content.bisq_easy.components.offer.amount_selection.AmountSelectionController;
+import bisq.desktop.main.content.mu_sig.components.offer.amount_selection.MuSigAmountSelectionController;
 import bisq.i18n.Res;
 import bisq.offer.Direction;
 import bisq.offer.amount.OfferAmountUtil;
@@ -50,7 +50,7 @@ public class MuSigTakeOfferAmountController implements Controller {
     private final MuSigTakeOfferAmountModel model;
     @Getter
     private final MuSigTakeOfferAmountView view;
-    private final AmountSelectionController amountSelectionController;
+    private final MuSigAmountSelectionController amountSelectionController;
     private final MarketPriceService marketPriceService;
     private final UserIdentityService userIdentityService;
     private final ReputationService reputationService;
@@ -64,7 +64,7 @@ public class MuSigTakeOfferAmountController implements Controller {
         marketPriceService = serviceProvider.getBondedRolesService().getMarketPriceService();
         userIdentityService = serviceProvider.getUserService().getUserIdentityService();
         reputationService = serviceProvider.getUserService().getReputationService();
-        amountSelectionController = new AmountSelectionController(serviceProvider);
+        amountSelectionController = new MuSigAmountSelectionController(serviceProvider);
         view = new MuSigTakeOfferAmountView(model, this, amountSelectionController.getView().getRoot());
     }
 

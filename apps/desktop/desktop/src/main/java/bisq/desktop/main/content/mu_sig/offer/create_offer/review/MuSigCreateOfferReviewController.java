@@ -38,7 +38,7 @@ import bisq.desktop.common.threading.UIThread;
 import bisq.desktop.common.utils.KeyHandlerUtil;
 import bisq.desktop.common.view.Controller;
 import bisq.desktop.components.overlay.Popup;
-import bisq.desktop.main.content.bisq_easy.components.offer.PriceInput;
+import bisq.desktop.main.content.mu_sig.components.offer.MuSigPriceInput;
 import bisq.desktop.main.content.mu_sig.components.offer.MuSigReviewDataDisplay;
 import bisq.desktop.navigation.NavigationTarget;
 import bisq.i18n.Res;
@@ -81,7 +81,7 @@ public class MuSigCreateOfferReviewController implements Controller {
     private final MuSigCreateOfferReviewView view;
     private final Consumer<Boolean> mainButtonsVisibleHandler;
     private final Consumer<NavigationTarget> closeAndNavigateToHandler;
-    private final PriceInput priceInput;
+    private final MuSigPriceInput priceInput;
     private final MarketPriceService marketPriceService;
     private final MuSigReviewDataDisplay muSigReviewDataDisplay;
     private final MuSigService muSigService;
@@ -97,7 +97,7 @@ public class MuSigCreateOfferReviewController implements Controller {
         marketPriceService = serviceProvider.getBondedRolesService().getMarketPriceService();
         muSigService = serviceProvider.getMuSigService();
 
-        priceInput = new PriceInput(serviceProvider.getBondedRolesService().getMarketPriceService());
+        priceInput = new MuSigPriceInput(serviceProvider.getBondedRolesService().getMarketPriceService());
         muSigReviewDataDisplay = new MuSigReviewDataDisplay();
 
         model = new MuSigCreateOfferReviewModel();

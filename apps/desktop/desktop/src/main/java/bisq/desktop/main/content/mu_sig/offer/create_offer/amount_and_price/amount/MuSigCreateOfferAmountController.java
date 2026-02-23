@@ -28,7 +28,7 @@ import bisq.desktop.common.Browser;
 import bisq.desktop.common.utils.KeyHandlerUtil;
 import bisq.desktop.common.view.Controller;
 import bisq.desktop.components.overlay.Popup;
-import bisq.desktop.main.content.bisq_easy.components.offer.amount_selection.AmountSelectionController;
+import bisq.desktop.main.content.mu_sig.components.offer.amount_selection.MuSigAmountSelectionController;
 import bisq.desktop.navigation.NavigationTarget;
 import bisq.i18n.Res;
 import bisq.mu_sig.MuSigTradeAmountLimits;
@@ -72,7 +72,7 @@ public class MuSigCreateOfferAmountController implements Controller {
     private final MuSigCreateOfferAmountModel model;
     @Getter
     private final MuSigCreateOfferAmountView view;
-    private final AmountSelectionController amountSelectionController;
+    private final MuSigAmountSelectionController amountSelectionController;
     private final SettingsService settingsService;
     private final MarketPriceService marketPriceService;
     private final Region owner;
@@ -97,7 +97,7 @@ public class MuSigCreateOfferAmountController implements Controller {
         this.closeAndNavigateToHandler = closeAndNavigateToHandler;
         model = new MuSigCreateOfferAmountModel();
 
-        amountSelectionController = new AmountSelectionController(serviceProvider);
+        amountSelectionController = new MuSigAmountSelectionController(serviceProvider);
         view = new MuSigCreateOfferAmountView(model, this, amountSelectionController.getView().getRoot());
     }
 
