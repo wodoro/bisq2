@@ -136,15 +136,15 @@ class MuSigMediationPayoutDistributionCalculatorTest {
     }
 
     @Test
-    void penaltyTransferIsCappedByMinimumRefundConstraint() {
+    void buyerPenaltyAtHundredPercentKeepsMinimumRefundConstraint() {
         MuSigMediationPayoutDistributionCalculator.PayoutAmounts payoutAmounts = MuSigMediationPayoutDistributionCalculator.calculateForType(
                         MediationPayoutDistributionType.BUYER_GETS_TRADE_AMOUNT_MINUS_PENALTY,
                         CONTEXT,
-                        Optional.of(2.0))
+                        Optional.of(1.0))
                 .orElseThrow();
 
-        assertEquals(24_000, payoutAmounts.buyerAmountAsSats());
-        assertEquals(696_000, payoutAmounts.sellerAmountAsSats());
+        assertEquals(120_000, payoutAmounts.buyerAmountAsSats());
+        assertEquals(600_000, payoutAmounts.sellerAmountAsSats());
     }
 
     @Test
