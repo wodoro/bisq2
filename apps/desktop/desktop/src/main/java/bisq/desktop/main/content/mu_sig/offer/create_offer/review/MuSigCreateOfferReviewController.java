@@ -39,7 +39,7 @@ import bisq.desktop.common.utils.KeyHandlerUtil;
 import bisq.desktop.common.view.Controller;
 import bisq.desktop.components.overlay.Popup;
 import bisq.desktop.main.content.bisq_easy.components.offer.PriceInput;
-import bisq.desktop.main.content.mu_sig.components.MuSigReviewDataDisplay;
+import bisq.desktop.main.content.mu_sig.components.offer.MuSigReviewDataDisplay;
 import bisq.desktop.navigation.NavigationTarget;
 import bisq.i18n.Res;
 import bisq.mu_sig.MuSigService;

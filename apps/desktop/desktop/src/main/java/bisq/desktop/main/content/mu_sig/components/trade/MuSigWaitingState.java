@@ -15,15 +15,11 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.components;
+package bisq.desktop.main.content.mu_sig.components.trade;
 
-public enum MuSigProtocolWaitingState {
-    TAKE_OFFER,
-    ACCOUNT_DATA,
-    FIAT_PAYMENT,
-    FIAT_PAYMENT_CONFIRMATION,
-    BITCOIN_ADDRESS,
-    BITCOIN_PAYMENT,
+public enum MuSigWaitingState {
+    PAYMENT,
+    PAYMENT_CONFIRMATION,
     BITCOIN_CONFIRMATION,
     SCAN_WITH_CAMERA,
     TRADE_COMPLETED

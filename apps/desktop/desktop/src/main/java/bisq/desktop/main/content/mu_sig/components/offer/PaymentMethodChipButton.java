@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.components;
+package bisq.desktop.main.content.mu_sig.components.offer;
 
 import bisq.account.payment_method.PaymentMethod;
 import bisq.common.util.StringUtils;
