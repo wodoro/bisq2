@@ -23,11 +23,11 @@ import bisq.desktop.main.content.chat.message_container.list.ChatMessageListItem
 import bisq.desktop.main.content.chat.message_container.list.ChatMessagesListController;
 import bisq.desktop.main.content.chat.message_container.list.message_box.MessageDeliveryStatusBox;
 
-public class MyProtocolLogMessageBox extends PeerProtocolLogMessageBox {
+public class MuSigMyProtocolLogMessageBox extends MuSigPeerProtocolLogMessageBox {
     private final MessageDeliveryStatusBox messageDeliveryStatusBox;
 
-    public MyProtocolLogMessageBox(ChatMessageListItem<? extends ChatMessage, ? extends ChatChannel<? extends ChatMessage>> item,
-                                   ChatMessagesListController controller) {
+    public MuSigMyProtocolLogMessageBox(ChatMessageListItem<? extends ChatMessage, ? extends ChatChannel<? extends ChatMessage>> item,
+                                        ChatMessagesListController controller) {
         super(item);
 
         messageDeliveryStatusBox = new MessageDeliveryStatusBox(item, controller);

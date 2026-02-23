@@ -22,14 +22,14 @@ import lombok.Getter;
 import java.util.Comparator;
 
 @Getter
-enum MarketSortType {
-    NUM_OFFERS(MarketItemUtil.sortByNumOffers()),
-    ASC(MarketItemUtil.sortByMarketNameAsc()),
-    DESC(MarketItemUtil.sortByMarketNameDesc());
+enum MuSigMarketSortType {
+    NUM_OFFERS(MuSigMarketItemUtil.sortByNumOffers()),
+    ASC(MuSigMarketItemUtil.sortByMarketNameAsc()),
+    DESC(MuSigMarketItemUtil.sortByMarketNameDesc());
 
-    private final Comparator<MusigMarketItem> comparator;
+    private final Comparator<MarketItem> comparator;
 
-    MarketSortType(Comparator<MusigMarketItem> comparator) {
+    MuSigMarketSortType(Comparator<MarketItem> comparator) {
         this.comparator = comparator;
     }
 }

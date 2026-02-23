@@ -23,15 +23,15 @@ import bisq.common.market.MarketRepository;
 import java.util.Comparator;
 import java.util.List;
 
-public class MarketItemUtil {
+public class MuSigMarketItemUtil {
     static final List<Market> majorMarkets = MarketRepository.getMajorFiatMarkets();
     
-    static Comparator<MusigMarketItem> sortByNumOffers() {
-        return Comparator.<MusigMarketItem>comparingLong(o -> o.getNumOffers().get()).reversed()
+    static Comparator<MarketItem> sortByNumOffers() {
+        return Comparator.<MarketItem>comparingLong(o -> o.getNumOffers().get()).reversed()
                 .thenComparing(o -> o.getMarket().toString());
     }
 
-    static Comparator<MusigMarketItem> sortByMajorMarkets() {
+    static Comparator<MarketItem> sortByMajorMarkets() {
         return (lhs, rhs) -> {
             int index1 = majorMarkets.indexOf(lhs.getMarket());
             if (index1 == -1) {
@@ -45,15 +45,15 @@ public class MarketItemUtil {
         };
     }
 
-    static Comparator<MusigMarketItem> sortByMarketNameAsc() {
-        return Comparator.comparing(MusigMarketItem::toString);
+    static Comparator<MarketItem> sortByMarketNameAsc() {
+        return Comparator.comparing(MarketItem::toString);
     }
 
-    static Comparator<MusigMarketItem> sortByMarketNameDesc() {
-        return Comparator.comparing(MusigMarketItem::toString).reversed();
+    static Comparator<MarketItem> sortByMarketNameDesc() {
+        return Comparator.comparing(MarketItem::toString).reversed();
     }
 
-    static Comparator<MusigMarketItem> sortByMarketActivity() {
+    static Comparator<MarketItem> sortByMarketActivity() {
         return (lhs, rhs) -> sortByNumOffers()
                 .thenComparing(sortByMajorMarkets())
                 .thenComparing(sortByMarketNameAsc())

@@ -51,12 +51,12 @@ import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
-public class State2BuyerSendPayment extends BaseState {
+public class MuSigState2BuyerSendPayment extends MuSigBaseState {
     private final Controller controller;
 
-    public State2BuyerSendPayment(ServiceProvider serviceProvider,
-                                  MuSigTrade trade,
-                                  MuSigOpenTradeChannel channel) {
+    public MuSigState2BuyerSendPayment(ServiceProvider serviceProvider,
+                                       MuSigTrade trade,
+                                       MuSigOpenTradeChannel channel) {
         controller = new Controller(serviceProvider, trade, channel);
     }
 
@@ -64,7 +64,7 @@ public class State2BuyerSendPayment extends BaseState {
         return controller.getView().getRoot();
     }
 
-    private static class Controller extends BaseState.Controller<Model, View> {
+    private static class Controller extends MuSigBaseState.Controller<Model, View> {
         private final ModerationRequestService moderationRequestService;
 
         private Controller(ServiceProvider serviceProvider,
@@ -154,7 +154,7 @@ public class State2BuyerSendPayment extends BaseState {
     }
 
     @Getter
-    private static class Model extends BaseState.Model {
+    private static class Model extends MuSigBaseState.Model {
         private final BooleanProperty confirmFiatSentButtonDisabled = new SimpleBooleanProperty();
         private final SettableErrorValidator accountDataBannedValidator = new SettableErrorValidator(Res.get("bisqEasy.tradeState.info.buyer.phase2a.accountDataBannedError"));
         @Setter
@@ -173,7 +173,7 @@ public class State2BuyerSendPayment extends BaseState {
         }
     }
 
-    public static class View extends BaseState.View<Model, Controller> {
+    public static class View extends MuSigBaseState.View<Model, Controller> {
         private final Button confirmFiatSentButton;
         private final MaterialTextArea sellersAccountData;
         private final MaterialTextField quoteAmount, myAccountName;

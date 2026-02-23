@@ -30,7 +30,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-public class PeerProtocolLogMessageBox extends MessageBox {
+public class MuSigPeerProtocolLogMessageBox extends MessageBox {
     protected final ChatMessageListItem<? extends ChatMessage, ? extends ChatChannel<? extends ChatMessage>> item;
     protected final VBox tradeLogMessageBg = new VBox();
     protected final VBox contentVBox;
@@ -38,7 +38,7 @@ public class PeerProtocolLogMessageBox extends MessageBox {
     protected final Label dateTime;
     protected final SelectableLabel message;
 
-    public PeerProtocolLogMessageBox(ChatMessageListItem<? extends ChatMessage, ? extends ChatChannel<? extends ChatMessage>> item) {
+    public MuSigPeerProtocolLogMessageBox(ChatMessageListItem<? extends ChatMessage, ? extends ChatChannel<? extends ChatMessage>> item) {
         this.item = item;
 
         String decoded = Res.decode(item.getMessage());

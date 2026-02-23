@@ -22,8 +22,8 @@ import lombok.Getter;
 import java.util.function.Predicate;
 
 @Getter
-public class MarketFilterPredicateProvider {
-    public static Predicate<MusigMarketItem> getPredicate(MuSigFilters.MarketFilter marketFilter) {
+public class MuSigMarketFilterPredicateProvider {
+    public static Predicate<MarketItem> getPredicate(MuSigFilters.MarketFilter marketFilter) {
         return switch (marketFilter) {
             case ALL -> item -> true;
             case FAVOURITES -> item -> item.getIsFavourite().get();

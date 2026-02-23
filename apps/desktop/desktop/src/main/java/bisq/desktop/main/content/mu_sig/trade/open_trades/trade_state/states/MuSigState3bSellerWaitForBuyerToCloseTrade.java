@@ -31,12 +31,12 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class State2SellerWaitForPayment extends BaseState {
+public class MuSigState3bSellerWaitForBuyerToCloseTrade extends MuSigBaseState {
     private final Controller controller;
 
-    public State2SellerWaitForPayment(ServiceProvider serviceProvider,
-                                      MuSigTrade trade,
-                                      MuSigOpenTradeChannel channel) {
+    public MuSigState3bSellerWaitForBuyerToCloseTrade(ServiceProvider serviceProvider,
+                                                      MuSigTrade trade,
+                                                      MuSigOpenTradeChannel channel) {
         controller = new Controller(serviceProvider, trade, channel);
     }
 
@@ -44,7 +44,7 @@ public class State2SellerWaitForPayment extends BaseState {
         return controller.getView().getRoot();
     }
 
-    private static class Controller extends BaseState.Controller<Model, View> {
+    private static class Controller extends MuSigBaseState.Controller<Model, View> {
         private Controller(ServiceProvider serviceProvider, MuSigTrade trade, MuSigOpenTradeChannel channel) {
             super(serviceProvider, trade, channel);
         }
@@ -63,15 +63,14 @@ public class State2SellerWaitForPayment extends BaseState {
         public void onActivate() {
             super.onActivate();
 
-            String nonBtcCurrencyCode = model.getNonBtcCurrencyCode();
-            String formattedNonBtcAmount = model.getFormattedNonBtcAmount();
-            if (model.getMarket().isBaseCurrencyBitcoin()) {
-                model.setHeadline(Res.get("muSig.tradeState.info.fiat.phase2a.waitForPayment.headline", nonBtcCurrencyCode));
-                model.setInfo(Res.get("muSig.tradeState.info.fiat.phase2a.waitForPayment.info", formattedNonBtcAmount));
-            } else {
-                model.setHeadline(Res.get("muSig.tradeState.info.crypto.phase2a.waitForPayment.headline", nonBtcCurrencyCode));
-                model.setInfo(Res.get("muSig.tradeState.info.crypto.phase2a.waitForPayment.info", formattedNonBtcAmount));
-            }
+            boolean isBaseCurrencyBitcoin = model.getTrade().getMarket().isBaseCurrencyBitcoin();
+
+            model.setHeadline(isBaseCurrencyBitcoin
+                    ? Res.get("muSig.tradeState.info.fiat.phase3b.waitForTradeClose.headline")
+                    : Res.get("muSig.tradeState.info.crypto.phase3b.waitForTradeClose.headline"));
+            model.setInfo(isBaseCurrencyBitcoin
+                    ? Res.get("muSig.tradeState.info.fiat.phase3b.waitForTradeClose.info")
+                    : Res.get("muSig.tradeState.info.crypto.phase3b.waitForTradeClose.info"));
         }
 
         @Override
@@ -81,7 +80,7 @@ public class State2SellerWaitForPayment extends BaseState {
     }
 
     @Getter
-    private static class Model extends BaseState.Model {
+    private static class Model extends MuSigBaseState.Model {
         @Setter
         private String headline;
         @Setter
@@ -92,7 +91,7 @@ public class State2SellerWaitForPayment extends BaseState {
         }
     }
 
-    public static class View extends BaseState.View<Model, Controller> {
+    public static class View extends MuSigBaseState.View<Model, Controller> {
         private final WrappingText headline, info;
         private final MuSigWaitingAnimation waitingAnimation;
 

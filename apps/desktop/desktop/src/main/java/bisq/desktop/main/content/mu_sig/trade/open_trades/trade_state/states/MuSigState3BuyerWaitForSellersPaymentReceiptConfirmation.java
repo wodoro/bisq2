@@ -27,15 +27,16 @@ import bisq.trade.mu_sig.MuSigTrade;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class State1aSetupDepositTx extends BaseState {
+public class MuSigState3BuyerWaitForSellersPaymentReceiptConfirmation extends MuSigBaseState {
     private final Controller controller;
 
-    public State1aSetupDepositTx(ServiceProvider serviceProvider,
-                                 MuSigTrade trade,
-                                 MuSigOpenTradeChannel channel) {
+    public MuSigState3BuyerWaitForSellersPaymentReceiptConfirmation(ServiceProvider serviceProvider,
+                                                                    MuSigTrade trade,
+                                                                    MuSigOpenTradeChannel channel) {
         controller = new Controller(serviceProvider, trade, channel);
     }
 
@@ -43,10 +44,8 @@ public class State1aSetupDepositTx extends BaseState {
         return controller.getView().getRoot();
     }
 
-    private static class Controller extends BaseState.Controller<Model, View> {
-        private Controller(ServiceProvider serviceProvider,
-                           MuSigTrade trade,
-                           MuSigOpenTradeChannel channel) {
+    private static class Controller extends MuSigBaseState.Controller<Model, View> {
+        private Controller(ServiceProvider serviceProvider, MuSigTrade trade, MuSigOpenTradeChannel channel) {
             super(serviceProvider, trade, channel);
         }
 
@@ -63,6 +62,14 @@ public class State1aSetupDepositTx extends BaseState {
         @Override
         public void onActivate() {
             super.onActivate();
+
+            if (model.getMarket().isBaseCurrencyBitcoin()) {
+                model.setHeadline(Res.get("muSig.tradeState.info.fiat.phase3.headline"));
+                model.setInfo(Res.get("muSig.tradeState.info.fiat.phase3.info", model.getFormattedNonBtcAmount()));
+            } else {
+                model.setHeadline(Res.get("muSig.tradeState.info.crypto.phase3.headline"));
+                model.setInfo(Res.get("muSig.tradeState.info.crypto.phase3.info", model.getFormattedNonBtcAmount()));
+            }
         }
 
         @Override
@@ -72,29 +79,37 @@ public class State1aSetupDepositTx extends BaseState {
     }
 
     @Getter
-    private static class Model extends BaseState.Model {
-        private Model(MuSigTrade trade, MuSigOpenTradeChannel channel) {
+    private static class Model extends MuSigBaseState.Model {
+        @Setter
+        private String headline;
+        @Setter
+        private String info;
+
+        protected Model(MuSigTrade trade, MuSigOpenTradeChannel channel) {
             super(trade, channel);
         }
     }
 
-    public static class View extends BaseState.View<Model, Controller> {
+    public static class View extends MuSigBaseState.View<Model, Controller> {
+        private final WrappingText headline, info;
         private final MuSigWaitingAnimation waitingAnimation;
 
         private View(Model model, Controller controller) {
             super(model, controller);
 
-            WrappingText headline = MuSigFormUtils.getHeadline(Res.get("muSig.tradeState.info.phase1a.headline"));
-            WrappingText info = MuSigFormUtils.getInfo(Res.get("muSig.tradeState.info.phase1a.info"));
-            waitingAnimation = new MuSigWaitingAnimation(MuSigWaitingState.BITCOIN_CONFIRMATION);
+            waitingAnimation = new MuSigWaitingAnimation(MuSigWaitingState.PAYMENT_CONFIRMATION);
+            headline = MuSigFormUtils.getHeadline();
+            info = MuSigFormUtils.getInfo();
             HBox waitingInfo = createWaitingInfo(waitingAnimation, headline, info);
-
-            root.getChildren().addAll(waitingInfo);
+            root.getChildren().add(waitingInfo);
         }
 
         @Override
         protected void onViewAttached() {
             super.onViewAttached();
+
+            headline.setText(model.getHeadline());
+            info.setText(model.getInfo());
 
             waitingAnimation.play();
         }

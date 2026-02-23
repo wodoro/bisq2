@@ -82,31 +82,31 @@ public class MuSigOfferbookModel implements Model {
     private Predicate<MuSigOfferListItem> paymentMethodFilterPredicate = item -> true;
 
     private final ObjectProperty<CryptoAsset> selectedBaseCryptoAsset = new SimpleObjectProperty<>();
-    private final ObservableList<MusigMarketItem> marketItems = FXCollections.observableArrayList();
-    private final FilteredList<MusigMarketItem> filteredMarketItems = new FilteredList<>(marketItems);
-    private final SortedList<MusigMarketItem> sortedMarketItems = new SortedList<>(filteredMarketItems);
-    private final FilteredList<MusigMarketItem> favouriteMarketItems = new FilteredList<>(marketItems);
-    private final SortedList<MusigMarketItem> sortedFavouriteMarketItems = new SortedList<>(favouriteMarketItems, MarketItemUtil.sortByMarketNameAsc());
-    private final ObjectProperty<MusigMarketItem> selectedMarketItem = new SimpleObjectProperty<>();
+    private final ObservableList<MarketItem> marketItems = FXCollections.observableArrayList();
+    private final FilteredList<MarketItem> filteredMarketItems = new FilteredList<>(marketItems);
+    private final SortedList<MarketItem> sortedMarketItems = new SortedList<>(filteredMarketItems);
+    private final FilteredList<MarketItem> favouriteMarketItems = new FilteredList<>(marketItems);
+    private final SortedList<MarketItem> sortedFavouriteMarketItems = new SortedList<>(favouriteMarketItems, MuSigMarketItemUtil.sortByMarketNameAsc());
+    private final ObjectProperty<MarketItem> selectedMarketItem = new SimpleObjectProperty<>();
 
     private final StringProperty marketListTitle = new SimpleStringProperty();
     private final StringProperty marketsSearchBoxText = new SimpleStringProperty();
     private final ObjectProperty<MuSigFilters.MarketFilter> selectedMarketsFilter = new SimpleObjectProperty<>();
-    private final ObjectProperty<MarketSortType> selectedMarketSortType = new SimpleObjectProperty<>(MarketSortType.NUM_OFFERS);
+    private final ObjectProperty<MuSigMarketSortType> selectedMarketSortType = new SimpleObjectProperty<>(MuSigMarketSortType.NUM_OFFERS);
     private final BooleanProperty shouldShowAppliedFilters = new SimpleBooleanProperty();
     private final BooleanProperty shouldShowFavouritesListView = new SimpleBooleanProperty();
     private final BooleanProperty favouritesListViewNeedsHeightUpdate = new SimpleBooleanProperty();
 
-    private final Predicate<MusigMarketItem> marketItemsPredicate = item ->
+    private final Predicate<MarketItem> marketItemsPredicate = item ->
             getMarketFilterPredicate().test(item)
                     && getMarketSearchTextPredicate().test(item)
                     && getMarketPricePredicate().test(item)
                     && !item.getIsFavourite().get();
-    private final Predicate<MusigMarketItem> favouriteMarketItemsPredicate = item -> item.getIsFavourite().get();;
+    private final Predicate<MarketItem> favouriteMarketItemsPredicate = item -> item.getIsFavourite().get();;
     @Setter
-    private Predicate<MusigMarketItem> marketFilterPredicate = item -> true;
+    private Predicate<MarketItem> marketFilterPredicate = item -> true;
     @Setter
-    private Predicate<MusigMarketItem> marketSearchTextPredicate = item -> true;
+    private Predicate<MarketItem> marketSearchTextPredicate = item -> true;
     @Setter
-    private Predicate<MusigMarketItem> marketPricePredicate = item -> true;
+    private Predicate<MarketItem> marketPricePredicate = item -> true;
 }

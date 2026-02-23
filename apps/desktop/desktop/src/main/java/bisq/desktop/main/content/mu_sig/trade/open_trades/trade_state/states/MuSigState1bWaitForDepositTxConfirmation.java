@@ -58,12 +58,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class State1bWaitForDepositTxConfirmation extends BaseState {
+public class MuSigState1bWaitForDepositTxConfirmation extends MuSigBaseState {
     private final Controller controller;
 
-    public State1bWaitForDepositTxConfirmation(ServiceProvider serviceProvider,
-                                               MuSigTrade trade,
-                                               MuSigOpenTradeChannel channel) {
+    public MuSigState1bWaitForDepositTxConfirmation(ServiceProvider serviceProvider,
+                                                    MuSigTrade trade,
+                                                    MuSigOpenTradeChannel channel) {
         controller = new Controller(serviceProvider, trade, channel);
     }
 
@@ -71,7 +71,7 @@ public class State1bWaitForDepositTxConfirmation extends BaseState {
         return controller.getView().getRoot();
     }
 
-    private static class Controller extends BaseState.Controller<Model, View> {
+    private static class Controller extends MuSigBaseState.Controller<Model, View> {
         private final static Map<String, Tx> CONFIRMED_TX_CACHE = new HashMap<>();
 
         private final ExplorerService explorerService;
@@ -208,7 +208,7 @@ public class State1bWaitForDepositTxConfirmation extends BaseState {
     }
 
     @Getter
-    private static class Model extends BaseState.Model {
+    private static class Model extends MuSigBaseState.Model {
         enum ConfirmationState {
             REQUEST_STARTED,
             IN_MEMPOOL,
@@ -233,7 +233,7 @@ public class State1bWaitForDepositTxConfirmation extends BaseState {
         }
     }
 
-    public static class View extends BaseState.View<Model, Controller> {
+    public static class View extends MuSigBaseState.View<Model, Controller> {
         private final Button button;
         private final MaterialTextField txId;
         private final MuSigWaitingAnimation waitingAnimation;

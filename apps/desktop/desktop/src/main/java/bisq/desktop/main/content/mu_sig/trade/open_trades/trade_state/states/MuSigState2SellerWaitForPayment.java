@@ -31,12 +31,12 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class State3BuyerWaitForSellersPaymentReceiptConfirmation extends BaseState {
+public class MuSigState2SellerWaitForPayment extends MuSigBaseState {
     private final Controller controller;
 
-    public State3BuyerWaitForSellersPaymentReceiptConfirmation(ServiceProvider serviceProvider,
-                                                               MuSigTrade trade,
-                                                               MuSigOpenTradeChannel channel) {
+    public MuSigState2SellerWaitForPayment(ServiceProvider serviceProvider,
+                                           MuSigTrade trade,
+                                           MuSigOpenTradeChannel channel) {
         controller = new Controller(serviceProvider, trade, channel);
     }
 
@@ -44,7 +44,7 @@ public class State3BuyerWaitForSellersPaymentReceiptConfirmation extends BaseSta
         return controller.getView().getRoot();
     }
 
-    private static class Controller extends BaseState.Controller<Model, View> {
+    private static class Controller extends MuSigBaseState.Controller<Model, View> {
         private Controller(ServiceProvider serviceProvider, MuSigTrade trade, MuSigOpenTradeChannel channel) {
             super(serviceProvider, trade, channel);
         }
@@ -63,12 +63,14 @@ public class State3BuyerWaitForSellersPaymentReceiptConfirmation extends BaseSta
         public void onActivate() {
             super.onActivate();
 
+            String nonBtcCurrencyCode = model.getNonBtcCurrencyCode();
+            String formattedNonBtcAmount = model.getFormattedNonBtcAmount();
             if (model.getMarket().isBaseCurrencyBitcoin()) {
-                model.setHeadline(Res.get("muSig.tradeState.info.fiat.phase3.headline"));
-                model.setInfo(Res.get("muSig.tradeState.info.fiat.phase3.info", model.getFormattedNonBtcAmount()));
+                model.setHeadline(Res.get("muSig.tradeState.info.fiat.phase2a.waitForPayment.headline", nonBtcCurrencyCode));
+                model.setInfo(Res.get("muSig.tradeState.info.fiat.phase2a.waitForPayment.info", formattedNonBtcAmount));
             } else {
-                model.setHeadline(Res.get("muSig.tradeState.info.crypto.phase3.headline"));
-                model.setInfo(Res.get("muSig.tradeState.info.crypto.phase3.info", model.getFormattedNonBtcAmount()));
+                model.setHeadline(Res.get("muSig.tradeState.info.crypto.phase2a.waitForPayment.headline", nonBtcCurrencyCode));
+                model.setInfo(Res.get("muSig.tradeState.info.crypto.phase2a.waitForPayment.info", formattedNonBtcAmount));
             }
         }
 
@@ -79,7 +81,7 @@ public class State3BuyerWaitForSellersPaymentReceiptConfirmation extends BaseSta
     }
 
     @Getter
-    private static class Model extends BaseState.Model {
+    private static class Model extends MuSigBaseState.Model {
         @Setter
         private String headline;
         @Setter
@@ -90,14 +92,14 @@ public class State3BuyerWaitForSellersPaymentReceiptConfirmation extends BaseSta
         }
     }
 
-    public static class View extends BaseState.View<Model, Controller> {
+    public static class View extends MuSigBaseState.View<Model, Controller> {
         private final WrappingText headline, info;
         private final MuSigWaitingAnimation waitingAnimation;
 
         private View(Model model, Controller controller) {
             super(model, controller);
 
-            waitingAnimation = new MuSigWaitingAnimation(MuSigWaitingState.PAYMENT_CONFIRMATION);
+            waitingAnimation = new MuSigWaitingAnimation(MuSigWaitingState.PAYMENT);
             headline = MuSigFormUtils.getHeadline();
             info = MuSigFormUtils.getInfo();
             HBox waitingInfo = createWaitingInfo(waitingAnimation, headline, info);
@@ -110,7 +112,6 @@ public class State3BuyerWaitForSellersPaymentReceiptConfirmation extends BaseSta
 
             headline.setText(model.getHeadline());
             info.setText(model.getInfo());
-
             waitingAnimation.play();
         }
 

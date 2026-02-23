@@ -54,10 +54,10 @@ import java.util.Optional;
 import static bisq.settings.DontShowAgainKey.CONFIRM_CLOSE_MU_SIG_TRADE;
 
 @Slf4j
-public class State4TradeClosed extends BaseState {
+public class MuSigState4TradeClosed extends MuSigBaseState {
     protected final Controller controller;
 
-    public State4TradeClosed(ServiceProvider serviceProvider, MuSigTrade trade, MuSigOpenTradeChannel channel) {
+    public MuSigState4TradeClosed(ServiceProvider serviceProvider, MuSigTrade trade, MuSigOpenTradeChannel channel) {
         controller = new Controller(serviceProvider, trade, channel);
     }
 
@@ -65,7 +65,7 @@ public class State4TradeClosed extends BaseState {
         return controller.getView().getRoot();
     }
 
-    protected static class Controller extends BaseState.Controller<Model, View> {
+    protected static class Controller extends MuSigBaseState.Controller<Model, View> {
         private final ReputationService reputationService;
         protected final ExplorerService explorerService;
         private final DontShowAgainService dontShowAgainService;
@@ -174,7 +174,7 @@ public class State4TradeClosed extends BaseState {
 
     @Setter
     @Getter
-    protected static class Model extends BaseState.Model {
+    protected static class Model extends MuSigBaseState.Model {
         protected String paymentProof;
         protected String paymentProofDescription;
         protected boolean blockExplorerLinkVisible;
@@ -196,7 +196,7 @@ public class State4TradeClosed extends BaseState {
         }
     }
 
-    public static class View extends BaseState.View<Model, Controller> {
+    public static class View extends MuSigBaseState.View<Model, Controller> {
         private final UserProfileDisplay peerProfileDisplay;
         protected final Button closeTradeButton, exportButton, detailsButton;
         protected final MuSigTradeCompletedTable muSigTradeCompletedTable;

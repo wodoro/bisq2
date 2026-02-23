@@ -43,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Optional;
 
 @Slf4j
-public abstract class BaseState {
+public abstract class MuSigBaseState {
     protected static abstract class Controller<M extends Model, V extends View<?, ?>> implements bisq.desktop.common.view.Controller {
         protected final M model;
         @Getter

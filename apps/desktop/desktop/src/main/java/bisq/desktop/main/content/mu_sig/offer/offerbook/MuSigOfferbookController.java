@@ -253,16 +253,16 @@ public class MuSigOfferbookController implements Controller {
         model.getSelectedMarketsFilter().set(persistedMarketsFilter);
         selectedMarketFilterPin = EasyBind.subscribe(model.getSelectedMarketsFilter(), filter -> {
             if (filter != null) {
-                model.setMarketFilterPredicate(MarketFilterPredicateProvider.getPredicate(filter));
+                model.setMarketFilterPredicate(MuSigMarketFilterPredicateProvider.getPredicate(filter));
                 settingsService.setCookie(CookieKey.MU_SIG_MARKETS_FILTER, model.getSelectedMarketsFilter().get().name());
                 updateFilteredMarketItems();
             }
             model.getShouldShowAppliedFilters().set(filter == MuSigFilters.MarketFilter.WITH_OFFERS || filter == MuSigFilters.MarketFilter.FAVOURITES);
         });
 
-        MarketSortType persistedMarketSortType = settingsService.getCookie().asString(CookieKey.MU_SIG_MARKET_SORT_TYPE)
-                .map(name -> ProtobufUtils.enumFromProto(MarketSortType.class, name, MarketSortType.NUM_OFFERS))
-                .orElse(MarketSortType.NUM_OFFERS);
+        MuSigMarketSortType persistedMarketSortType = settingsService.getCookie().asString(CookieKey.MU_SIG_MARKET_SORT_TYPE)
+                .map(name -> ProtobufUtils.enumFromProto(MuSigMarketSortType.class, name, MuSigMarketSortType.NUM_OFFERS))
+                .orElse(MuSigMarketSortType.NUM_OFFERS);
         model.getSelectedMarketSortType().set(persistedMarketSortType);
         selectedMarketSortTypePin = EasyBind.subscribe(model.getSelectedMarketSortType(), marketSortType -> {
             if (marketSortType != null) {
@@ -341,7 +341,7 @@ public class MuSigOfferbookController implements Controller {
         selectedMuSigOfferPin.unbind();
     }
 
-    void onSelectMarketItem(MusigMarketItem marketItem) {
+    void onSelectMarketItem(MarketItem marketItem) {
         if (marketItem == null) {
             model.getSelectedMarketItem().set(null);
             maybeSelectFirst();
@@ -351,7 +351,7 @@ public class MuSigOfferbookController implements Controller {
     }
 
     void onCreateOffer() {
-        MusigMarketItem marketItem = model.getSelectedMarketItem().get();
+        MarketItem marketItem = model.getSelectedMarketItem().get();
         checkArgument(marketItem != null, "No selected market item");
         Navigation.navigateTo(NavigationTarget.MU_SIG_CREATE_OFFER, new MuSigCreateOfferController.InitData(marketItem.getMarket()));
     }
@@ -377,7 +377,7 @@ public class MuSigOfferbookController implements Controller {
                 .show();
     }
 
-    void onSortMarkets(MarketSortType marketSortType) {
+    void onSortMarkets(MuSigMarketSortType marketSortType) {
         model.getSelectedMarketSortType().set(marketSortType);
         model.getSortedMarketItems().setComparator(marketSortType.getComparator());
     }
@@ -418,8 +418,8 @@ public class MuSigOfferbookController implements Controller {
     }
 
     private void updateQuoteMarketItems(List<Market> availableMarkets) {
-        List<MusigMarketItem> marketItems = availableMarkets.stream()
-                .map(market -> new MusigMarketItem(market,
+        List<MarketItem> marketItems = availableMarkets.stream()
+                .map(market -> new MarketItem(market,
                         favouriteMarketsService,
                         marketPriceService,
                         userProfileService,
@@ -451,13 +451,13 @@ public class MuSigOfferbookController implements Controller {
     }
 
     private void maybeSelectFirst() {
-        MusigMarketItem firstMarketItem = getFirstMarketItem();
+        MarketItem firstMarketItem = getFirstMarketItem();
         if (firstMarketItem != null) {
             model.getSelectedMarketItem().set(firstMarketItem);
         }
     }
 
-    private MusigMarketItem getFirstMarketItem() {
+    private MarketItem getFirstMarketItem() {
         return !model.getSortedMarketItems().isEmpty() ? model.getSortedMarketItems().get(0) : null;
     }
 
@@ -466,7 +466,7 @@ public class MuSigOfferbookController implements Controller {
         model.getFilteredMuSigOfferListItems().setPredicate(model.getMuSigOfferListItemsPredicate());
     }
 
-    private void updateMarketData(MusigMarketItem selectedMarketItem) {
+    private void updateMarketData(MarketItem selectedMarketItem) {
         if (selectedMarketItem != null) {
             Market selectedMarket = selectedMarketItem.getMarket();
             if (selectedMarket != null) {
@@ -510,13 +510,13 @@ public class MuSigOfferbookController implements Controller {
         model.getShouldShowFavouritesListView().set(!model.getFavouriteMarketItems().isEmpty());
     }
 
-    private Optional<MusigMarketItem> findMarketItem(Market market) {
+    private Optional<MarketItem> findMarketItem(Market market) {
         return model.getMarketItems().stream()
                 .filter(e -> e.getMarket().equals(market))
                 .findAny();
     }
 
-    private void updateMarketPrice(MusigMarketItem marketItem) {
+    private void updateMarketPrice(MarketItem marketItem) {
         Market selectedMarket = marketItem.getMarket();
         if (selectedMarket != null) {
             marketPriceService

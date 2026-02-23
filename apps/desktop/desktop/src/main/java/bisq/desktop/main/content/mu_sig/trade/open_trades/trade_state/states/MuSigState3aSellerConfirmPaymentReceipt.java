@@ -36,12 +36,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Optional;
 
 @Slf4j
-public class State3aSellerConfirmPaymentReceipt extends BaseState {
+public class MuSigState3aSellerConfirmPaymentReceipt extends MuSigBaseState {
     private final Controller controller;
 
-    public State3aSellerConfirmPaymentReceipt(ServiceProvider serviceProvider,
-                                              MuSigTrade trade,
-                                              MuSigOpenTradeChannel channel) {
+    public MuSigState3aSellerConfirmPaymentReceipt(ServiceProvider serviceProvider,
+                                                   MuSigTrade trade,
+                                                   MuSigOpenTradeChannel channel) {
         controller = new Controller(serviceProvider, trade, channel);
     }
 
@@ -49,7 +49,7 @@ public class State3aSellerConfirmPaymentReceipt extends BaseState {
         return controller.getView().getRoot();
     }
 
-    private static class Controller extends BaseState.Controller<Model, View> {
+    private static class Controller extends MuSigBaseState.Controller<Model, View> {
         private Controller(ServiceProvider serviceProvider, MuSigTrade trade, MuSigOpenTradeChannel channel) {
             super(serviceProvider, trade, channel);
         }
@@ -97,7 +97,7 @@ public class State3aSellerConfirmPaymentReceipt extends BaseState {
     }
 
     @Getter
-    private static class Model extends BaseState.Model {
+    private static class Model extends MuSigBaseState.Model {
         @Setter
         private String info;
 
@@ -106,7 +106,7 @@ public class State3aSellerConfirmPaymentReceipt extends BaseState {
         }
     }
 
-    public static class View extends BaseState.View<Model, Controller> {
+    public static class View extends MuSigBaseState.View<Model, Controller> {
         private final WrappingText headline;
         private final Button confirmPaymentReceiptButton;
         private final WrappingText info;

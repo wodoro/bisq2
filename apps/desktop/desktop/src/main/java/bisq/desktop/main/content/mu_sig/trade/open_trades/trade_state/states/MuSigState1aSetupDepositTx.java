@@ -27,16 +27,15 @@ import bisq.trade.mu_sig.MuSigTrade;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class State3bSellerWaitForBuyerToCloseTrade extends BaseState {
+public class MuSigState1aSetupDepositTx extends MuSigBaseState {
     private final Controller controller;
 
-    public State3bSellerWaitForBuyerToCloseTrade(ServiceProvider serviceProvider,
-                                                 MuSigTrade trade,
-                                                 MuSigOpenTradeChannel channel) {
+    public MuSigState1aSetupDepositTx(ServiceProvider serviceProvider,
+                                      MuSigTrade trade,
+                                      MuSigOpenTradeChannel channel) {
         controller = new Controller(serviceProvider, trade, channel);
     }
 
@@ -44,8 +43,10 @@ public class State3bSellerWaitForBuyerToCloseTrade extends BaseState {
         return controller.getView().getRoot();
     }
 
-    private static class Controller extends BaseState.Controller<Model, View> {
-        private Controller(ServiceProvider serviceProvider, MuSigTrade trade, MuSigOpenTradeChannel channel) {
+    private static class Controller extends MuSigBaseState.Controller<Model, View> {
+        private Controller(ServiceProvider serviceProvider,
+                           MuSigTrade trade,
+                           MuSigOpenTradeChannel channel) {
             super(serviceProvider, trade, channel);
         }
 
@@ -62,15 +63,6 @@ public class State3bSellerWaitForBuyerToCloseTrade extends BaseState {
         @Override
         public void onActivate() {
             super.onActivate();
-
-            boolean isBaseCurrencyBitcoin = model.getTrade().getMarket().isBaseCurrencyBitcoin();
-
-            model.setHeadline(isBaseCurrencyBitcoin
-                    ? Res.get("muSig.tradeState.info.fiat.phase3b.waitForTradeClose.headline")
-                    : Res.get("muSig.tradeState.info.crypto.phase3b.waitForTradeClose.headline"));
-            model.setInfo(isBaseCurrencyBitcoin
-                    ? Res.get("muSig.tradeState.info.fiat.phase3b.waitForTradeClose.info")
-                    : Res.get("muSig.tradeState.info.crypto.phase3b.waitForTradeClose.info"));
         }
 
         @Override
@@ -80,37 +72,30 @@ public class State3bSellerWaitForBuyerToCloseTrade extends BaseState {
     }
 
     @Getter
-    private static class Model extends BaseState.Model {
-        @Setter
-        private String headline;
-        @Setter
-        private String info;
-
-        protected Model(MuSigTrade trade, MuSigOpenTradeChannel channel) {
+    private static class Model extends MuSigBaseState.Model {
+        private Model(MuSigTrade trade, MuSigOpenTradeChannel channel) {
             super(trade, channel);
         }
     }
 
-    public static class View extends BaseState.View<Model, Controller> {
-        private final WrappingText headline, info;
+    public static class View extends MuSigBaseState.View<Model, Controller> {
         private final MuSigWaitingAnimation waitingAnimation;
 
         private View(Model model, Controller controller) {
             super(model, controller);
 
-            waitingAnimation = new MuSigWaitingAnimation(MuSigWaitingState.PAYMENT);
-            headline = MuSigFormUtils.getHeadline();
-            info = MuSigFormUtils.getInfo();
+            WrappingText headline = MuSigFormUtils.getHeadline(Res.get("muSig.tradeState.info.phase1a.headline"));
+            WrappingText info = MuSigFormUtils.getInfo(Res.get("muSig.tradeState.info.phase1a.info"));
+            waitingAnimation = new MuSigWaitingAnimation(MuSigWaitingState.BITCOIN_CONFIRMATION);
             HBox waitingInfo = createWaitingInfo(waitingAnimation, headline, info);
-            root.getChildren().add(waitingInfo);
+
+            root.getChildren().addAll(waitingInfo);
         }
 
         @Override
         protected void onViewAttached() {
             super.onViewAttached();
 
-            headline.setText(model.getHeadline());
-            info.setText(model.getInfo());
             waitingAnimation.play();
         }
 

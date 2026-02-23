@@ -31,14 +31,14 @@ import bisq.desktop.common.view.Controller;
 import bisq.desktop.common.view.Navigation;
 import bisq.desktop.components.overlay.Popup;
 import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_details.MuSigTradeDetailsController;
-import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.State1aSetupDepositTx;
-import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.State1bWaitForDepositTxConfirmation;
-import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.State2BuyerSendPayment;
-import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.State2SellerWaitForPayment;
-import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.State3BuyerWaitForSellersPaymentReceiptConfirmation;
-import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.State3aSellerConfirmPaymentReceipt;
-import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.State3bSellerWaitForBuyerToCloseTrade;
-import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.State4TradeClosed;
+import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.MuSigState1aSetupDepositTx;
+import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.MuSigState1bWaitForDepositTxConfirmation;
+import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.MuSigState2BuyerSendPayment;
+import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.MuSigState2SellerWaitForPayment;
+import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.MuSigState3BuyerWaitForSellersPaymentReceiptConfirmation;
+import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.MuSigState3aSellerConfirmPaymentReceipt;
+import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.MuSigState3bSellerWaitForBuyerToCloseTrade;
+import bisq.desktop.main.content.mu_sig.trade.open_trades.trade_state.states.MuSigState4TradeClosed;
 import bisq.desktop.navigation.NavigationTarget;
 import bisq.i18n.Res;
 import bisq.mu_sig.MuSigService;
@@ -301,39 +301,39 @@ public class MuSigTradeStateController implements Controller {
                  TAKER_CREATED_NONCE_SHARES_AND_PARTIAL_SIGNATURES,
                  MAKER_CREATED_PARTIAL_SIGNATURES_AND_SIGNED_DEPOSIT_TX,
                  TAKER_SIGNED_AND_PUBLISHED_DEPOSIT_TX -> {
-                model.getStateInfoVBox().set(new State1aSetupDepositTx(serviceProvider, trade, channel).getRoot());
+                model.getStateInfoVBox().set(new MuSigState1aSetupDepositTx(serviceProvider, trade, channel).getRoot());
             }
 
             // Deposit tx published and account payload exchanged
             case MAKER_RECEIVED_ACCOUNT_PAYLOAD_AND_DEPOSIT_TX,
                  TAKER_RECEIVED_ACCOUNT_PAYLOAD -> {
-                model.getStateInfoVBox().set(new State1bWaitForDepositTxConfirmation(serviceProvider, trade, channel).getRoot());
+                model.getStateInfoVBox().set(new MuSigState1bWaitForDepositTxConfirmation(serviceProvider, trade, channel).getRoot());
             }
 
             // Deposit tx confirmed, settlement phase starts
             case DEPOSIT_TX_CONFIRMED -> {
                 if (isSeller) {
-                    model.getStateInfoVBox().set(new State2SellerWaitForPayment(serviceProvider, trade, channel).getRoot());
+                    model.getStateInfoVBox().set(new MuSigState2SellerWaitForPayment(serviceProvider, trade, channel).getRoot());
                 } else {
-                    model.getStateInfoVBox().set(new State2BuyerSendPayment(serviceProvider, trade, channel).getRoot());
+                    model.getStateInfoVBox().set(new MuSigState2BuyerSendPayment(serviceProvider, trade, channel).getRoot());
                 }
             }
 
             case BUYER_INITIATED_PAYMENT -> {
-                model.getStateInfoVBox().set(new State3BuyerWaitForSellersPaymentReceiptConfirmation(serviceProvider, trade, channel).getRoot());
+                model.getStateInfoVBox().set(new MuSigState3BuyerWaitForSellersPaymentReceiptConfirmation(serviceProvider, trade, channel).getRoot());
             }
             case SELLER_RECEIVED_INITIATED_PAYMENT_MESSAGE -> {
-                model.getStateInfoVBox().set(new State3aSellerConfirmPaymentReceipt(serviceProvider, trade, channel).getRoot());
+                model.getStateInfoVBox().set(new MuSigState3aSellerConfirmPaymentReceipt(serviceProvider, trade, channel).getRoot());
             }
             case SELLER_CONFIRMED_PAYMENT_RECEIPT -> {
-                model.getStateInfoVBox().set(new State3bSellerWaitForBuyerToCloseTrade(serviceProvider, trade, channel).getRoot());
+                model.getStateInfoVBox().set(new MuSigState3bSellerWaitForBuyerToCloseTrade(serviceProvider, trade, channel).getRoot());
             }
 
             case BUYER_CLOSED_TRADE,
                  SELLER_CLOSED_TRADE,
                  BUYER_FORCE_CLOSED_TRADE,
                  SELLER_FORCE_CLOSED_TRADE -> {
-                model.getStateInfoVBox().set(new State4TradeClosed(serviceProvider, trade, channel).getRoot());
+                model.getStateInfoVBox().set(new MuSigState4TradeClosed(serviceProvider, trade, channel).getRoot());
             }
             case FAILED -> {
                 model.getPhaseAndInfoVisible().set(false);
