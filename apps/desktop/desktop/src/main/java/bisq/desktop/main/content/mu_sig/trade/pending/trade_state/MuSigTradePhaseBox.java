@@ -228,7 +228,7 @@ class MuSigTradePhaseBox {
         }
 
         void onRequestMediation() {
-            MuSigOpenTradesUtils.requestMediation(model.getSelectedChannel(),
+            MuSigPendingTTradesUtils.requestMediation(model.getSelectedChannel(),
                     model.getTrade().getContract(),
                     muSigMediationRequestService, channelService);
         }

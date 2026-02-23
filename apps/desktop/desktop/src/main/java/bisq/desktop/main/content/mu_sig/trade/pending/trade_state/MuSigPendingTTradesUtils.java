@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class MuSigOpenTradesUtils {
+public class MuSigPendingTTradesUtils {
 
     public static void exportTrade(MuSigTrade trade, Scene scene) {
         try {

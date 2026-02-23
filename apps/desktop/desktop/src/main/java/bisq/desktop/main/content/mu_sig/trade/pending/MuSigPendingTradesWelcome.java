@@ -33,10 +33,10 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MuSigOpenTradesWelcome {
+public class MuSigPendingTradesWelcome {
     private final Controller controller;
 
-    public MuSigOpenTradesWelcome() {
+    public MuSigPendingTradesWelcome() {
         controller = new Controller();
     }
 

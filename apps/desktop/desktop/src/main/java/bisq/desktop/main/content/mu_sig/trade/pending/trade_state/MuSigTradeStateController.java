@@ -232,11 +232,11 @@ public class MuSigTradeStateController implements Controller {
     }
 
     void onExportTrade() {
-        MuSigOpenTradesUtils.exportTrade(model.getTrade().get(), getView().getRoot().getScene());
+        MuSigPendingTTradesUtils.exportTrade(model.getTrade().get(), getView().getRoot().getScene());
     }
 
     void onRequestMediation() {
-        MuSigOpenTradesUtils.requestMediation(model.getChannel().get(),
+        MuSigPendingTTradesUtils.requestMediation(model.getChannel().get(),
                 model.getTrade().get().getContract(),
                 muSigMediationRequestService, openTradeChannelService);
     }

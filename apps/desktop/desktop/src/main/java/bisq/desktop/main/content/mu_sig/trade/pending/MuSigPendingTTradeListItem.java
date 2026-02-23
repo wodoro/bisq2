@@ -44,7 +44,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-class MuSigOpenTradeListItem implements DateTableItem {
+class MuSigPendingTTradeListItem implements DateTableItem {
     @EqualsAndHashCode.Include
     private final MuSigOpenTradeChannel channel;
     @EqualsAndHashCode.Include
@@ -67,11 +67,11 @@ class MuSigOpenTradeListItem implements DateTableItem {
     private String mediatorUserName = "";
     private boolean isInMediation;
 
-    public MuSigOpenTradeListItem(MuSigOpenTradeChannel channel,
-                                  MuSigTrade trade,
-                                  ReputationService reputationService,
-                                  ChatNotificationService chatNotificationService,
-                                  UserProfileService userProfileService) {
+    public MuSigPendingTTradeListItem(MuSigOpenTradeChannel channel,
+                                      MuSigTrade trade,
+                                      ReputationService reputationService,
+                                      ChatNotificationService chatNotificationService,
+                                      UserProfileService userProfileService) {
         this.channel = channel;
         this.trade = trade;
 

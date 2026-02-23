@@ -62,23 +62,23 @@ import org.fxmisc.easybind.Subscription;
 import java.util.Comparator;
 
 @Slf4j
-public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuSigOpenTradesModel> {
+public final class MuSigPendingTTradesView extends ChatView<MuSigPendingTTradesView, MuSigPendingTTradesModel> {
     private final VBox tradeWelcomeViewRoot, tradeStateViewRoot, chatVBox;
-    private final BisqTableView<MuSigOpenTradeListItem> tableView;
+    private final BisqTableView<MuSigPendingTTradeListItem> tableView;
     private final Button toggleChatWindowButton;
     private final AnchorPane tableViewAnchorPane;
     private Subscription noOpenTradesPin, tradeRulesAcceptedPin, tableViewSelectionPin,
             selectedModelItemPin, chatWindowPin, isAnyTradeInMediationPin;
-    private BisqTableColumn<MuSigOpenTradeListItem> mediatorColumn;
+    private BisqTableColumn<MuSigPendingTTradeListItem> mediatorColumn;
     private final InvalidationListener listItemListener;
 
-    public MuSigOpenTradesView(MuSigOpenTradesModel model,
-                               MuSigOpenTradesController controller,
-                               HBox tradeDataHeader,
-                               VBox chatMessagesComponent,
-                               Pane channelSidebar,
-                               VBox tradeStateViewRoot,
-                               VBox tradeWelcomeViewRoot) {
+    public MuSigPendingTTradesView(MuSigPendingTTradesModel model,
+                                   MuSigPendingTradesController controller,
+                                   HBox tradeDataHeader,
+                                   VBox chatMessagesComponent,
+                                   Pane channelSidebar,
+                                   VBox tradeStateViewRoot,
+                                   VBox tradeWelcomeViewRoot) {
         super(model, controller, chatMessagesComponent, channelSidebar);
 
         this.tradeStateViewRoot = tradeStateViewRoot;
@@ -149,7 +149,7 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
 
         tableView.initialize();
 
-        MuSigOpenTradesModel model = getModel();
+        MuSigPendingTTradesModel model = getModel();
 
         tradeWelcomeViewRoot.visibleProperty().bind(model.getTradeWelcomeVisible());
         tradeWelcomeViewRoot.managedProperty().bind(model.getTradeWelcomeVisible());
@@ -316,78 +316,78 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
     private void configTableView() {
         tableView.getColumns().add(tableView.getSelectionMarkerColumn());
 
-        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
+        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigPendingTTradeListItem>()
                 .title(Res.get("muSig.trade.pending.table.me"))
                 .fixWidth(45)
                 .left()
-                .comparator(Comparator.comparing(MuSigOpenTradeListItem::getMyUserName))
+                .comparator(Comparator.comparing(MuSigPendingTTradeListItem::getMyUserName))
                 .setCellFactory(getMyUserCellFactory())
                 .build());
-        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
+        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigPendingTTradeListItem>()
                 .minWidth(95)
                 .left()
-                .comparator(Comparator.comparing(MuSigOpenTradeListItem::getDirectionalTitle))
-                .valueSupplier(MuSigOpenTradeListItem::getDirectionalTitle)
+                .comparator(Comparator.comparing(MuSigPendingTTradeListItem::getDirectionalTitle))
+                .valueSupplier(MuSigPendingTTradeListItem::getDirectionalTitle)
                 .build());
-        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
+        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigPendingTTradeListItem>()
                 .title(Res.get("muSig.trade.pending.table.tradePeer"))
                 .minWidth(110)
                 .left()
-                .comparator(Comparator.comparing(MuSigOpenTradeListItem::getPeersUserName))
+                .comparator(Comparator.comparing(MuSigPendingTTradeListItem::getPeersUserName))
                 .setCellFactory(getTradePeerCellFactory())
                 .build());
 
-        mediatorColumn = new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
+        mediatorColumn = new BisqTableColumn.Builder<MuSigPendingTTradeListItem>()
                 .title(Res.get("muSig.trade.pending.table.mediator"))
                 .minWidth(110)
                 .left()
-                .comparator(Comparator.comparing(MuSigOpenTradeListItem::getMediatorUserName))
+                .comparator(Comparator.comparing(MuSigPendingTTradeListItem::getMediatorUserName))
                 .setCellFactory(getMediatorCellFactory())
                 .build();
 
         tableView.getColumns().add(DateColumnUtil.getDateColumn(tableView.getSortOrder()));
 
-        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
+        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigPendingTTradeListItem>()
                 .title(Res.get("muSig.trade.pending.table.tradeId"))
                 .minWidth(85)
-                .comparator(Comparator.comparing(MuSigOpenTradeListItem::getTradeId))
-                .valueSupplier(MuSigOpenTradeListItem::getShortTradeId)
-                .tooltipSupplier(MuSigOpenTradeListItem::getTradeId)
+                .comparator(Comparator.comparing(MuSigPendingTTradeListItem::getTradeId))
+                .valueSupplier(MuSigPendingTTradeListItem::getShortTradeId)
+                .tooltipSupplier(MuSigPendingTTradeListItem::getTradeId)
                 .build());
-        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
+        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigPendingTTradeListItem>()
                 .title(Res.get("muSig.trade.pending.table.nonBtcAmount"))
                 .fixWidth(120)
-                .comparator(Comparator.comparing(MuSigOpenTradeListItem::getNonBtcAmount))
-                .valueSupplier(MuSigOpenTradeListItem::getNonBtcAmountString)
+                .comparator(Comparator.comparing(MuSigPendingTTradeListItem::getNonBtcAmount))
+                .valueSupplier(MuSigPendingTTradeListItem::getNonBtcAmountString)
                 .build());
-        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
+        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigPendingTTradeListItem>()
                 .title(Res.get("muSig.trade.pending.table.btcAmount"))
                 .fixWidth(120)
-                .comparator(Comparator.comparing(MuSigOpenTradeListItem::getBtcAmount))
+                .comparator(Comparator.comparing(MuSigPendingTTradeListItem::getBtcAmount))
                 .setCellFactory(getBaseCellFactory())
                 .build());
-        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
+        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigPendingTTradeListItem>()
                 .title(Res.get("muSig.trade.pending.table.price"))
                 .fixWidth(170)
-                .comparator(Comparator.comparing(MuSigOpenTradeListItem::getPrice))
-                .valueSupplier(MuSigOpenTradeListItem::getPriceString)
+                .comparator(Comparator.comparing(MuSigPendingTTradeListItem::getPrice))
+                .valueSupplier(MuSigPendingTTradeListItem::getPriceString)
                 .build());
-        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
+        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigPendingTTradeListItem>()
                 .title(Res.get("muSig.trade.pending.table.paymentMethod"))
                 .minWidth(60)
-                .comparator(Comparator.comparing(MuSigOpenTradeListItem::getPaymentMethodDisplayName))
+                .comparator(Comparator.comparing(MuSigPendingTTradeListItem::getPaymentMethodDisplayName))
                 .setCellFactory(getPaymentMethodCellFactory())
                 .build());
-        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
+        tableView.getColumns().add(new BisqTableColumn.Builder<MuSigPendingTTradeListItem>()
                 .title(Res.get("muSig.trade.pending.table.makerTakerRole"))
                 .minWidth(85)
                 .right()
-                .comparator(Comparator.comparing(MuSigOpenTradeListItem::getMyRole))
-                .valueSupplier(MuSigOpenTradeListItem::getMyRole)
+                .comparator(Comparator.comparing(MuSigPendingTTradeListItem::getMyRole))
+                .valueSupplier(MuSigPendingTTradeListItem::getMyRole)
                 .build());
     }
 
-    private Callback<TableColumn<MuSigOpenTradeListItem, MuSigOpenTradeListItem>, TableCell<MuSigOpenTradeListItem, MuSigOpenTradeListItem>> getBaseCellFactory() {
+    private Callback<TableColumn<MuSigPendingTTradeListItem, MuSigPendingTTradeListItem>, TableCell<MuSigPendingTTradeListItem, MuSigPendingTTradeListItem>> getBaseCellFactory() {
         return column -> new TableCell<>() {
             private final BitcoinAmountDisplay bitcoinAmountDisplay = new BitcoinAmountDisplay("0", false);
 
@@ -399,7 +399,7 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
             }
 
             @Override
-            protected void updateItem(MuSigOpenTradeListItem item, boolean empty) {
+            protected void updateItem(MuSigPendingTTradeListItem item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item != null && !empty) {
@@ -413,14 +413,14 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
         };
     }
 
-    private Callback<TableColumn<MuSigOpenTradeListItem, MuSigOpenTradeListItem>, TableCell<MuSigOpenTradeListItem, MuSigOpenTradeListItem>> getMyUserCellFactory() {
+    private Callback<TableColumn<MuSigPendingTTradeListItem, MuSigPendingTTradeListItem>, TableCell<MuSigPendingTTradeListItem, MuSigPendingTTradeListItem>> getMyUserCellFactory() {
         return column -> new TableCell<>() {
 
             private final UserProfileIcon userProfileIcon = new UserProfileIcon();
             private final StackPane stackPane = new StackPane(userProfileIcon);
 
             @Override
-            protected void updateItem(MuSigOpenTradeListItem item, boolean empty) {
+            protected void updateItem(MuSigPendingTTradeListItem item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item != null && !empty) {
@@ -435,13 +435,13 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
         };
     }
 
-    private Callback<TableColumn<MuSigOpenTradeListItem, MuSigOpenTradeListItem>, TableCell<MuSigOpenTradeListItem, MuSigOpenTradeListItem>> getTradePeerCellFactory() {
+    private Callback<TableColumn<MuSigPendingTTradeListItem, MuSigPendingTTradeListItem>, TableCell<MuSigPendingTTradeListItem, MuSigPendingTTradeListItem>> getTradePeerCellFactory() {
         return column -> new TableCell<>() {
             private UserProfileDisplay userProfileDisplay;
             private Badge badge;
 
             @Override
-            protected void updateItem(MuSigOpenTradeListItem item, boolean empty) {
+            protected void updateItem(MuSigPendingTTradeListItem item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item != null && !empty) {
@@ -471,13 +471,13 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
         };
     }
 
-    private Callback<TableColumn<MuSigOpenTradeListItem, MuSigOpenTradeListItem>, TableCell<MuSigOpenTradeListItem, MuSigOpenTradeListItem>> getMediatorCellFactory() {
+    private Callback<TableColumn<MuSigPendingTTradeListItem, MuSigPendingTTradeListItem>, TableCell<MuSigPendingTTradeListItem, MuSigPendingTTradeListItem>> getMediatorCellFactory() {
         return column -> new TableCell<>() {
             private UserProfileDisplay userProfileDisplay;
             private Badge badge;
 
             @Override
-            protected void updateItem(MuSigOpenTradeListItem item, boolean empty) {
+            protected void updateItem(MuSigPendingTTradeListItem item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item != null && !empty && item.getChannel().getMediator().isPresent()) {
@@ -507,13 +507,13 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
         };
     }
 
-    private Callback<TableColumn<MuSigOpenTradeListItem, MuSigOpenTradeListItem>, TableCell<MuSigOpenTradeListItem, MuSigOpenTradeListItem>> getPaymentMethodCellFactory() {
+    private Callback<TableColumn<MuSigPendingTTradeListItem, MuSigPendingTTradeListItem>, TableCell<MuSigPendingTTradeListItem, MuSigPendingTTradeListItem>> getPaymentMethodCellFactory() {
         return column -> new TableCell<>() {
             private final BisqTooltip tooltip = new BisqTooltip(BisqTooltip.Style.MEDIUM_DARK);
             private final StackPane pane = new StackPane();
 
             @Override
-            protected void updateItem(MuSigOpenTradeListItem item, boolean empty) {
+            protected void updateItem(MuSigPendingTTradeListItem item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item != null && !empty) {
@@ -533,11 +533,11 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
         };
     }
 
-    private MuSigOpenTradesModel getModel() {
-        return (MuSigOpenTradesModel) model;
+    private MuSigPendingTTradesModel getModel() {
+        return (MuSigPendingTTradesModel) model;
     }
 
-    private MuSigOpenTradesController getController() {
-        return (MuSigOpenTradesController) controller;
+    private MuSigPendingTradesController getController() {
+        return (MuSigPendingTradesController) controller;
     }
 }

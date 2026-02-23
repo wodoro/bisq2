@@ -48,7 +48,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
-public final class MuSigOpenTradesController extends ChatController<MuSigOpenTradesView, MuSigOpenTradesModel> {
+public final class MuSigPendingTradesController extends ChatController<MuSigPendingTTradesView, MuSigPendingTTradesModel> {
     private final MuSigOpenTradeChannelService channelService;
     private final MuSigTradeService tradeService;
     private final SettingsService settingsService;
@@ -56,11 +56,11 @@ public final class MuSigOpenTradesController extends ChatController<MuSigOpenTra
     private final ChatNotificationService chatNotificationService;
     private MuSigTradeStateController muSigTradeStateController;
     private Pin channelsPin, tradesPin, tradeRulesConfirmedPin;
-    private MuSigOpenTradesWelcome muSigOpenTradesWelcome;
+    private MuSigPendingTradesWelcome muSigOpenTradesWelcome;
     private MuSigTradeDataHeader muSigTradeDataHeader;
     private final Map<String, Pin> isInMediationPinMap = new HashMap<>();
 
-    public MuSigOpenTradesController(ServiceProvider serviceProvider) {
+    public MuSigPendingTradesController(ServiceProvider serviceProvider) {
         super(serviceProvider, ChatChannelDomain.MU_SIG_OPEN_TRADES, NavigationTarget.MU_SIG_OPEN_TRADES);
 
         channelService = chatService.getMuSigOpenTradeChannelService();
@@ -73,18 +73,18 @@ public final class MuSigOpenTradesController extends ChatController<MuSigOpenTra
     @Override
     public void createDependencies(ChatChannelDomain chatChannelDomain) {
         muSigTradeStateController = new MuSigTradeStateController(serviceProvider);
-        muSigOpenTradesWelcome = new MuSigOpenTradesWelcome();
+        muSigOpenTradesWelcome = new MuSigPendingTradesWelcome();
         muSigTradeDataHeader = new MuSigTradeDataHeader(serviceProvider, Res.get("muSig.trade.pending.chat.peer.description").toUpperCase());
     }
 
     @Override
-    public MuSigOpenTradesModel createAndGetModel(ChatChannelDomain chatChannelDomain) {
-        return new MuSigOpenTradesModel(chatChannelDomain);
+    public MuSigPendingTTradesModel createAndGetModel(ChatChannelDomain chatChannelDomain) {
+        return new MuSigPendingTTradesModel(chatChannelDomain);
     }
 
     @Override
-    public MuSigOpenTradesView createAndGetView() {
-        return new MuSigOpenTradesView(model,
+    public MuSigPendingTTradesView createAndGetView() {
+        return new MuSigPendingTTradesView(model,
                 this,
                 muSigTradeDataHeader.getRoot(),
                 chatMessageContainerController.getView().getRoot(),
@@ -193,7 +193,7 @@ public final class MuSigOpenTradesController extends ChatController<MuSigOpenTra
         });
     }
 
-    void onSelectItem(MuSigOpenTradeListItem item) {
+    void onSelectItem(MuSigPendingTTradeListItem item) {
         if (item == null || !hasTradeForChannel(item.getChannel())) {
             selectionService.selectChannel(null);
         } else {
@@ -271,7 +271,7 @@ public final class MuSigOpenTradesController extends ChatController<MuSigOpenTra
         tradeService.findTrade(tradeId)
                 .ifPresentOrElse(this::handleTradeAndChannelRemoved,
                         () -> {
-                            Optional<MuSigOpenTradeListItem> listItem = findListItem(tradeId);
+                            Optional<MuSigPendingTTradeListItem> listItem = findListItem(tradeId);
                             if (listItem.isEmpty()) {
                                 log.debug("Channel with tradeId {} was removed but associated trade and the listItem is not found. " +
                                         "This is expected as we first remove the trade and then the channel.", tradeId);
@@ -296,7 +296,7 @@ public final class MuSigOpenTradesController extends ChatController<MuSigOpenTra
                 return;
             }
 
-            model.getListItems().add(new MuSigOpenTradeListItem(channel,
+            model.getListItems().add(new MuSigPendingTTradeListItem(channel,
                     trade,
                     reputationService,
                     chatNotificationService,
@@ -327,7 +327,7 @@ public final class MuSigOpenTradesController extends ChatController<MuSigOpenTra
                 return;
             }
 
-            MuSigOpenTradeListItem item = findListItem(trade).get();
+            MuSigPendingTTradeListItem item = findListItem(trade).get();
             item.dispose();
             model.getListItems().remove(item);
 
@@ -345,7 +345,7 @@ public final class MuSigOpenTradesController extends ChatController<MuSigOpenTra
 
     private void handleClearTradesAndChannels() {
         UIThread.run(() -> {
-            model.getListItems().forEach(MuSigOpenTradeListItem::dispose);
+            model.getListItems().forEach(MuSigPendingTTradeListItem::dispose);
             model.getListItems().clear();
 
             isInMediationPinMap.values().forEach(Pin::unbind);
@@ -388,11 +388,11 @@ public final class MuSigOpenTradesController extends ChatController<MuSigOpenTra
         });
     }
 
-    private Optional<MuSigOpenTradeListItem> findListItem(MuSigTrade trade) {
+    private Optional<MuSigPendingTTradeListItem> findListItem(MuSigTrade trade) {
         return findListItem(trade.getId());
     }
 
-    private Optional<MuSigOpenTradeListItem> findListItem(String tradeId) {
+    private Optional<MuSigPendingTTradeListItem> findListItem(String tradeId) {
         return model.getListItems().stream()
                 .filter(item -> item.getTrade().getId().equals(tradeId))
                 .findAny();

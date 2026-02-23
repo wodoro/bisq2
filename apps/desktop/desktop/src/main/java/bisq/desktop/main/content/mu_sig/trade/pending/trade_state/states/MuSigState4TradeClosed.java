@@ -28,7 +28,7 @@ import bisq.desktop.common.view.Navigation;
 import bisq.desktop.components.overlay.Popup;
 import bisq.desktop.main.content.components.UserProfileDisplay;
 import bisq.desktop.main.content.mu_sig.trade.pending.trade_details.MuSigTradeDetailsController;
-import bisq.desktop.main.content.mu_sig.trade.pending.trade_state.MuSigOpenTradesUtils;
+import bisq.desktop.main.content.mu_sig.trade.pending.trade_state.MuSigPendingTTradesUtils;
 import bisq.desktop.navigation.NavigationTarget;
 import bisq.i18n.Res;
 import bisq.presentation.formatters.DateFormatter;
@@ -151,7 +151,7 @@ public class MuSigState4TradeClosed extends MuSigBaseState {
         }
 
         protected void onExportTrade() {
-            MuSigOpenTradesUtils.exportTrade(model.getTrade(), getView().getRoot().getScene());
+            MuSigPendingTTradesUtils.exportTrade(model.getTrade(), getView().getRoot().getScene());
         }
 
         public void openExplorer() {
