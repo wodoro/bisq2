@@ -519,7 +519,7 @@ public final class MuSigPendingTradesView extends ChatView<MuSigPendingTradesVie
                 if (item != null && !empty) {
                     Node paymentMethodIcon = ImageUtil.getImageViewById(
                             MuSigViewUtils.getPaymentMethodImageId(item.getPaymentMethod()));
-                    pane.getChildren().add(paymentMethodIcon);
+                    pane.getChildren().setAll(paymentMethodIcon);
                     tooltip.setText(Res.get("muSig.trade.pending.table.paymentMethod.tooltip",
                             item.getPaymentMethodDisplayName()));
                     Tooltip.install(pane, tooltip);

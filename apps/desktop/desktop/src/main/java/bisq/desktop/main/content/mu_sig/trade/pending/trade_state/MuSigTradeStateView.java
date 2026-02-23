@@ -138,10 +138,11 @@ public class MuSigTradeStateView extends View<VBox, MuSigTradeStateModel, MuSigT
             }
         });
 
-        shouldShowTryRequestMediationAgainPin = EasyBind.subscribe(model.getShouldShowTryRequestMediationAgain(), showTryAgain -> {
-            tryAgainMenuItem.setVisible(showTryAgain);
-            tryAgainMenuItem.setManaged(showTryAgain);
-        });
+        shouldShowTryRequestMediationAgainPin = EasyBind.subscribe(model.getShouldShowTryRequestMediationAgain(),
+                showTryAgain -> {
+                    tryAgainMenuItem.setVisible(showTryAgain);
+                    tryAgainMenuItem.setManaged(showTryAgain);
+                });
 
         requestMediationDeliveryStatusPin = EasyBind.subscribe(model.getRequestMediationDeliveryStatus(),
                 status -> {
