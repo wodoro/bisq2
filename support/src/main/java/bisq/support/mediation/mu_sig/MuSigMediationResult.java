@@ -18,6 +18,7 @@
 package bisq.support.mediation.mu_sig;
 
 import bisq.common.proto.PersistableProto;
+import bisq.support.mediation.MediationPayoutDistributionType;
 import bisq.support.mediation.MediationResultReason;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,24 +35,38 @@ public class MuSigMediationResult implements PersistableProto {
     private final MediationResultReason mediationResultReason;
     private final long proposedBuyerPayoutAmount;
     private final long proposedSellerPayoutAmount;
+    private final MediationPayoutDistributionType mediationPayoutDistributionType;
+    private final Optional<Double> payoutAdjustmentPercentage;
     private final Optional<String> summaryNotes;
 
     public MuSigMediationResult(MediationResultReason mediationResultReason,
                                 long proposedBuyerPayoutAmount,
                                 long proposedSellerPayoutAmount,
+                                MediationPayoutDistributionType mediationPayoutDistributionType,
+                                Optional<Double> payoutAdjustmentPercentage,
                                 Optional<String> summaryNotes) {
-        this(currentTimeMillis(), mediationResultReason, proposedBuyerPayoutAmount, proposedSellerPayoutAmount, summaryNotes);
+        this(currentTimeMillis(),
+                mediationResultReason,
+                proposedBuyerPayoutAmount,
+                proposedSellerPayoutAmount,
+                mediationPayoutDistributionType,
+                payoutAdjustmentPercentage,
+                summaryNotes);
     }
 
     private MuSigMediationResult(long date,
-                                MediationResultReason mediationResultReason,
-                                long proposedBuyerPayoutAmount,
-                                long proposedSellerPayoutAmount,
-                                Optional<String> summaryNotes) {
+                                 MediationResultReason mediationResultReason,
+                                 long proposedBuyerPayoutAmount,
+                                 long proposedSellerPayoutAmount,
+                                 MediationPayoutDistributionType mediationPayoutDistributionType,
+                                 Optional<Double> payoutAdjustmentPercentage,
+                                 Optional<String> summaryNotes) {
         this.date = date;
         this.mediationResultReason = mediationResultReason;
         this.proposedBuyerPayoutAmount = proposedBuyerPayoutAmount;
         this.proposedSellerPayoutAmount = proposedSellerPayoutAmount;
+        this.mediationPayoutDistributionType = mediationPayoutDistributionType;
+        this.payoutAdjustmentPercentage = payoutAdjustmentPercentage;
         this.summaryNotes = summaryNotes;
     }
 
@@ -61,7 +76,9 @@ public class MuSigMediationResult implements PersistableProto {
                 .setDate(date)
                 .setMediationResultReason(mediationResultReason.toProtoEnum())
                 .setProposedBuyerPayoutAmount(proposedBuyerPayoutAmount)
-                .setProposedSellerPayoutAmount(proposedSellerPayoutAmount);
+                .setProposedSellerPayoutAmount(proposedSellerPayoutAmount)
+                .setMediationPayoutDistributionType(mediationPayoutDistributionType.toProtoEnum());
+        payoutAdjustmentPercentage.ifPresent(builder::setPayoutAdjustmentPercentage);
         summaryNotes.ifPresent(builder::setSummaryNotes);
         return builder;
     }
@@ -78,6 +95,8 @@ public class MuSigMediationResult implements PersistableProto {
                 MediationResultReason.fromProto(proto.getMediationResultReason()),
                 proto.getProposedBuyerPayoutAmount(),
                 proto.getProposedSellerPayoutAmount(),
+                MediationPayoutDistributionType.fromProto(proto.getMediationPayoutDistributionType()),
+                proto.hasPayoutAdjustmentPercentage() ? Optional.of(proto.getPayoutAdjustmentPercentage()) : Optional.empty(),
                 proto.hasSummaryNotes() ? Optional.of(proto.getSummaryNotes()) : Optional.empty());
     }
 }

@@ -65,6 +65,7 @@ public class MuSigMediationCaseCloseView extends NavigationView<VBox, MuSigMedia
                 mediationCaseProposalComponent,
                 closeCaseButtonRow
         );
+        VBox.setMargin(mediationCaseProposalComponent, new Insets(10, 0, 0, 0));
         content.setAlignment(Pos.CENTER_LEFT);
         content.setPadding(new Insets(0, 20, 0, 0));
 
