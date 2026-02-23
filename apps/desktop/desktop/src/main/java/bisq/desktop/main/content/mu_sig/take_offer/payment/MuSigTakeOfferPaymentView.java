@@ -82,7 +82,6 @@ public class MuSigTakeOfferPaymentView extends View<StackPane, MuSigTakeOfferPay
         subtitleLabel.setMaxWidth(700);
 
         gridPane = GridPaneUtil.getGridPane(10, 10, new Insets(0));
-        gridPane.getStyleClass().add("fiat-methods-grid-pane");
 
         singlePaymentMethodAccountSelection = createComboBox();
 

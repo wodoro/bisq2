@@ -31,10 +31,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.scene.layout.StackPane;
 import lombok.Getter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 public class MuSigCreateOfferDirectionAndMarketModel implements Model {
+    static final Map<String, StackPane> MARKET_ICON_CACHE = new HashMap<>();
+
     private final ObjectProperty<Direction> displayDirection = new SimpleObjectProperty<>(Direction.BUY);
     private final BooleanProperty buyButtonDisabled = new SimpleBooleanProperty();
     private final StringProperty headlineText = new SimpleStringProperty();
@@ -44,6 +50,7 @@ public class MuSigCreateOfferDirectionAndMarketModel implements Model {
     private final ObjectProperty<MuSigCreateOfferDirectionAndMarketView.MarketListItem> selectedMarketListItem = new SimpleObjectProperty<>();
     private final StringProperty paymentCurrencySearchText = new SimpleStringProperty();
     private final ObjectProperty<Market> selectedMarket = new SimpleObjectProperty<>();
+    private final ObjectProperty<StackPane> tradePairImage = new SimpleObjectProperty<>();
     private final ObservableList<MuSigCreateOfferDirectionAndMarketView.MarketListItem> marketListItems = FXCollections.observableArrayList();
     private final FilteredList<MuSigCreateOfferDirectionAndMarketView.MarketListItem> filteredMarketListItems = new FilteredList<>(marketListItems);
     private final SortedList<MuSigCreateOfferDirectionAndMarketView.MarketListItem> sortedMarketListItems = new SortedList<>(filteredMarketListItems);
@@ -62,6 +69,7 @@ public class MuSigCreateOfferDirectionAndMarketModel implements Model {
         selectedMarketListItem.set(null);
         paymentCurrencySearchText.set(null);
         selectedMarket.set(null);
+        tradePairImage.set(null);
         marketListItems.clear();
         selectedBaseCryptoAssetListItem.set(null);
         cryptoCurrencySearchText.set(null);

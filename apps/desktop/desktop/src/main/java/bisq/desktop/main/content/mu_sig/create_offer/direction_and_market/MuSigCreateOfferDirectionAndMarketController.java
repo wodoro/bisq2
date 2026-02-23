@@ -24,6 +24,7 @@ import bisq.common.market.Market;
 import bisq.common.market.MarketRepository;
 import bisq.desktop.ServiceProvider;
 import bisq.desktop.common.view.Controller;
+import bisq.desktop.main.content.components.MarketImageComposition;
 import bisq.i18n.Res;
 import bisq.mu_sig.MuSigService;
 import bisq.offer.Direction;
@@ -36,6 +37,8 @@ import org.fxmisc.easybind.Subscription;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static bisq.desktop.main.content.mu_sig.create_offer.direction_and_market.MuSigCreateOfferDirectionAndMarketModel.MARKET_ICON_CACHE;
 
 @Slf4j
 public class MuSigCreateOfferDirectionAndMarketController implements Controller {
@@ -64,6 +67,7 @@ public class MuSigCreateOfferDirectionAndMarketController implements Controller 
 
     public void setMarket(Market market) {
         model.getSelectedMarket().set(market);
+        model.getTradePairImage().set(MarketImageComposition.getMarketIcons(market, MARKET_ICON_CACHE));
     }
 
     public ReadOnlyObjectProperty<Direction> getDisplayDirection() {
@@ -227,15 +231,20 @@ public class MuSigCreateOfferDirectionAndMarketController implements Controller 
     }
 
     private void updateSelectedMarket(Market market) {
+        model.getSelectedMarket().set(market);
+        model.getTradePairImage().set(MarketImageComposition.getMarketIcons(market, MARKET_ICON_CACHE));
+
         MuSigCreateOfferDirectionAndMarketView.MarketListItem item = model.getMarketListItems().stream()
                 .filter(m -> m.getMarket().equals(market))
-                .findAny().orElse(null);
+                .findAny()
+                .orElse(null);
         model.getSelectedMarketListItem().set(item);
-        model.getSelectedMarket().set(market);
+
+        String baseCurrencyName = market.getBaseCurrencyName();
         model.getHeadlineText().set(Res.get("muSig.createOffer.directionAndMarket.headline",
-                market.getBaseCurrencyName(), market.getQuoteCurrencyName()));
-        model.getBuyButtonText().set(Res.get("muSig.createOffer.directionAndMarket.buyButton", market.getBaseCurrencyName()));
-        model.getSellButtonText().set(Res.get("muSig.createOffer.directionAndMarket.sellButton", market.getBaseCurrencyName()));
+                baseCurrencyName, market.getQuoteCurrencyName()));
+        model.getBuyButtonText().set(Res.get("muSig.createOffer.directionAndMarket.buyButton", baseCurrencyName));
+        model.getSellButtonText().set(Res.get("muSig.createOffer.directionAndMarket.sellButton", baseCurrencyName));
     }
 
     private void setDisplayDirection(Direction direction) {

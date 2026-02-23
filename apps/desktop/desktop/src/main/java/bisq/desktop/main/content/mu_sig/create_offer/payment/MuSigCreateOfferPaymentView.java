@@ -75,7 +75,6 @@ public class MuSigCreateOfferPaymentView extends View<StackPane, MuSigCreateOffe
         headlineLabel.getStyleClass().add("bisq-text-headline-2");
 
         gridPane = GridPaneUtil.getGridPane(10, 10, new Insets(0));
-        gridPane.getStyleClass().add("fiat-methods-grid-pane");
 
         VBox vBox = new VBox(20, gridPane);
         vBox.setAlignment(Pos.CENTER);

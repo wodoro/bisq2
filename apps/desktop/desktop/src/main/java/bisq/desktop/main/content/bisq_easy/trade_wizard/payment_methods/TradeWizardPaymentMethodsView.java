@@ -82,7 +82,6 @@ public class TradeWizardPaymentMethodsView extends View<StackPane, TradeWizardPa
         nonFoundLabel.setAlignment(Pos.CENTER);
 
         fiatMethodsGridPane = GridPaneUtil.getGridPane(10, 10, new Insets(0));
-        fiatMethodsGridPane.getStyleClass().add("fiat-methods-grid-pane");
 
         addCustomPaymentMethodBox = new AddCustomPaymentMethodBox();
 
@@ -94,7 +93,6 @@ public class TradeWizardPaymentMethodsView extends View<StackPane, TradeWizardPa
         bitcoinSubtitleLabel.setMaxWidth(600);
 
         bitcoinMethodsGridPane = GridPaneUtil.getTwoColumnsGridPane(10, 10, new Insets(0));
-        bitcoinMethodsGridPane.getStyleClass().add("bitcoin-methods-grid-pane");
         bitcoinMethodsGridPane.setAlignment(Pos.CENTER);
 
         VBox fiatVBox = new VBox(20, fiatSubtitleLabel, nonFoundLabel, fiatMethodsGridPane);
