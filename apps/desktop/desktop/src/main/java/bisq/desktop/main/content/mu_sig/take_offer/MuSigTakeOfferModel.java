@@ -56,6 +56,7 @@ public class MuSigTakeOfferModel extends NavigationModel {
     private final List<NavigationTarget> childTargets = new ArrayList<>();
     @Setter
     private String paymentMethodProgressLabel;
+
     public MuSigTakeOfferModel() {
     }
 
@@ -79,5 +80,6 @@ public class MuSigTakeOfferModel extends NavigationModel {
         showProgressBox.set(false);
         selectedChildTarget.set(null);
         childTargets.clear();
+        paymentMethodProgressLabel = null;
     }
 }

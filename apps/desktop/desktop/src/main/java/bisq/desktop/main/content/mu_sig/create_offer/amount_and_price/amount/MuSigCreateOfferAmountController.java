@@ -43,7 +43,6 @@ import bisq.offer.price.spec.PriceSpec;
 import bisq.settings.CookieKey;
 import bisq.settings.SettingsService;
 import bisq.user.identity.UserIdentityService;
-import bisq.user.profile.UserProfileService;
 import bisq.user.reputation.ReputationService;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -77,7 +76,6 @@ public class MuSigCreateOfferAmountController implements Controller {
     private final SettingsService settingsService;
     private final MarketPriceService marketPriceService;
     private final Region owner;
-    private final UserProfileService userProfileService;
     private final ReputationService reputationService;
     private final UserIdentityService userIdentityService;
     private final Consumer<Boolean> navigationButtonsVisibleHandler;
@@ -92,7 +90,6 @@ public class MuSigCreateOfferAmountController implements Controller {
                                             Consumer<NavigationTarget> closeAndNavigateToHandler) {
         settingsService = serviceProvider.getSettingsService();
         marketPriceService = serviceProvider.getBondedRolesService().getMarketPriceService();
-        userProfileService = serviceProvider.getUserService().getUserProfileService();
         userIdentityService = serviceProvider.getUserService().getUserIdentityService();
         reputationService = serviceProvider.getUserService().getReputationService();
         this.owner = owner;
@@ -436,18 +433,18 @@ public class MuSigCreateOfferAmountController implements Controller {
         Monetary maxRangeValue = market.isCrypto()
                 ? MuSigTradeAmountLimits.usdToBtc(marketPriceService, MAX_USD_TRADE_AMOUNT).orElseThrow()
                 : MuSigTradeAmountLimits.usdToFiat(marketPriceService, market, MAX_USD_TRADE_AMOUNT)
-                    .orElseThrow().round(0);
+                .orElseThrow().round(0);
         Monetary minRangeValue = market.isCrypto()
                 ? MuSigTradeAmountLimits.usdToBtc(marketPriceService, DEFAULT_MIN_USD_TRADE_AMOUNT).orElseThrow()
                 : MuSigTradeAmountLimits.usdToFiat(marketPriceService, market, DEFAULT_MIN_USD_TRADE_AMOUNT)
-                    .orElseThrow().round(0);
+                .orElseThrow().round(0);
         applyMaxAmountBasedOnReputation();
 
         Fiat defaultUsdAmount = MAX_USD_TRADE_AMOUNT_WITHOUT_REPUTATION.multiply(2);
         Monetary defaultAmount = market.isCrypto()
                 ? MuSigTradeAmountLimits.usdToBtc(marketPriceService, defaultUsdAmount).orElseThrow()
                 : MuSigTradeAmountLimits.usdToFiat(marketPriceService, market, defaultUsdAmount)
-                    .orElseThrow().round(0);
+                .orElseThrow().round(0);
         boolean isBuyer = model.getDisplayDirection().isBuy();
         Monetary reputationBasedMaxAmount = model.getReputationBasedMaxAmount().round(0);
         amountSelectionController.setMaxAllowedLimitation(maxRangeValue);

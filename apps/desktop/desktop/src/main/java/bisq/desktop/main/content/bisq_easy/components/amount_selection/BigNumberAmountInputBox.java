@@ -212,16 +212,18 @@ public class BigNumberAmountInputBox implements AmountNumberBox {
         private final Label codeLabel;
 
         private View(Model model, Controller controller) {
-            super(new HBox(), model, controller);
+            super(new HBox(10), model, controller);
+
+            root.getStyleClass().add("big-amount-input");
 
             textInput = new TextField();
+
             codeLabel = new Label();
             codeLabel.getStyleClass().add("currency-code");
             codeLabel.setVisible(model.showCurrencyCode);
             codeLabel.setManaged(model.showCurrencyCode);
+
             root.getChildren().addAll(textInput, codeLabel);
-            root.setSpacing(10);
-            root.getStyleClass().add("big-amount-input");
 
             textListener = this::onTextChanged;
             focusListener = this::onFocusChanged;

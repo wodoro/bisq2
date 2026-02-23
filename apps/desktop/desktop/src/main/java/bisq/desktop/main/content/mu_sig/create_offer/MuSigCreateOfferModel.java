@@ -71,5 +71,6 @@ public class MuSigCreateOfferModel extends NavigationModel {
         selectedChildTarget.set(null);
         animateRightOut = true;
         isBackButtonHighlighted.set(false);
+        paymentMethodProgressLabel = null;
     }
 }

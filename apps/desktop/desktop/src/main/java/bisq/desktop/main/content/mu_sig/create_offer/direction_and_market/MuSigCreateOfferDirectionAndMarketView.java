@@ -69,7 +69,7 @@ public class MuSigCreateOfferDirectionAndMarketView extends View<StackPane, MuSi
     private final Label headlineLabel, tradePairIconLabel;
     private final BisqPopup marketSelectionPopup;
     private final HBox tradePairBox;
-    private Subscription displayDirectionPin, marketPin, marketSelectionPin, selectedMarketListItemPin,
+    private Subscription displayDirectionPin, marketSelectionPin, selectedMarketListItemPin,
             selectedBaseCryptoAssetListItemPin;
 
     public MuSigCreateOfferDirectionAndMarketView(MuSigCreateOfferDirectionAndMarketModel model,
@@ -171,12 +171,7 @@ public class MuSigCreateOfferDirectionAndMarketView extends View<StackPane, MuSi
             }
         });
 
-        marketPin = EasyBind.subscribe(model.getSelectedMarket(), selectedMarket -> {
-            if (selectedMarket != null) {
-                StackPane tradePairImage = MarketImageComposition.getMarketIcons(selectedMarket);
-                tradePairIconLabel.setGraphic(tradePairImage);
-            }
-        });
+        tradePairIconLabel.graphicProperty().bind(model.getTradePairImage());
 
         marketSelectionPin = EasyBind.subscribe(marketSelectionPopup.showingProperty(), isShowing -> {
             String activePopupStyleClass = "active-market-selection-popup";
@@ -192,6 +187,7 @@ public class MuSigCreateOfferDirectionAndMarketView extends View<StackPane, MuSi
         headlineLabel.textProperty().unbind();
         buyButton.textProperty().unbind();
         sellButton.textProperty().unbind();
+        tradePairIconLabel.graphicProperty().unbind();
 
         marketsTableView.dispose();
         baseCryptoAssetsTableView.dispose();
@@ -209,7 +205,6 @@ public class MuSigCreateOfferDirectionAndMarketView extends View<StackPane, MuSi
         selectedMarketListItemPin.unsubscribe();
         selectedBaseCryptoAssetListItemPin.unsubscribe();
         displayDirectionPin.unsubscribe();
-        marketPin.unsubscribe();
         marketSelectionPin.unsubscribe();
     }
 

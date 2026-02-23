@@ -144,7 +144,7 @@ public class MuSigTakeOfferController extends NavigationController implements In
             checkArgument(accountsForPaymentMethod.size() == 1,
                     "In case we have not displayed the payment method screen we expect that there exist " +
                             "only one account for that single payment method.");
-            PaymentMethodSpec<?> takersPaymentMethodSpec = muSigOffer.getMarket().isBaseCurrencyBitcoin()
+            PaymentMethodSpec<?> takersPaymentMethodSpec = isBaseCurrencyBitcoin
                     ? quoteSidePaymentMethodSpecs.get(0)
                     : baseSidePaymentMethodSpecs.get(0);
             muSigTakeOfferReviewController.setTakersAccount(accountsForPaymentMethod.iterator().next());
