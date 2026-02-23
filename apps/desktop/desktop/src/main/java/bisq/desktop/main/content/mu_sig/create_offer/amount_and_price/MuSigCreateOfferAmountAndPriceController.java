@@ -119,9 +119,9 @@ public class MuSigCreateOfferAmountAndPriceController implements Controller {
     }
 
     private String getHeadline() {
-        String quoteCurrencyCode = model.getMarket().getQuoteCurrencyCode();
+        String baseCurrencyCode = model.getMarket().getBaseCurrencyCode();
         return model.getDisplayDirection().isBuy()
-                ? Res.get("bisqEasy.tradeWizard.amountAtPrice.buy.headline", quoteCurrencyCode)
-                : Res.get("bisqEasy.tradeWizard.amountAtPrice.sell.headline", quoteCurrencyCode);
+                ? Res.get("muSig.offerWizard.amountAtPrice.buy.headline", baseCurrencyCode)
+                : Res.get("muSig.offerWizard.amountAtPrice.sell.headline", baseCurrencyCode);
     }
 }
