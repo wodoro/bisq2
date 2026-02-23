@@ -220,7 +220,7 @@ public class MuSigCreateOfferView extends NavigationView<VBox, MuSigCreateOfferM
         return switch (target) {
             case MU_SIG_CREATE_OFFER_DIRECTION_AND_MARKET -> Res.get("bisqEasy.tradeWizard.progress.directionAndMarket");
             case MU_SIG_CREATE_OFFER_AMOUNT_AND_PRICE -> Res.get("bisqEasy.tradeWizard.progress.amountAndPrice.createOffer");
-            case MU_SIG_CREATE_OFFER_PAYMENT_METHODS -> Res.get("bisqEasy.tradeWizard.progress.paymentMethods");
+            case MU_SIG_CREATE_OFFER_PAYMENT_METHODS -> model.getPaymentMethodProgressLabel();
             case MU_SIG_CREATE_OFFER_REVIEW_OFFER -> Res.get("bisqEasy.tradeWizard.progress.review");
             default -> "";
         };

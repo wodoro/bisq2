@@ -33,9 +33,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Slf4j
 @Getter
 public class MuSigCreateOfferModel extends NavigationModel {
@@ -48,6 +45,8 @@ public class MuSigCreateOfferModel extends NavigationModel {
     private final BooleanProperty backButtonVisible = new SimpleBooleanProperty(true);
     private final ObservableList<NavigationTarget> childTargets = FXCollections.observableArrayList();
     private final ObjectProperty<NavigationTarget> selectedChildTarget = new SimpleObjectProperty<>();
+    @Setter
+    private String paymentMethodProgressLabel;
     @Setter
     private boolean animateRightOut = true;
     private final BooleanProperty isBackButtonHighlighted = new SimpleBooleanProperty();

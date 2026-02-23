@@ -103,6 +103,12 @@ public class MuSigCreateOfferController extends NavigationController implements 
     public void initWithData(InitData data) {
         Market market = data.getMarket();
         muSigCreateOfferDirectionAndMarketController.setMarket(market);
+
+
+        boolean isBaseCurrencyBitcoin = market.isBaseCurrencyBitcoin();
+        model.setPaymentMethodProgressLabel(isBaseCurrencyBitcoin
+                ? Res.get("muSig.offerWizard.progress.fiat.account")
+                : Res.get("muSig.offerWizard.progress.crypto.account"));
     }
 
     @Override

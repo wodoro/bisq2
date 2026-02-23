@@ -54,7 +54,8 @@ public class MuSigTakeOfferModel extends NavigationModel {
     private final BooleanProperty showProgressBox = new SimpleBooleanProperty();
     private final ObjectProperty<NavigationTarget> selectedChildTarget = new SimpleObjectProperty<>();
     private final List<NavigationTarget> childTargets = new ArrayList<>();
-
+    @Setter
+    private String paymentMethodProgressLabel;
     public MuSigTakeOfferModel() {
     }
 

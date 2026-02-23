@@ -138,7 +138,7 @@ public class MuSigTakeOfferView extends NavigationView<VBox, MuSigTakeOfferModel
     @Override
     protected void onViewAttached() {
         if (model.isPaymentMethodVisible()) {
-            Label paymentMethod = createAndGetProgressLabel(Res.get("bisqEasy.takeOffer.progress.method"));
+            Label paymentMethod = createAndGetProgressLabel(model.getPaymentMethodProgressLabel());
             progressLabelList.add(0, paymentMethod);
             progressBox.getChildren().add(0, getHLine());
             progressBox.getChildren().add(0, paymentMethod);

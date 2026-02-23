@@ -103,6 +103,11 @@ public class MuSigTakeOfferController extends NavigationController implements In
         muSigTakeOfferPaymentController.init(muSigOffer);
         muSigTakeOfferReviewController.init(muSigOffer);
 
+        boolean isBaseCurrencyBitcoin = muSigOffer.getMarket().isBaseCurrencyBitcoin();
+        model.setPaymentMethodProgressLabel(isBaseCurrencyBitcoin
+                ? Res.get("muSig.offerWizard.progress.fiat.account")
+                : Res.get("muSig.offerWizard.progress.crypto.account"));
+
         model.setAmountVisible(muSigOffer.hasAmountRange());
         List<PaymentMethodSpec<?>> baseSidePaymentMethodSpecs = muSigOffer.getBaseSidePaymentMethodSpecs();
         List<PaymentMethodSpec<?>> quoteSidePaymentMethodSpecs = muSigOffer.getQuoteSidePaymentMethodSpecs();
@@ -111,7 +116,7 @@ public class MuSigTakeOfferController extends NavigationController implements In
         boolean isSinglePaymentMethod = baseSidePaymentMethodSpecs.size() == 1 && quoteSidePaymentMethodSpecs.size() == 1;
         Set<Account<? extends PaymentMethod<?>, ?>> accountsForPaymentMethod = null;
         if (isSinglePaymentMethod) {
-            boolean isBaseCurrencyBitcoin = muSigOffer.getMarket().isBaseCurrencyBitcoin();
+
             PaymentMethodSpec<?> takersPaymentMethodSpec = isBaseCurrencyBitcoin
                     ? quoteSidePaymentMethodSpecs.get(0)
                     : baseSidePaymentMethodSpecs.get(0);
