@@ -60,7 +60,7 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
         HBox closeButtonRow = new HBox(Spacer.fillHBox(), closeButton);
         closeButtonRow.setPadding(new Insets(15, 15, 0, 0));
 
-        Label headline = new Label(Res.get("bisqEasy.openTrades.tradeDetails.headline"));
+        Label headline = new Label(Res.get("muSig.openTrades.tradeDetails.headline"));
         headline.getStyleClass().add("bisq-text-17");
         headline.setAlignment(Pos.CENTER);
         headline.setMaxWidth(Double.MAX_VALUE);
@@ -78,25 +78,25 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
 
         // Trade date
         tradeDateLabel = getValueLabel();
-        HBox tradeDateBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.tradeDate", tradeDateLabel);
+        HBox tradeDateBox = createAndGetDescriptionAndValueBox("muSig.openTrades.tradeDetails.tradeDate", tradeDateLabel);
 
         // Trade duration
         tradeDurationLabel = getValueLabel();
-        tradeDurationBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.tradeDuration", tradeDurationLabel);
+        tradeDurationBox = createAndGetDescriptionAndValueBox("muSig.openTrades.tradeDetails.tradeDuration", tradeDurationLabel);
 
         // Traders / Roles
-        Label mePrefixLabel = new Label(Res.get("bisqEasy.openTrades.tradeDetails.tradersAndRole.me"));
+        Label mePrefixLabel = new Label(Res.get("muSig.openTrades.tradeDetails.tradersAndRole.me"));
         mePrefixLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
         meLabel = getValueLabel();
         Label offerTypeAndRoleSlashLabel = new Label("/");
         offerTypeAndRoleSlashLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-        Label peerPrefixLabel = new Label(Res.get("bisqEasy.openTrades.tradeDetails.tradersAndRole.peer"));
+        Label peerPrefixLabel = new Label(Res.get("muSig.openTrades.tradeDetails.tradersAndRole.peer"));
         peerPrefixLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
         peerLabel = getValueLabel();
         HBox tradersAndRoleDetailsHBox = new HBox(5, mePrefixLabel, meLabel, offerTypeAndRoleSlashLabel, peerPrefixLabel, peerLabel);
         tradersAndRoleDetailsHBox.setAlignment(Pos.BASELINE_LEFT);
-        tradersAndRoleCopyButton = getTradeIdCopyButton(Res.get("bisqEasy.openTrades.tradeDetails.tradersAndRole.copy"));
-        HBox tradersAndRoleBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.tradersAndRole",
+        tradersAndRoleCopyButton = getTradeIdCopyButton(Res.get("muSig.openTrades.tradeDetails.tradersAndRole.copy"));
+        HBox tradersAndRoleBox = createAndGetDescriptionAndValueBox("muSig.openTrades.tradeDetails.tradersAndRole",
                 tradersAndRoleDetailsHBox, tradersAndRoleCopyButton);
 
         // Offer type and market
@@ -106,7 +106,7 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
         marketLabel = getValueLabel();
         HBox offerTypeAndMarketDetailsHBox = new HBox(5, offerTypeLabel, offerAndMarketslashLabel, marketLabel);
         offerTypeAndMarketDetailsHBox.setAlignment(Pos.BASELINE_LEFT);
-        HBox offerTypeAndMarketBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.offerTypeAndMarket",
+        HBox offerTypeAndMarketBox = createAndGetDescriptionAndValueBox("muSig.openTrades.tradeDetails.offerTypeAndMarket",
                 offerTypeAndMarketDetailsHBox);
 
         // Amount and price
@@ -135,7 +135,7 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
         HBox amountAndPriceDetailsHBox = new HBox(5, nonBtcAmountLabel, nonBtcCurrencyLabel, btcAmountHBox,
                 atLabel, priceLabel, priceCodesLabel, priceSpecLabel);
         amountAndPriceDetailsHBox.setAlignment(Pos.BASELINE_LEFT);
-        HBox amountAndPriceBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.amountAndPrice", amountAndPriceDetailsHBox);
+        HBox amountAndPriceBox = createAndGetDescriptionAndValueBox("muSig.openTrades.tradeDetails.amountAndPrice", amountAndPriceDetailsHBox);
 
         // Payment method
         paymentMethodValue = getValueLabel();
@@ -143,20 +143,20 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
 
         // Trade ID
         tradeIdLabel = getValueLabel();
-        tradeIdCopyButton = getTradeIdCopyButton(Res.get("bisqEasy.openTrades.tradeDetails.tradeId.copy"));
-        HBox tradeIdBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.tradeId",
+        tradeIdCopyButton = getTradeIdCopyButton(Res.get("muSig.openTrades.tradeDetails.tradeId.copy"));
+        HBox tradeIdBox = createAndGetDescriptionAndValueBox("muSig.openTrades.tradeDetails.tradeId",
                 tradeIdLabel, tradeIdCopyButton);
 
         // Peer network address
         peerNetworkAddressLabel = getValueLabel();
-        peerNetworkAddressCopyButton = getTradeIdCopyButton(Res.get("bisqEasy.openTrades.tradeDetails.peerNetworkAddress.copy"));
-        HBox peerNetworkAddressBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.peerNetworkAddress",
+        peerNetworkAddressCopyButton = getTradeIdCopyButton(Res.get("muSig.openTrades.tradeDetails.peerNetworkAddress.copy"));
+        HBox peerNetworkAddressBox = createAndGetDescriptionAndValueBox("muSig.openTrades.tradeDetails.peerNetworkAddress",
                 peerNetworkAddressLabel, peerNetworkAddressCopyButton);
 
         // Payment account data
         peersAccountPayloadDescription = getDescriptionLabel("");
         peersPaymentAccountData = getValueLabel();
-        peersAccountDataCopyButton = getTradeIdCopyButton(Res.get("bisqEasy.openTrades.tradeDetails.paymentAccountData.copy"));
+        peersAccountDataCopyButton = getTradeIdCopyButton(Res.get("muSig.openTrades.tradeDetails.paymentAccountData.copy"));
         HBox paymentAccountDataBox = createAndGetDescriptionAndValueBox(peersAccountPayloadDescription,
                 peersPaymentAccountData, peersAccountDataCopyButton);
 
@@ -169,12 +169,12 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
 
         // Assigned mediator
         assignedMediatorLabel = getValueLabel();
-        assignedMediatorBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.assignedMediator", assignedMediatorLabel);
+        assignedMediatorBox = createAndGetDescriptionAndValueBox("muSig.openTrades.tradeDetails.assignedMediator", assignedMediatorLabel);
 
         Region overviewLine = getLine();
-        Label overviewLabel = new Label(Res.get("bisqEasy.openTrades.tradeDetails.overview").toUpperCase());
+        Label overviewLabel = new Label(Res.get("muSig.openTrades.tradeDetails.overview").toUpperCase());
         overviewLabel.getStyleClass().addAll("text-fill-grey-dimmed", "font-light", "medium-text");
-        Label detailsLabel = new Label(Res.get("bisqEasy.openTrades.tradeDetails.details").toUpperCase());
+        Label detailsLabel = new Label(Res.get("muSig.openTrades.tradeDetails.details").toUpperCase());
         detailsLabel.getStyleClass().addAll("text-fill-grey-dimmed", "font-light", "medium-text");
         Region detailsLine = getLine();
 

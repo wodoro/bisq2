@@ -330,7 +330,7 @@ class MuSigTradePhaseBox {
                     openTradeGuide);
             tradeOptionsVBox.setPadding(new Insets(0, 30, 0, 0));
 
-            requestMediationButton = new Button(Res.get("bisqEasy.tradeState.requestMediation"));
+            requestMediationButton = new Button(Res.get("muSig.tradeState.requestMediation"));
             requestMediationButton.getStyleClass().addAll("outlined-button", "request-mediation-button");
 
             VBox.setMargin(phase1HBox, new Insets(25, 0, 0, 0));

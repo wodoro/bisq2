@@ -124,7 +124,7 @@ public class MuSigMarketItem {
 
     private void addAsFavourite() {
         if (!favouriteMarketsService.canAddNewFavourite()) {
-            new Popup().information(Res.get("bisqEasy.offerbook.marketListCell.favourites.maxReached.popup"))
+            new Popup().information(Res.get("muSig.offerbook.marketListCell.favourites.maxReached.popup"))
                     .closeButtonText(Res.get("confirmation.ok"))
                     .show();
             return;

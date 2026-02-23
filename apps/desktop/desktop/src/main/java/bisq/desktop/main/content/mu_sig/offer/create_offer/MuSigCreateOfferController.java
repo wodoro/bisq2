@@ -193,7 +193,7 @@ public class MuSigCreateOfferController extends NavigationController implements 
                     muSigCreateOfferAmountAndPriceController.getBaseSideAmountSpec().get(),
                     muSigCreateOfferAmountAndPriceController.getPriceSpec().get()
             );
-            model.getNextButtonText().set(Res.get("bisqEasy.tradeWizard.review.nextButton.createOffer"));
+            model.getNextButtonText().set(Res.get("muSig.tradeWizard.review.nextButton.createOffer"));
         } else {
             model.getNextButtonText().set(Res.get("action.next"));
         }

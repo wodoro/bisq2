@@ -385,8 +385,8 @@ public class MuSigAmountSelectionController implements Controller {
         isRangeAmountEnabledPin = EasyBind.subscribe(model.getIsRangeAmountEnabled(), isRangeAmountEnabled -> {
             model.getDescription().set(
                     Res.get(isRangeAmountEnabled
-                                    ? "bisqEasy.tradeWizard.amount.description.range"
-                                    : "bisqEasy.tradeWizard.amount.description.fixed"
+                                    ? "muSig.tradeWizard.amount.description.range"
+                                    : "muSig.tradeWizard.amount.description.fixed"
                             , model.getMarket().getQuoteCurrencyCode()));
             updateShouldShowAmounts();
             maxOrFixedQuoteSideAmountInput.setTextInputMaxCharCount(isRangeAmountEnabled ? RANGE_INPUT_TEXT_MAX_LENGTH : FIXED_INPUT_TEXT_MAX_LENGTH);

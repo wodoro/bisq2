@@ -88,7 +88,7 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
         tableView = new BisqTableView<>(getModel().getSortedList());
         configTableView();
 
-        Label headlineLabel = new Label(Res.get("bisqEasy.openTrades.table.headline"));
+        Label headlineLabel = new Label(Res.get("muSig.openTrades.table.headline"));
         headlineLabel.getStyleClass().add("bisq-easy-container-headline");
         HBox header = new HBox(10, headlineLabel);
         header.setAlignment(Pos.CENTER_LEFT);
@@ -180,7 +180,7 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
                 noOpenTrades -> {
                     if (noOpenTrades) {
                         tableView.removeListeners();
-                        tableView.setPlaceholderText(Res.get("bisqEasy.openTrades.noTrades"));
+                        tableView.setPlaceholderText(Res.get("muSig.openTrades.noTrades"));
                         tableView.allowVerticalScrollbar();
                         tableViewAnchorPane.setMinHeight(150);
                         tableViewAnchorPane.setMaxHeight(150);
@@ -257,8 +257,8 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
     private void chatWindowChanged(Stage chatWindow) {
         if (chatWindow == null) {
             ImageView icon = ImageUtil.getImageViewById("detach");
-            toggleChatWindowButton.setText(Res.get("bisqEasy.openTrades.chat.detach"));
-            toggleChatWindowButton.setTooltip(new BisqTooltip(Res.get("bisqEasy.openTrades.chat.detach.tooltip")));
+            toggleChatWindowButton.setText(Res.get("muSig.openTrades.chat.detach"));
+            toggleChatWindowButton.setTooltip(new BisqTooltip(Res.get("muSig.openTrades.chat.detach.tooltip")));
             toggleChatWindowButton.setGraphic(icon);
 
             if (!centerVBox.getChildren().contains(chatVBox)) {
@@ -266,8 +266,8 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
             }
         } else {
             ImageView icon = ImageUtil.getImageViewById("attach");
-            toggleChatWindowButton.setText(Res.get("bisqEasy.openTrades.chat.attach"));
-            toggleChatWindowButton.setTooltip(new BisqTooltip(Res.get("bisqEasy.openTrades.chat.attach.tooltip")));
+            toggleChatWindowButton.setText(Res.get("muSig.openTrades.chat.attach"));
+            toggleChatWindowButton.setTooltip(new BisqTooltip(Res.get("muSig.openTrades.chat.attach.tooltip")));
             toggleChatWindowButton.setGraphic(icon);
 
             chatWindow.titleProperty().bind(getModel().getChatWindowTitle());
@@ -317,7 +317,7 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
         tableView.getColumns().add(tableView.getSelectionMarkerColumn());
 
         tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
-                .title(Res.get("bisqEasy.openTrades.table.me"))
+                .title(Res.get("muSig.openTrades.table.me"))
                 .fixWidth(45)
                 .left()
                 .comparator(Comparator.comparing(MuSigOpenTradeListItem::getMyUserName))
@@ -330,7 +330,7 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
                 .valueSupplier(MuSigOpenTradeListItem::getDirectionalTitle)
                 .build());
         tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
-                .title(Res.get("bisqEasy.openTrades.table.tradePeer"))
+                .title(Res.get("muSig.openTrades.table.tradePeer"))
                 .minWidth(110)
                 .left()
                 .comparator(Comparator.comparing(MuSigOpenTradeListItem::getPeersUserName))
@@ -338,7 +338,7 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
                 .build());
 
         mediatorColumn = new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
-                .title(Res.get("bisqEasy.openTrades.table.mediator"))
+                .title(Res.get("muSig.openTrades.table.mediator"))
                 .minWidth(110)
                 .left()
                 .comparator(Comparator.comparing(MuSigOpenTradeListItem::getMediatorUserName))
@@ -348,7 +348,7 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
         tableView.getColumns().add(DateColumnUtil.getDateColumn(tableView.getSortOrder()));
 
         tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
-                .title(Res.get("bisqEasy.openTrades.table.tradeId"))
+                .title(Res.get("muSig.openTrades.table.tradeId"))
                 .minWidth(85)
                 .comparator(Comparator.comparing(MuSigOpenTradeListItem::getTradeId))
                 .valueSupplier(MuSigOpenTradeListItem::getShortTradeId)
@@ -367,19 +367,19 @@ public final class MuSigOpenTradesView extends ChatView<MuSigOpenTradesView, MuS
                 .setCellFactory(getBaseCellFactory())
                 .build());
         tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
-                .title(Res.get("bisqEasy.openTrades.table.price"))
+                .title(Res.get("muSig.openTrades.table.price"))
                 .fixWidth(170)
                 .comparator(Comparator.comparing(MuSigOpenTradeListItem::getPrice))
                 .valueSupplier(MuSigOpenTradeListItem::getPriceString)
                 .build());
         tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
-                .title(Res.get("bisqEasy.openTrades.table.paymentMethod"))
+                .title(Res.get("muSig.openTrades.table.paymentMethod"))
                 .minWidth(60)
                 .comparator(Comparator.comparing(MuSigOpenTradeListItem::getPaymentMethodDisplayName))
                 .setCellFactory(getPaymentMethodCellFactory())
                 .build());
         tableView.getColumns().add(new BisqTableColumn.Builder<MuSigOpenTradeListItem>()
-                .title(Res.get("bisqEasy.openTrades.table.makerTakerRole"))
+                .title(Res.get("muSig.openTrades.table.makerTakerRole"))
                 .minWidth(85)
                 .right()
                 .comparator(Comparator.comparing(MuSigOpenTradeListItem::getMyRole))

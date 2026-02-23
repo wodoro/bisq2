@@ -173,8 +173,8 @@ public class MuSigOfferListItem {
 
         // TODO not used
         String offerType = displayDirection.isBuy()
-                ? Res.get("bisqEasy.offerbook.offerList.table.columns.offerType.buy")
-                : Res.get("bisqEasy.offerbook.offerList.table.columns.offerType.sell");
+                ? Res.get("muSig.offerbook.offerList.table.columns.offerType.buy")
+                : Res.get("muSig.offerbook.offerList.table.columns.offerType.sell");
 
         // reputationScore = reputationService.getReputationScore(senderUserProfile);
         // totalScore = reputationScore.getTotalScore();

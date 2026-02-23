@@ -37,11 +37,11 @@ public class MuSigOpenTradesUtils {
             String quoteSideMethod = contract.getQuoteSidePaymentMethodSpec().getDisplayString();
             String paymentMethod = baseSideMethod + " / " + quoteSideMethod;
             List<String> headers = List.of(
-                    Res.get("bisqEasy.openTrades.table.tradeId"),
+                    Res.get("muSig.openTrades.table.tradeId"),
                     Res.get("muSig.openTrades.csv.amount", baseSideMonetary.getCode()),
                     Res.get("muSig.openTrades.csv.amount", quoteSideMonetary.getCode()),
-                    Res.get("bisqEasy.openTrades.csv.txIdOrPreimage"),
-                    Res.get("bisqEasy.openTrades.csv.paymentMethod")
+                    Res.get("muSig.openTrades.csv.txIdOrPreimage"),
+                    Res.get("muSig.openTrades.csv.paymentMethod")
             );
             List<List<String>> tradeData = List.of(
                     List.of(

@@ -137,7 +137,7 @@ class MuSigCreateOfferReviewView extends View<StackPane, MuSigCreateOfferReviewM
         gridPane.add(securityDepositDetails, 2, rowIndex, 2, 1);
 
         rowIndex++;
-        Label feeInfoDescription = new Label(Res.get("bisqEasy.tradeWizard.review.feeDescription"));
+        Label feeInfoDescription = new Label(Res.get("muSig.tradeWizard.review.feeDescription"));
         feeInfoDescription.getStyleClass().add(DESCRIPTION_STYLE);
         gridPane.add(feeInfoDescription, 0, rowIndex);
 
@@ -154,12 +154,12 @@ class MuSigCreateOfferReviewView extends View<StackPane, MuSigCreateOfferReviewM
         gridPane.add(line3, 0, rowIndex, 4, 1);
 
         // Feedback overlays
-        createOfferSuccessButton = new Button(Res.get("bisqEasy.tradeWizard.review.createOfferSuccessButton"));
+        createOfferSuccessButton = new Button(Res.get("muSig.tradeWizard.review.createOfferSuccessButton"));
         createOfferSuccessButton.setDefaultButton(true);
         createOfferSuccessOverlay = new WizardOverlay(root)
                 .info()
-                .headline("bisqEasy.tradeWizard.review.createOfferSuccess.headline")
-                .descriptionFromI18nKey("bisqEasy.tradeWizard.review.createOfferSuccess.subTitle")
+                .headline("muSig.tradeWizard.review.createOfferSuccess.headline")
+                .descriptionFromI18nKey("muSig.tradeWizard.review.createOfferSuccess.subTitle")
                 .buttons(createOfferSuccessButton)
                 .build();
 

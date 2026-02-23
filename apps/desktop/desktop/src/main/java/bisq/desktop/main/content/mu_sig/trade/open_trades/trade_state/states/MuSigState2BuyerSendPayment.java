@@ -103,7 +103,7 @@ public class MuSigState2BuyerSendPayment extends MuSigBaseState {
                 String message = "Account data of " + peerUserName + " is banned: " + peersAccountPayload;
                 moderationRequestService.reportUserProfile(peer, message);
 
-                new Popup().warning(Res.get("bisqEasy.tradeState.info.buyer.phase2a.accountDataBanned.popup.warning")).show();
+                new Popup().warning(Res.get("muSig.tradeState.info.buyer.phase2a.accountDataBanned.popup.warning")).show();
             } else {
                 model.getConfirmFiatSentButtonDisabled().set(false);
                 model.getAccountDataBannedValidator().setIsInvalid(false);
@@ -147,7 +147,7 @@ public class MuSigState2BuyerSendPayment extends MuSigBaseState {
         }
 
         private void onConfirmFiatSent() {
-            sendTradeLogMessage(Res.encode("bisqEasy.tradeState.info.buyer.phase2a.tradeLogMessage",
+            sendTradeLogMessage(Res.encode("muSig.tradeState.info.buyer.phase2a.tradeLogMessage",
                     model.getChannel().getMyUserIdentity().getUserName(), model.getQuoteCode()));
             muSigTradeService.paymentInitiated(model.getTrade());
         }
@@ -156,7 +156,7 @@ public class MuSigState2BuyerSendPayment extends MuSigBaseState {
     @Getter
     private static class Model extends MuSigBaseState.Model {
         private final BooleanProperty confirmFiatSentButtonDisabled = new SimpleBooleanProperty();
-        private final SettableErrorValidator accountDataBannedValidator = new SettableErrorValidator(Res.get("bisqEasy.tradeState.info.buyer.phase2a.accountDataBannedError"));
+        private final SettableErrorValidator accountDataBannedValidator = new SettableErrorValidator(Res.get("muSig.tradeState.info.buyer.phase2a.accountDataBannedError"));
         @Setter
         private String sellersAccountData;
         @Setter
@@ -185,8 +185,8 @@ public class MuSigState2BuyerSendPayment extends MuSigBaseState {
 
             headline = MuSigFormUtils.getHeadline();
 
-            quoteAmount = MuSigFormUtils.getTextField(Res.get("bisqEasy.tradeState.info.buyer.phase2a.quoteAmount"), "", false);
-            myAccountName = MuSigFormUtils.getTextField(Res.get("bisqEasy.tradeState.info.buyer.phase2a.myAccountName"), "", false);
+            quoteAmount = MuSigFormUtils.getTextField(Res.get("muSig.tradeState.info.buyer.phase2a.quoteAmount"), "", false);
+            myAccountName = MuSigFormUtils.getTextField(Res.get("muSig.tradeState.info.buyer.phase2a.myAccountName"), "", false);
             sellersAccountData = MuSigFormUtils.addTextArea("", "", false);
             sellersAccountData.setValidator(model.getAccountDataBannedValidator());
 

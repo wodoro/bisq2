@@ -107,7 +107,7 @@ public class MuSigTakeOfferReviewController implements Controller {
         priceInput.setMarket(market);
 
         String marketCodes = market.getMarketCodes();
-        priceInput.setDescription(Res.get("bisqEasy.takeOffer.review.price.price", marketCodes));
+        priceInput.setDescription(Res.get("muSig.takeOffer.review.price.price", marketCodes));
 
         if (muSigOffer.getAmountSpec() instanceof FixedAmountSpec) {
             OfferAmountUtil.findBaseSideFixedAmount(marketPriceService, muSigOffer)
@@ -202,15 +202,15 @@ public class MuSigTakeOfferReviewController implements Controller {
                             UIThread.run(() -> {
                                 if (trade.getTradeProtocolFailure() == null || trade.getTradeProtocolFailure().isUnexpected()) {
                                     String errorStackTrace = trade.getErrorStackTrace() != null ? StringUtils.truncate(trade.getErrorStackTrace(), 2000) : "";
-                                    new Popup().error(Res.get("bisqEasy.openTrades.failed.errorPopup.message",
+                                    new Popup().error(Res.get("muSig.openTrades.failed.errorPopup.message",
                                                     errorMessage,
                                                     errorStackTrace))
                                             .show();
                                 } else {
-                                    new Popup().headline(Res.get("bisqEasy.openTrades.failure.popup.headline"))
-                                            .failure(Res.get("bisqEasy.openTrades.failure.popup.message.header"),
+                                    new Popup().headline(Res.get("muSig.openTrades.failure.popup.headline"))
+                                            .failure(Res.get("muSig.openTrades.failure.popup.message.header"),
                                                     errorMessage,
-                                                    Res.get("bisqEasy.openTrades.failure.popup.message.footer"))
+                                                    Res.get("muSig.openTrades.failure.popup.message.footer"))
                                             .show();
                                 }
                             });
@@ -222,15 +222,15 @@ public class MuSigTakeOfferReviewController implements Controller {
                             UIThread.run(() -> {
                                 if (trade.getPeersTradeProtocolFailure() == null || trade.getPeersTradeProtocolFailure().isUnexpected()) {
                                     String errorStackTrace = trade.getPeersErrorStackTrace() != null ? StringUtils.truncate(trade.getPeersErrorStackTrace(), 2000) : "";
-                                    new Popup().error(Res.get("bisqEasy.openTrades.failedAtPeer.errorPopup.message",
+                                    new Popup().error(Res.get("muSig.openTrades.failedAtPeer.errorPopup.message",
                                                     peersErrorMessage,
                                                     errorStackTrace))
                                             .show();
                                 } else {
-                                    new Popup().headline(Res.get("bisqEasy.openTrades.atPeer.failure.popup.headline"))
-                                            .failure(Res.get("bisqEasy.openTrades.failure.popup.message.header"),
+                                    new Popup().headline(Res.get("muSig.openTrades.atPeer.failure.popup.headline"))
+                                            .failure(Res.get("muSig.openTrades.failure.popup.message.header"),
                                                     peersErrorMessage,
-                                                    Res.get("bisqEasy.openTrades.failure.popup.message.footer"))
+                                                    Res.get("muSig.openTrades.failure.popup.message.footer"))
                                             .show();
                                 }
                             });
@@ -267,7 +267,7 @@ public class MuSigTakeOfferReviewController implements Controller {
                 onCancelHandler.run();
             });
         } catch (NoMuSigMediatorAvailableException e) {
-            UIThread.run(() -> new Popup().warning(Res.get("bisqEasy.takeOffer.noMediatorAvailable.warning"))
+            UIThread.run(() -> new Popup().warning(Res.get("muSig.takeOffer.noMediatorAvailable.warning"))
                     .closeButtonText(Res.get("action.cancel"))
                     .onClose(onCancelHandler)
                     .actionButtonText(Res.get("confirmation.ok"))
@@ -303,25 +303,25 @@ public class MuSigTakeOfferReviewController implements Controller {
         String formattedQuoteAmount = AmountFormatter.formatQuoteAmount(fixQuoteSideAmount);
         Direction takersDirection = model.getMuSigOffer().getTakersDisplayDirection();
         if (takersDirection.isSell()) {
-            toSendAmountDescription = Res.get("bisqEasy.tradeWizard.review.toSend");
-            toReceiveAmountDescription = Res.get("bisqEasy.tradeWizard.review.toReceive");
+            toSendAmountDescription = Res.get("muSig.tradeWizard.review.toSend");
+            toReceiveAmountDescription = Res.get("muSig.tradeWizard.review.toReceive");
             toSendAmount = formattedBaseAmount;
             toSendCode = fixBaseSideAmount.getCode();
             toReceiveAmount = formattedQuoteAmount;
             toReceiveCode = fixQuoteSideAmount.getCode();
 
-            model.setFee(Res.get("bisqEasy.takeOffer.review.sellerPaysMinerFee"));
-            model.setFeeDetails(Res.get("bisqEasy.takeOffer.review.noTradeFeesLong"));
+            model.setFee(Res.get("muSig.takeOffer.review.sellerPaysMinerFee"));
+            model.setFeeDetails(Res.get("muSig.takeOffer.review.noTradeFeesLong"));
         } else {
-            toSendAmountDescription = Res.get("bisqEasy.tradeWizard.review.toPay");
-            toReceiveAmountDescription = Res.get("bisqEasy.tradeWizard.review.toReceive");
+            toSendAmountDescription = Res.get("muSig.tradeWizard.review.toPay");
+            toReceiveAmountDescription = Res.get("muSig.tradeWizard.review.toReceive");
             toSendAmount = formattedQuoteAmount;
             toSendCode = fixQuoteSideAmount.getCode();
             toReceiveAmount = formattedBaseAmount;
             toReceiveCode = fixBaseSideAmount.getCode();
 
-            model.setFee(Res.get("bisqEasy.takeOffer.review.noTradeFees"));
-            model.setFeeDetails(Res.get("bisqEasy.takeOffer.review.sellerPaysMinerFeeLong"));
+            model.setFee(Res.get("muSig.takeOffer.review.noTradeFees"));
+            model.setFeeDetails(Res.get("muSig.takeOffer.review.sellerPaysMinerFeeLong"));
         }
 
         String directionString = String.format("%s %s",
@@ -335,7 +335,7 @@ public class MuSigTakeOfferReviewController implements Controller {
         muSigReviewDataDisplay.setToReceiveAmountDescription(toReceiveAmountDescription.toUpperCase());
         muSigReviewDataDisplay.setToReceiveMaxOrFixedAmount(toReceiveAmount);
         muSigReviewDataDisplay.setToReceiveCode(toReceiveCode);
-        muSigReviewDataDisplay.setPriceDescription(Res.get("bisqEasy.takeOffer.review.price.price").toUpperCase());
+        muSigReviewDataDisplay.setPriceDescription(Res.get("muSig.takeOffer.review.price.price").toUpperCase());
         muSigReviewDataDisplay.setPrice(model.getPrice());
         muSigReviewDataDisplay.setPriceCode(model.getPriceCode());
         muSigReviewDataDisplay.setIsCryptoMarket(model.getMuSigOffer().getMarket().isCrypto());
@@ -366,20 +366,20 @@ public class MuSigTakeOfferReviewController implements Controller {
         Optional<Double> percentFromMarketPrice = PriceUtil.findPercentFromMarketPrice(marketPriceService, priceSpec, market);
         double percent = percentFromMarketPrice.orElse(0d);
         if ((priceSpec instanceof FloatPriceSpec || priceSpec instanceof MarketPriceSpec) && percent == 0) {
-            model.setPriceDetails(Res.get("bisqEasy.tradeWizard.review.priceDetails", marketPriceAsString));
+            model.setPriceDetails(Res.get("muSig.tradeWizard.review.priceDetails", marketPriceAsString));
         } else {
             String aboveOrBelow = percent > 0 ? Res.get("offer.price.above") : Res.get("offer.price.below");
             String percentAsString = percentFromMarketPrice.map(Math::abs).map(PercentageFormatter::formatToPercentWithSymbol)
                     .orElseGet(() -> Res.get("data.na"));
             if (priceSpec instanceof FloatPriceSpec) {
-                model.setPriceDetails(Res.get("bisqEasy.tradeWizard.review.priceDetails.float",
+                model.setPriceDetails(Res.get("muSig.tradeWizard.review.priceDetails.float",
                         percentAsString, aboveOrBelow, marketPriceAsString));
             } else {
                 if (percent == 0) {
-                    model.setPriceDetails(Res.get("bisqEasy.tradeWizard.review.priceDetails.fix.atMarket",
+                    model.setPriceDetails(Res.get("muSig.tradeWizard.review.priceDetails.fix.atMarket",
                             marketPriceAsString));
                 } else {
-                    model.setPriceDetails(Res.get("bisqEasy.tradeWizard.review.priceDetails.fix",
+                    model.setPriceDetails(Res.get("muSig.tradeWizard.review.priceDetails.fix",
                             percentAsString, aboveOrBelow, marketPriceAsString));
                 }
             }
@@ -391,7 +391,7 @@ public class MuSigTakeOfferReviewController implements Controller {
                 .map(PriceFormatter::format)
                 .orElse("");
         String codes = priceQuote.map(e -> e.getMarket().getMarketCodes()).orElse("");
-        model.setPriceWithCode(Res.get("bisqEasy.tradeWizard.review.price", formattedPrice, codes));
+        model.setPriceWithCode(Res.get("muSig.tradeWizard.review.price", formattedPrice, codes));
         model.setPrice(formattedPrice);
         model.setPriceCode(codes);
     }
