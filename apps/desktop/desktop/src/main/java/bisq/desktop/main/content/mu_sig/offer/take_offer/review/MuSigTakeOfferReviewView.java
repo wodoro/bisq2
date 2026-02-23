@@ -79,7 +79,7 @@ class MuSigTakeOfferReviewView extends View<StackPane, MuSigTakeOfferReviewModel
         gridPane.getColumnConstraints().addAll(col1, col2, col3, col4);
 
         int rowIndex = 0;
-        Label headline = new Label(Res.get("muSig.offer.take.review.headline"));
+        Label headline = new Label(Res.get("muSig.offer.taker.review.headline"));
         headline.getStyleClass().add("trade-wizard-review-headline");
         GridPane.setHalignment(headline, HPos.CENTER);
         GridPane.setMargin(headline, new Insets(10, 0, 30, 0));
@@ -94,7 +94,7 @@ class MuSigTakeOfferReviewView extends View<StackPane, MuSigTakeOfferReviewModel
         gridPane.add(reviewDataDisplay, 0, rowIndex, 4, 1);
 
         rowIndex++;
-        Label detailsHeadline = new Label(Res.get("muSig.offer.take.review.detailsHeadline").toUpperCase());
+        Label detailsHeadline = new Label(Res.get("muSig.offer.taker.review.detailsHeadline").toUpperCase());
         detailsHeadline.getStyleClass().add("trade-wizard-review-details-headline");
         gridPane.add(detailsHeadline, 0, rowIndex, 4, 1);
 
@@ -104,7 +104,7 @@ class MuSigTakeOfferReviewView extends View<StackPane, MuSigTakeOfferReviewModel
         gridPane.add(line2, 0, rowIndex, 4, 1);
 
         rowIndex++;
-        Label priceDescription = new Label(Res.get("muSig.offer.take.review.price.price"));
+        Label priceDescription = new Label(Res.get("muSig.offer.taker.review.price.price"));
         priceDescription.getStyleClass().add(DESCRIPTION_STYLE);
         gridPane.add(priceDescription, 0, rowIndex);
 
@@ -117,7 +117,7 @@ class MuSigTakeOfferReviewView extends View<StackPane, MuSigTakeOfferReviewModel
         gridPane.add(priceDetails, 2, rowIndex, 2, 1);
 
         rowIndex++;
-        Label paymentMethodDescription = new Label(Res.get("muSig.offer.take.review.paymentMethod.description"));
+        Label paymentMethodDescription = new Label(Res.get("muSig.offer.taker.review.paymentMethod.description"));
         paymentMethodDescription.getStyleClass().add(DESCRIPTION_STYLE);
         gridPane.add(paymentMethodDescription, 0, rowIndex);
 
@@ -169,17 +169,17 @@ class MuSigTakeOfferReviewView extends View<StackPane, MuSigTakeOfferReviewModel
         takeOfferSendMessageWaitingAnimation = new MuSigProtocolWaitingAnimation(MuSigProtocolWaitingState.TAKE_OFFER);
         sendTakeOfferMessageOverlay = new WizardOverlay(root)
                 .headlineIcon(takeOfferSendMessageWaitingAnimation)
-                .headline("muSig.offer.take.review.sendTakeOfferMessageFeedback.headline")
-                .description("muSig.offer.take.review.sendTakeOfferMessageFeedback.subTitle",
-                        "muSig.offer.take.review.sendTakeOfferMessageFeedback.info")
+                .headline("muSig.offer.taker.review.sendTakeOfferMessageFeedback.headline")
+                .description("muSig.offer.taker.review.sendTakeOfferMessageFeedback.subTitle",
+                        "muSig.offer.taker.review.sendTakeOfferMessageFeedback.info")
                 .build();
 
-        takeOfferSuccessButton = new Button(Res.get("muSig.offer.take.review.takeOfferSuccessButton"));
+        takeOfferSuccessButton = new Button(Res.get("muSig.offer.taker.review.takeOfferSuccessButton"));
         takeOfferSuccessButton.setDefaultButton(true);
         takeOfferSuccessOverlay = new WizardOverlay(root)
                 .info()
-                .headline("muSig.offer.take.review.takeOfferSuccess.headline")
-                .description("muSig.offer.take.review.takeOfferSuccess.subTitle")
+                .headline("muSig.offer.taker.review.takeOfferSuccess.headline")
+                .description("muSig.offer.taker.review.takeOfferSuccess.subTitle")
                 .buttons(takeOfferSuccessButton)
                 .build();
 

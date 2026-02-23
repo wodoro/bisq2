@@ -130,8 +130,8 @@ public class MuSigState4TradeClosed extends MuSigBaseState {
 
         protected void onCloseCompletedTrade() {
             if (dontShowAgainService.showAgain(CONFIRM_CLOSE_MU_SIG_TRADE)) {
-                new Popup().feedback(Res.get("muSig.openTrades.closeTrade.warning.completed"))
-                        .actionButtonText(Res.get("muSig.openTrades.confirmCloseTrade"))
+                new Popup().feedback(Res.get("muSig.trade.pending.closeTrade.warning.completed"))
+                        .actionButtonText(Res.get("muSig.trade.pending.confirmCloseTrade"))
                         .onAction(this::doCloseCompletedTrade)
                         .closeButtonText(Res.get("action.cancel"))
                         .dontShowAgainId(CONFIRM_CLOSE_MU_SIG_TRADE)

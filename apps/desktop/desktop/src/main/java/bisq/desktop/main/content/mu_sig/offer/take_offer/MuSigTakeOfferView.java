@@ -69,7 +69,7 @@ public class MuSigTakeOfferView extends NavigationView<VBox, MuSigTakeOfferModel
         root.setPrefWidth(OverlayModel.WIDTH);
         root.setPrefHeight(POPUP_HEIGHT);
 
-        Label review = createAndGetProgressLabel(Res.get("muSig.offer.take.progress.review"));
+        Label review = createAndGetProgressLabel(Res.get("muSig.offer.taker.progress.review"));
         progressLabelList.add(review);
 
         progressBox = new HBox(10);
@@ -95,7 +95,7 @@ public class MuSigTakeOfferView extends NavigationView<VBox, MuSigTakeOfferModel
         nextButton = new Button(Res.get("action.next"));
         nextButton.setDefaultButton(true);
 
-        takeOfferButton = new Button(Res.get("muSig.offer.take.review.takeOffer"));
+        takeOfferButton = new Button(Res.get("muSig.offer.taker.review.takeOffer"));
         takeOfferButton.setDefaultButton(true);
 
         backButton = new Button(Res.get("action.back"));
@@ -144,7 +144,7 @@ public class MuSigTakeOfferView extends NavigationView<VBox, MuSigTakeOfferModel
             progressBox.getChildren().add(0, paymentMethod);
         }
         if (model.isAmountVisible()) {
-            Label amount = createAndGetProgressLabel(Res.get("muSig.offer.take.progress.amount"));
+            Label amount = createAndGetProgressLabel(Res.get("muSig.offer.taker.progress.amount"));
             progressLabelList.add(0, amount);
             progressBox.getChildren().add(0, getHLine());
             progressBox.getChildren().add(0, amount);

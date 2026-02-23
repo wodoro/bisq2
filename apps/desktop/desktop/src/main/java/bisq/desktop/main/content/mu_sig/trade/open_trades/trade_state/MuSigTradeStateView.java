@@ -80,13 +80,13 @@ public class MuSigTradeStateView extends View<VBox, MuSigTradeStateModel, MuSigT
         isInMediationHBox.setPadding(new Insets(10));
         isInMediationHBox.getStyleClass().add("bisq-easy-trade-isInMediation-bg");
 
-        exportButton = new Button(Res.get("muSig.openTrades.exportTrade"));
+        exportButton = new Button(Res.get("muSig.trade.pending.exportTrade"));
         exportButton.setMinWidth(180);
 
-        reportToMediatorButton = new Button(Res.get("muSig.openTrades.reportToMediator"));
+        reportToMediatorButton = new Button(Res.get("muSig.trade.pending.reportToMediator"));
         reportToMediatorButton.getStyleClass().add("outlined-button");
 
-        closeTradeButton = new Button(Res.get("muSig.openTrades.closeTrade"));
+        closeTradeButton = new Button(Res.get("muSig.trade.pending.closeTrade"));
         closeTradeButton.setMinWidth(160);
         closeTradeButton.setDefaultButton(true);
 
@@ -147,7 +147,7 @@ public class MuSigTradeStateView extends View<VBox, MuSigTradeStateModel, MuSigT
                 status -> {
                     // If the peer had sent the request we do not get any requestMediationDeliveryStatus status is null.
                     if (status == null || status == MessageDeliveryStatus.ACK_RECEIVED || status == MessageDeliveryStatus.MAILBOX_MSG_RECEIVED) {
-                        mediationBannerLabel.setText(Res.get("muSig.openTrades.inMediation.info"));
+                        mediationBannerLabel.setText(Res.get("muSig.trade.pending.inMediation.info"));
                     } else {
                         String deliveryStatus = status.getDisplayString();
                         if (status == MessageDeliveryStatus.FAILED) {
@@ -156,7 +156,7 @@ public class MuSigTradeStateView extends View<VBox, MuSigTradeStateModel, MuSigT
                                     : "";
                             mediationBannerLabel.setText(deliveryStatus + resendRequest);
                         } else {
-                            mediationBannerLabel.setText(Res.get("muSig.openTrades.inMediation.requestSent", deliveryStatus));
+                            mediationBannerLabel.setText(Res.get("muSig.trade.pending.inMediation.requestSent", deliveryStatus));
                         }
                     }
                 });

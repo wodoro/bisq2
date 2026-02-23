@@ -90,7 +90,7 @@ public class MuSigState3aSellerConfirmPaymentReceipt extends MuSigBaseState {
         }
 
         private void onPaymentReceiptConfirmed() {
-            sendTradeLogMessage(Res.encode("muSig.trade.state.seller.phase2b.tradeLogMessage",
+            sendTradeLogMessage(Res.encode("muSig.trade.state.phase2b.logMessage",
                     model.getChannel().getMyUserIdentity().getUserName(), model.getFormattedNonBtcAmount()));
             muSigTradeService.paymentReceiptConfirmed(model.getTrade());
         }

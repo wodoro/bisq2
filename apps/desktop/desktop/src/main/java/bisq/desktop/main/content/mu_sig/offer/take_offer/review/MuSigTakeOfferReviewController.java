@@ -107,7 +107,7 @@ public class MuSigTakeOfferReviewController implements Controller {
         priceInput.setMarket(market);
 
         String marketCodes = market.getMarketCodes();
-        priceInput.setDescription(Res.get("muSig.offer.take.review.price.price", marketCodes));
+        priceInput.setDescription(Res.get("muSig.offer.taker.review.price.price", marketCodes));
 
         if (muSigOffer.getAmountSpec() instanceof FixedAmountSpec) {
             OfferAmountUtil.findBaseSideFixedAmount(marketPriceService, muSigOffer)
@@ -154,7 +154,7 @@ public class MuSigTakeOfferReviewController implements Controller {
         if (paymentMethodSpec != null) {
             model.setTakersPaymentMethodSpec(paymentMethodSpec);
             model.setPaymentMethodDisplayString(paymentMethodSpec.getShortDisplayString());
-            muSigReviewDataDisplay.setPaymentMethodDescription(Res.get("muSig.offer.take.review.paymentMethod.description").toUpperCase());
+            muSigReviewDataDisplay.setPaymentMethodDescription(Res.get("muSig.offer.taker.review.paymentMethod.description").toUpperCase());
             muSigReviewDataDisplay.setPaymentMethod(model.getPaymentMethodDisplayString());
         }
     }
@@ -191,7 +191,7 @@ public class MuSigTakeOfferReviewController implements Controller {
             }
             timeoutScheduler = UIScheduler.run(() -> {
                         closeAndNavigateToHandler.accept(NavigationTarget.MU_SIG);
-                        new Popup().warning(Res.get("muSig.offer.take.timeout.warning", 150)).show();
+                        new Popup().warning(Res.get("muSig.offer.taker.timeout.warning", 150)).show();
                     })
                     .after(150, TimeUnit.SECONDS);
             // We have 120 seconds socket timeout, so we should never
@@ -202,15 +202,15 @@ public class MuSigTakeOfferReviewController implements Controller {
                             UIThread.run(() -> {
                                 if (trade.getTradeProtocolFailure() == null || trade.getTradeProtocolFailure().isUnexpected()) {
                                     String errorStackTrace = trade.getErrorStackTrace() != null ? StringUtils.truncate(trade.getErrorStackTrace(), 2000) : "";
-                                    new Popup().error(Res.get("muSig.openTrades.failed.errorPopup.message",
+                                    new Popup().error(Res.get("muSig.trade.pending.failed.errorPopup.message",
                                                     errorMessage,
                                                     errorStackTrace))
                                             .show();
                                 } else {
-                                    new Popup().headline(Res.get("muSig.openTrades.failure.popup.headline"))
-                                            .failure(Res.get("muSig.openTrades.failure.popup.message.header"),
+                                    new Popup().headline(Res.get("muSig.trade.pending.failure.popup.headline"))
+                                            .failure(Res.get("muSig.trade.pending.failure.popup.message.header"),
                                                     errorMessage,
-                                                    Res.get("muSig.openTrades.failure.popup.message.footer"))
+                                                    Res.get("muSig.trade.pending.failure.popup.message.footer"))
                                             .show();
                                 }
                             });
@@ -222,15 +222,15 @@ public class MuSigTakeOfferReviewController implements Controller {
                             UIThread.run(() -> {
                                 if (trade.getPeersTradeProtocolFailure() == null || trade.getPeersTradeProtocolFailure().isUnexpected()) {
                                     String errorStackTrace = trade.getPeersErrorStackTrace() != null ? StringUtils.truncate(trade.getPeersErrorStackTrace(), 2000) : "";
-                                    new Popup().error(Res.get("muSig.openTrades.failedAtPeer.errorPopup.message",
+                                    new Popup().error(Res.get("muSig.trade.pending.failedAtPeer.errorPopup.message",
                                                     peersErrorMessage,
                                                     errorStackTrace))
                                             .show();
                                 } else {
-                                    new Popup().headline(Res.get("muSig.openTrades.atPeer.failure.popup.headline"))
-                                            .failure(Res.get("muSig.openTrades.failure.popup.message.header"),
+                                    new Popup().headline(Res.get("muSig.trade.pending.failure.popup.headline.atPeer"))
+                                            .failure(Res.get("muSig.trade.pending.failure.popup.message.header"),
                                                     peersErrorMessage,
-                                                    Res.get("muSig.openTrades.failure.popup.message.footer"))
+                                                    Res.get("muSig.trade.pending.failure.popup.message.footer"))
                                             .show();
                                 }
                             });
@@ -249,7 +249,7 @@ public class MuSigTakeOfferReviewController implements Controller {
         } catch (UserProfileBannedException e) {
             UIThread.run(() -> {
                 if (muSigOffer.getMakersUserProfileId().equals(e.getUserProfileId())) {
-                    new Popup().warning(Res.get("muSig.offer.take.banned.maker.warning")).show();
+                    new Popup().warning(Res.get("muSig.offer.taker.banned.maker.warning")).show();
                 } else {
                     // We do not inform banned users about being banned
                     log.debug("Takers user profile was banned");
@@ -259,15 +259,15 @@ public class MuSigTakeOfferReviewController implements Controller {
         } catch (RateLimitExceededException e) {
             UIThread.run(() -> {
                 if (muSigOffer.getMakersUserProfileId().equals(e.getUserProfileId())) {
-                    new Popup().warning(Res.get("muSig.offer.take.rateLimitsExceeded.maker.warning")).show();
+                    new Popup().warning(Res.get("muSig.offer.taker.rateLimitsExceeded.maker.warning")).show();
                 } else {
                     String exceedsLimitInfo = bannedUserService.getExceedsLimitInfo(e.getUserProfileId()).orElseGet(() -> Res.get("data.na"));
-                    new Popup().warning(Res.get("muSig.offer.take.rateLimitsExceeded.taker.warning", exceedsLimitInfo)).show();
+                    new Popup().warning(Res.get("muSig.offer.taker.rateLimitsExceeded.taker.warning", exceedsLimitInfo)).show();
                 }
                 onCancelHandler.run();
             });
         } catch (NoMuSigMediatorAvailableException e) {
-            UIThread.run(() -> new Popup().warning(Res.get("muSig.offer.take.noMediatorAvailable.warning"))
+            UIThread.run(() -> new Popup().warning(Res.get("muSig.offer.taker.noMediatorAvailable.warning"))
                     .closeButtonText(Res.get("action.cancel"))
                     .onClose(onCancelHandler)
                     .actionButtonText(Res.get("confirmation.ok"))
@@ -310,8 +310,8 @@ public class MuSigTakeOfferReviewController implements Controller {
             toReceiveAmount = formattedQuoteAmount;
             toReceiveCode = fixQuoteSideAmount.getCode();
 
-            model.setFee(Res.get("muSig.offer.take.review.sellerPaysMinerFee"));
-            model.setFeeDetails(Res.get("muSig.offer.take.review.noTradeFeesLong"));
+            model.setFee(Res.get("muSig.offer.taker.review.sellerPaysMinerFee"));
+            model.setFeeDetails(Res.get("muSig.offer.taker.review.noTradeFeesLong"));
         } else {
             toSendAmountDescription = Res.get("muSig.offer.create.review.toPay");
             toReceiveAmountDescription = Res.get("muSig.offer.create.review.toReceive");
@@ -320,8 +320,8 @@ public class MuSigTakeOfferReviewController implements Controller {
             toReceiveAmount = formattedBaseAmount;
             toReceiveCode = fixBaseSideAmount.getCode();
 
-            model.setFee(Res.get("muSig.offer.take.review.noTradeFees"));
-            model.setFeeDetails(Res.get("muSig.offer.take.review.sellerPaysMinerFeeLong"));
+            model.setFee(Res.get("muSig.offer.taker.review.noTradeFees"));
+            model.setFeeDetails(Res.get("muSig.offer.taker.review.sellerPaysMinerFeeLong"));
         }
 
         String directionString = String.format("%s %s",
@@ -335,7 +335,7 @@ public class MuSigTakeOfferReviewController implements Controller {
         muSigReviewDataDisplay.setToReceiveAmountDescription(toReceiveAmountDescription.toUpperCase());
         muSigReviewDataDisplay.setToReceiveMaxOrFixedAmount(toReceiveAmount);
         muSigReviewDataDisplay.setToReceiveCode(toReceiveCode);
-        muSigReviewDataDisplay.setPriceDescription(Res.get("muSig.offer.take.review.price.price").toUpperCase());
+        muSigReviewDataDisplay.setPriceDescription(Res.get("muSig.offer.taker.review.price.price").toUpperCase());
         muSigReviewDataDisplay.setPrice(model.getPrice());
         muSigReviewDataDisplay.setPriceCode(model.getPriceCode());
         muSigReviewDataDisplay.setIsCryptoMarket(model.getMuSigOffer().getMarket().isCrypto());

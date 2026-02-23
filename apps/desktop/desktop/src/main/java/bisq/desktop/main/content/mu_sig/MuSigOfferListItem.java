@@ -120,8 +120,8 @@ public class MuSigOfferListItem {
 
         displayDirection = offer.getDisplayDirection();
         takeOfferButtonText = displayDirection.isBuy()
-                ? Res.get("muSig.offerbook.table.cell.offer.intent.sell", market.getBaseCurrencyName())
-                : Res.get("muSig.offerbook.table.cell.offer.intent.buy", market.getBaseCurrencyName());
+                ? Res.get("muSig.offer.listing.table.cell.offer.intent.sell", market.getBaseCurrencyName())
+                : Res.get("muSig.offer.listing.table.cell.offer.intent.buy", market.getBaseCurrencyName());
         offerIntentText = displayDirection.isBuy()
                 ? Res.get("muSig.offer.mine.table.cell.offerType.buying")
                 : Res.get("muSig.offer.mine.table.cell.offerType.selling");
@@ -150,7 +150,7 @@ public class MuSigOfferListItem {
                 );
 
         if (!hasAnyMatchingAccount) {
-            cannotTakeOfferReason = Optional.of(Res.get("muSig.offerbook.table.cell.takeOffer.cannotTakeOfferReason.noAccountForOfferPaymentMethods",
+            cannotTakeOfferReason = Optional.of(Res.get("muSig.offer.listing.table.cell.takeOffer.cannotTakeOfferReason.noAccountForOfferPaymentMethods",
                     paymentMethodCurrencyCode));
         }
         canTakeOffer = hasAnyMatchingAccount;
@@ -173,8 +173,8 @@ public class MuSigOfferListItem {
 
         // TODO not used
         String offerType = displayDirection.isBuy()
-                ? Res.get("muSig.offerbook.offerList.table.columns.offerType.buy")
-                : Res.get("muSig.offerbook.offerList.table.columns.offerType.sell");
+                ? Res.get("muSig.offer.listing.offerList.table.columns.offerType.buy")
+                : Res.get("muSig.offer.listing.offerList.table.columns.offerType.sell");
 
         // reputationScore = reputationService.getReputationScore(senderUserProfile);
         // totalScore = reputationScore.getTotalScore();

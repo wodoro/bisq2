@@ -154,7 +154,7 @@ public class MuSigMyOffersController implements Controller {
     }
 
     void onRemoveOffer(MuSigOffer muSigOffer) {
-        new Popup().warning(Res.get("muSig.offerbook.removeOffer.confirmation"))
+        new Popup().warning(Res.get("muSig.offer.listing.removeOffer.confirmation"))
                 .actionButtonText(Res.get("confirmation.yes"))
                 .onAction(() -> doRemoveOffer(muSigOffer))
                 .closeButtonText(Res.get("confirmation.no"))
@@ -195,7 +195,7 @@ public class MuSigMyOffersController implements Controller {
             });
         } catch (RateLimitExceededException e) {
             UIThread.run(() -> {
-                new Popup().warning(Res.get("muSig.offerbook.rateLimitsExceeded.removeOffer.warning")).show();
+                new Popup().warning(Res.get("muSig.offer.listing.rateLimitsExceeded.removeOffer.warning")).show();
             });
         }
     }

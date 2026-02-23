@@ -92,7 +92,7 @@ public class MuSigTradeStateController implements Controller {
         resendMessageService = serviceProvider.getNetworkService().getResendMessageService();
 
         muSigTradePhaseBox = new MuSigTradePhaseBox(serviceProvider);
-        muSigTradeDataHeader = new MuSigTradeDataHeader(serviceProvider, Res.get("muSig.trade.state.header.peer").toUpperCase());
+        muSigTradeDataHeader = new MuSigTradeDataHeader(serviceProvider, Res.get("muSig.trade.pending.header.peer").toUpperCase());
         model = new MuSigTradeStateModel();
         view = new MuSigTradeStateView(model, this,
                 muSigTradePhaseBox.getRoot(),
@@ -142,16 +142,16 @@ public class MuSigTradeStateController implements Controller {
                                 UIThread.run(() -> {
                                     if (trade.getTradeProtocolFailure() == null || trade.getTradeProtocolFailure().isUnexpected()) {
                                         String errorStackTrace = trade.getErrorStackTrace() != null ? StringUtils.truncate(trade.getErrorStackTrace(), 2000) : "";
-                                        new Popup().error(Res.get("muSig.openTrades.failed.errorPopup.message",
+                                        new Popup().error(Res.get("muSig.trade.pending.failed.errorPopup.message",
                                                         errorMessage,
                                                         errorStackTrace))
                                                 .dontShowAgainId(key)
                                                 .show();
                                     } else {
-                                        new Popup().headline(Res.get("muSig.openTrades.failure.popup.headline"))
-                                                .failure(Res.get("muSig.openTrades.failure.popup.message.header"),
+                                        new Popup().headline(Res.get("muSig.trade.pending.failure.popup.headline"))
+                                                .failure(Res.get("muSig.trade.pending.failure.popup.message.header"),
                                                         errorMessage,
-                                                        Res.get("muSig.openTrades.failure.popup.message.footer"))
+                                                        Res.get("muSig.trade.pending.failure.popup.message.footer"))
                                                 .dontShowAgainId(key)
                                                 .show();
                                     }
@@ -167,16 +167,16 @@ public class MuSigTradeStateController implements Controller {
                                 UIThread.run(() -> {
                                     if (trade.getPeersTradeProtocolFailure() == null || trade.getPeersTradeProtocolFailure().isUnexpected()) {
                                         String errorStackTrace = trade.getPeersErrorStackTrace() != null ? StringUtils.truncate(trade.getPeersErrorStackTrace(), 2000) : "";
-                                        new Popup().error(Res.get("muSig.openTrades.failedAtPeer.errorPopup.message",
+                                        new Popup().error(Res.get("muSig.trade.pending.failedAtPeer.errorPopup.message",
                                                         peersErrorMessage,
                                                         errorStackTrace))
                                                 .dontShowAgainId(key)
                                                 .show();
                                     } else {
-                                        new Popup().headline(Res.get("muSig.openTrades.atPeer.failure.popup.headline"))
-                                                .failure(Res.get("muSig.openTrades.failure.popup.message.header"),
+                                        new Popup().headline(Res.get("muSig.trade.pending.failure.popup.headline.atPeer"))
+                                                .failure(Res.get("muSig.trade.pending.failure.popup.message.header"),
                                                         peersErrorMessage,
-                                                        Res.get("muSig.openTrades.failure.popup.message.footer"))
+                                                        Res.get("muSig.trade.pending.failure.popup.message.footer"))
                                                 .dontShowAgainId(key)
                                                 .show();
                                     }
@@ -220,7 +220,7 @@ public class MuSigTradeStateController implements Controller {
     }
 
     void onCloseTrade() {
-        new Popup().warning(Res.get("muSig.openTrades.closeTrade.warning.interrupted"))
+        new Popup().warning(Res.get("muSig.trade.pending.closeTrade.warning.interrupted"))
                 .actionButtonText(Res.get("confirmation.yes"))
                 .onAction(this::doCloseTrade)
                 .closeButtonText(Res.get("confirmation.no"))
@@ -339,14 +339,14 @@ public class MuSigTradeStateController implements Controller {
                 model.getPhaseAndInfoVisible().set(false);
                 model.getError().set(true);
                 model.getShowReportToMediatorButton().set(false);
-                model.getErrorMessage().set(Res.get("muSig.openTrades.failed.errorMessage",
+                model.getErrorMessage().set(Res.get("muSig.trade.pending.failed.errorMessage",
                         model.getTrade().get().getErrorMessage()));
             }
             case FAILED_AT_PEER -> {
                 model.getPhaseAndInfoVisible().set(false);
                 model.getShowReportToMediatorButton().set(false);
                 model.getError().set(true);
-                model.getErrorMessage().set(Res.get("muSig.openTrades.failedAtPeer.errorMessage",
+                model.getErrorMessage().set(Res.get("muSig.trade.pending.failedAtPeer.errorMessage",
                         model.getTrade().get().getPeersErrorMessage()));
             }
 

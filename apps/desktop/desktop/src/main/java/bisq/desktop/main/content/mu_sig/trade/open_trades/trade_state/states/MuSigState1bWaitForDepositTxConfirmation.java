@@ -109,8 +109,8 @@ public class MuSigState1bWaitForDepositTxConfirmation extends MuSigBaseState {
                 model.setInfo(Res.get("muSig.trade.state.phase1b.info.buyer", model.getNonBtcCurrencyCode()));
             } else {
                 model.setInfo(trade.getOffer().getMarket().isBaseCurrencyBitcoin()
-                        ? Res.get("muSig.trade.state.phase1b.info.seller.fiat", model.getNonBtcCurrencyCode())
-                        : Res.get("muSig.trade.state.phase1b.info.seller.crypto", model.getNonBtcCurrencyCode()));
+                        ? Res.get("muSig.trade.state.phase1b.info.fiat", model.getNonBtcCurrencyCode())
+                        : Res.get("muSig.trade.state.phase1b.info.crypto", model.getNonBtcCurrencyCode()));
             }
 
             if (model.getConfirmationState().get() == null) {

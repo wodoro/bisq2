@@ -189,7 +189,7 @@ public class MuSigTakeOfferController extends NavigationController implements In
         model.getCloseButtonVisible().set(true);
         boolean isTakeOfferReview = navigationTarget == NavigationTarget.MU_SIG_TAKE_OFFER_REVIEW;
         model.getNextButtonText().set(isTakeOfferReview ?
-                Res.get("muSig.offer.take.review.takeOffer") :
+                Res.get("muSig.offer.taker.review.takeOffer") :
                 Res.get("action.next"));
         model.getShowProgressBox().set(!isTakeOfferReview);
         setMainButtonsVisibleState(true);

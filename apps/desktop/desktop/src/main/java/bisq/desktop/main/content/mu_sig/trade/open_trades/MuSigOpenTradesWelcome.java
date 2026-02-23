@@ -81,19 +81,19 @@ public class MuSigOpenTradesWelcome {
             root.setPadding(new Insets(30, 48, 44, 48));
             root.setAlignment(Pos.TOP_LEFT);
 
-            Label headlineLabel = new Label(Res.get("muSig.openTrades.welcome.headline"));
+            Label headlineLabel = new Label(Res.get("muSig.trade.pending.welcome.headline"));
             headlineLabel.setWrapText(true);
             headlineLabel.getStyleClass().add("bisq-text-headline-5");
 
-            Label infoHeadline = new Label(Res.get("muSig.openTrades.welcome.info"));
+            Label infoHeadline = new Label(Res.get("muSig.trade.pending.welcome.info"));
             infoHeadline.setWrapText(true);
             infoHeadline.setAlignment(Pos.TOP_LEFT);
             infoHeadline.getStyleClass().add("bisq-easy-open-trades-welcome-info");
             infoHeadline.setMinHeight(80);
 
-            HBox line1 = getIconAndText(Res.get("muSig.openTrades.welcome.line1"), "thumbs-up-in-circle-green");
-            HBox line2 = getIconAndText(Res.get("muSig.openTrades.welcome.line2"), "trading-in-circle-green");
-            HBox line3 = getIconAndText(Res.get("muSig.openTrades.welcome.line3"), "learn-in-circle-green");
+            HBox line1 = getIconAndText(Res.get("muSig.trade.pending.welcome.line1"), "thumbs-up-in-circle-green");
+            HBox line2 = getIconAndText(Res.get("muSig.trade.pending.welcome.line2"), "trading-in-circle-green");
+            HBox line3 = getIconAndText(Res.get("muSig.trade.pending.welcome.line3"), "learn-in-circle-green");
 
             button = new Button(Res.get("muSig.trade.guide.open"));
             button.setDefaultButton(true);
