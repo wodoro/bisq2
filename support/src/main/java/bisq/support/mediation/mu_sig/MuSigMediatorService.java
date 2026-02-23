@@ -37,6 +37,7 @@ import bisq.persistence.Persistence;
 import bisq.persistence.PersistenceService;
 import bisq.persistence.RateLimitedPersistenceClient;
 import bisq.support.mediation.MediationCaseState;
+import bisq.support.mediation.MediationPayoutDistributionType;
 import bisq.support.mediation.MediationResultReason;
 import bisq.user.UserService;
 import bisq.user.banned.BannedUserService;
@@ -114,8 +115,13 @@ public class MuSigMediatorService extends RateLimitedPersistenceClient<MuSigMedi
     /* --------------------------------------------------------------------- */
 
     public MuSigMediationResult createMuSigMediationResult(MediationResultReason mediationResultReason,
+                                                           long proposedBuyerPayoutAmount,
+                                                           long proposedSellerPayoutAmount,
+                                                           MediationPayoutDistributionType mediationPayoutDistributionType,
+                                                           Optional<Double> payoutAdjustmentPercentage,
                                                            Optional<String> summaryNotes) {
-        return new MuSigMediationResult(mediationResultReason, 0L, 0L, summaryNotes);
+        return new MuSigMediationResult(mediationResultReason, proposedBuyerPayoutAmount, proposedSellerPayoutAmount,
+                mediationPayoutDistributionType, payoutAdjustmentPercentage, summaryNotes);
     }
 
     public void closeMediationCase(MuSigMediationCase muSigMediationCase, MuSigMediationResult muSigMediationResult) {

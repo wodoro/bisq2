@@ -53,6 +53,17 @@ enum MediationResultReason {
   MEDIATIONRESULTREASON_PEER_WAS_LATE = 9;
 }
 
+enum MediationPayoutDistributionType {
+  MEDIATIONPAYOUTDISTRIBUTIONTYPE_UNSPECIFIED = 0;
+  MEDIATIONPAYOUTDISTRIBUTIONTYPE_CUSTOM_PAYOUT = 1;
+  MEDIATIONPAYOUTDISTRIBUTIONTYPE_BUYER_GETS_TRADE_AMOUNT = 2;
+  MEDIATIONPAYOUTDISTRIBUTIONTYPE_BUYER_GETS_TRADE_AMOUNT_PLUS_COMPENSATION = 3;
+  MEDIATIONPAYOUTDISTRIBUTIONTYPE_BUYER_GETS_TRADE_AMOUNT_MINUS_PENALTY = 4;
+  MEDIATIONPAYOUTDISTRIBUTIONTYPE_SELLER_GETS_TRADE_AMOUNT = 5;
+  MEDIATIONPAYOUTDISTRIBUTIONTYPE_SELLER_GETS_TRADE_AMOUNT_PLUS_COMPENSATION = 6;
+  MEDIATIONPAYOUTDISTRIBUTIONTYPE_SELLER_GETS_TRADE_AMOUNT_MINUS_PENALTY = 7;
+}
+
 message MuSigMediationRequest {
   string tradeId = 1;
   contract.Contract contract = 2;
@@ -72,6 +83,8 @@ message MuSigMediationResult {
   sint64 proposedBuyerPayoutAmount = 3;
   sint64 proposedSellerPayoutAmount = 4;
   optional string summaryNotes = 5;
+  MediationPayoutDistributionType mediationPayoutDistributionType = 6;
+  optional double payoutAdjustmentPercentage = 7;
 }
 
 message MuSigMediationCase {

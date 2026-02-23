@@ -175,34 +175,36 @@ public class MuSigMediationCaseDetailSection {
     @Slf4j
     private static class View extends bisq.desktop.common.view.View<VBox, Model, Controller> {
 
-        private final Label tradeIdLabel, tradeDateLabel, offerTypeLabel, marketLabel;
-        private Label securityDepositLabel, securityDepositPercentLabel, openParenthesisLabel, closingParenthesisLabel,
-                buyerNetworkAddressLabel, sellerNetworkAddressLabel;
-        private final BisqMenuItem tradeIdCopyButton;
-        private BisqMenuItem buyerNetworkAddressCopyButton, sellerNetworkAddressCopyButton;
+        private final Label tradeDateLabel, securityDepositLabel, securityDepositPercentLabel, openParenthesisLabel, closingParenthesisLabel;
+        private Label tradeIdLabel, offerTypeLabel, marketLabel, buyerNetworkAddressLabel, sellerNetworkAddressLabel;
+        private BisqMenuItem tradeIdCopyButton, buyerNetworkAddressCopyButton, sellerNetworkAddressCopyButton;
 
         public View(VBox root, Model model, Controller controller) {
             super(root, model, controller);
-
-            // Trade ID
-            tradeIdLabel = getValueLabel();
-            tradeIdCopyButton = getCopyButton(Res.get("bisqEasy.openTrades.tradeDetails.tradeId.copy"));
-            HBox tradeIdBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.tradeId",
-                    tradeIdLabel, tradeIdCopyButton);
 
             // Trade date
             tradeDateLabel = getValueLabel();
             HBox tradeDateBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.tradeDate", tradeDateLabel);
 
-            // Offer type and market
-            offerTypeLabel = getValueLabel();
-            Label offerAndMarketslashLabel = new Label("/");
-            offerAndMarketslashLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-            marketLabel = getValueLabel();
-            HBox offerTypeAndMarketDetailsHBox = new HBox(5, offerTypeLabel, offerAndMarketslashLabel, marketLabel);
-            offerTypeAndMarketDetailsHBox.setAlignment(Pos.BASELINE_LEFT);
-            HBox offerTypeAndMarketBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.offerTypeAndMarket",
-                    offerTypeAndMarketDetailsHBox);
+            // Security deposits
+            securityDepositLabel = getValueLabel();
+            securityDepositPercentLabel = new Label();
+            securityDepositPercentLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
+            openParenthesisLabel = new Label("(");
+            openParenthesisLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
+            closingParenthesisLabel = new Label(")");
+            closingParenthesisLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
+            HBox securityDepositPercentBox = new HBox(openParenthesisLabel,
+                    securityDepositPercentLabel,
+                    closingParenthesisLabel);
+            securityDepositPercentBox.setAlignment(Pos.BASELINE_LEFT);
+            HBox securityDepositValueBox = new HBox(5, securityDepositLabel, securityDepositPercentBox);
+            securityDepositValueBox.setAlignment(Pos.BASELINE_LEFT);
+            HBox securityDepositBox = createAndGetDescriptionAndValueBox(
+                    getDescriptionLabel(Res.get("authorizedRole.mediator.mediationCaseDetails.securityDeposit")),
+                    securityDepositValueBox,
+                    Optional.empty()
+            );
 
             VBox content;
 
@@ -213,25 +215,21 @@ public class MuSigMediationCaseDetailSection {
 
                 VBox.setMargin(detailsLabel, new Insets(15, 0, -5, 0));
 
-                // Security deposits
-                securityDepositLabel = getValueLabel();
-                securityDepositPercentLabel = new Label();
-                securityDepositPercentLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-                openParenthesisLabel = new Label("(");
-                openParenthesisLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-                closingParenthesisLabel = new Label(")");
-                closingParenthesisLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-                HBox securityDepositPercentBox = new HBox(openParenthesisLabel,
-                        securityDepositPercentLabel,
-                        closingParenthesisLabel);
-                securityDepositPercentBox.setAlignment(Pos.BASELINE_LEFT);
-                HBox securityDepositValueBox = new HBox(5, securityDepositLabel, securityDepositPercentBox);
-                securityDepositValueBox.setAlignment(Pos.BASELINE_LEFT);
-                HBox securityDepositBox = createAndGetDescriptionAndValueBox(
-                        getDescriptionLabel(Res.get("authorizedRole.mediator.mediationCaseDetails.securityDeposit")),
-                        securityDepositValueBox,
-                        Optional.empty()
-                );
+                // Trade ID
+                tradeIdLabel = getValueLabel();
+                tradeIdCopyButton = getCopyButton(Res.get("bisqEasy.openTrades.tradeDetails.tradeId.copy"));
+                HBox tradeIdBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.tradeId",
+                        tradeIdLabel, tradeIdCopyButton);
+
+                // Offer type and market
+                offerTypeLabel = getValueLabel();
+                Label offerAndMarketslashLabel = new Label("/");
+                offerAndMarketslashLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
+                marketLabel = getValueLabel();
+                HBox offerTypeAndMarketDetailsHBox = new HBox(5, offerTypeLabel, offerAndMarketslashLabel, marketLabel);
+                offerTypeAndMarketDetailsHBox.setAlignment(Pos.BASELINE_LEFT);
+                HBox offerTypeAndMarketBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.offerTypeAndMarket",
+                        offerTypeAndMarketDetailsHBox);
 
                 // Network addresses
                 buyerNetworkAddressLabel = getValueLabel();
@@ -254,9 +252,8 @@ public class MuSigMediationCaseDetailSection {
                         sellerNetworkAddressBox);
             } else {
                 content = new VBox(10,
-                        tradeIdBox,
                         tradeDateBox,
-                        offerTypeAndMarketBox);
+                        securityDepositBox);
             }
 
             content.setAlignment(Pos.CENTER_LEFT);
@@ -265,22 +262,17 @@ public class MuSigMediationCaseDetailSection {
 
         @Override
         protected void onViewAttached() {
-            tradeIdLabel.setText(model.getTradeId());
-            tradeIdCopyButton.setOnAction(e -> ClipboardUtil.copyToClipboard(model.getTradeId()));
             tradeDateLabel.setText(model.getTradeDate());
-            offerTypeLabel.setText(model.getOfferType());
-            marketLabel.setText(model.getMarket());
+
+            Optional<Model.SecurityDepositInfo> info = model.getSecurityDepositInfo();
+            securityDepositLabel.setText(info.map(Model.SecurityDepositInfo::amountText).orElse(Res.get("data.na")));
+            securityDepositPercentLabel.setText(info.map(Model.SecurityDepositInfo::percentText).orElse(Res.get("data.na")));
+
             if (!model.isCompactView()) {
-                Optional<Model.SecurityDepositInfo> info = model.getSecurityDepositInfo();
-                boolean showPercent = info.map(Model.SecurityDepositInfo::isMatching).orElse(false);
-                securityDepositLabel.setText(info.map(Model.SecurityDepositInfo::amountText).orElse(Res.get("data.na")));
-                securityDepositPercentLabel.setText(info.map(Model.SecurityDepositInfo::percentText).orElse(Res.get("data.na")));
-                securityDepositPercentLabel.setVisible(showPercent);
-                securityDepositPercentLabel.setManaged(showPercent);
-                openParenthesisLabel.setVisible(showPercent);
-                openParenthesisLabel.setManaged(showPercent);
-                closingParenthesisLabel.setVisible(showPercent);
-                closingParenthesisLabel.setManaged(showPercent);
+                tradeIdLabel.setText(model.getTradeId());
+                tradeIdCopyButton.setOnAction(e -> ClipboardUtil.copyToClipboard(model.getTradeId()));
+                offerTypeLabel.setText(model.getOfferType());
+                marketLabel.setText(model.getMarket());
                 buyerNetworkAddressLabel.setText(model.getBuyerNetworkAddress());
                 sellerNetworkAddressLabel.setText(model.getSellerNetworkAddress());
                 buyerNetworkAddressCopyButton.setOnAction(e -> ClipboardUtil.copyToClipboard(model.getBuyerNetworkAddress()));
@@ -290,8 +282,8 @@ public class MuSigMediationCaseDetailSection {
 
         @Override
         protected void onViewDetached() {
-            tradeIdCopyButton.setOnAction(null);
             if (!model.isCompactView()) {
+                tradeIdCopyButton.setOnAction(null);
                 buyerNetworkAddressCopyButton.setOnAction(null);
                 sellerNetworkAddressCopyButton.setOnAction(null);
             }
