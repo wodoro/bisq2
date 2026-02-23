@@ -98,7 +98,7 @@ public class MuSigState4TradeClosed extends MuSigBaseState {
             trade.setTradeCompletedDate(System.currentTimeMillis());
 
             MuSigContract contract = trade.getContract();
-            model.setPaymentProofDescription(Res.get("bisqEasy.tradeState.paymentProof.MAIN_CHAIN"));
+            model.setPaymentProofDescription(Res.get("muSig.trade.state.phase4.txId"));
             model.setBlockExplorerLinkVisible(true);
             String paymentProof = trade.getDepositTxId();
             model.setPaymentProof(paymentProof);
@@ -130,8 +130,8 @@ public class MuSigState4TradeClosed extends MuSigBaseState {
 
         protected void onCloseCompletedTrade() {
             if (dontShowAgainService.showAgain(CONFIRM_CLOSE_MU_SIG_TRADE)) {
-                new Popup().feedback(Res.get("bisqEasy.openTrades.closeTrade.warning.completed"))
-                        .actionButtonText(Res.get("bisqEasy.openTrades.confirmCloseTrade"))
+                new Popup().feedback(Res.get("muSig.trade.pending.closeTrade.warning.completed"))
+                        .actionButtonText(Res.get("muSig.trade.pending.confirmCloseTrade"))
                         .onAction(this::doCloseCompletedTrade)
                         .closeButtonText(Res.get("action.cancel"))
                         .dontShowAgainId(CONFIRM_CLOSE_MU_SIG_TRADE)
@@ -211,9 +211,9 @@ public class MuSigState4TradeClosed extends MuSigBaseState {
             muSigTradeCompletedTable = new MuSigTradeCompletedTable();
             peerProfileDisplay = new UserProfileDisplay();
 
-            detailsButton = new Button(Res.get("bisqEasy.tradeState.info.phase4.showDetails"));
-            exportButton = new Button(Res.get("bisqEasy.tradeState.info.phase4.exportTrade"));
-            closeTradeButton = new Button(Res.get("bisqEasy.tradeState.info.phase4.leaveChannel"));
+            detailsButton = new Button(Res.get("muSig.trade.state.phase4.showDetails"));
+            exportButton = new Button(Res.get("muSig.trade.state.phase4.exportTrade"));
+            closeTradeButton = new Button(Res.get("muSig.trade.state.phase4.leaveChannel"));
             closeTradeButton.setDefaultButton(true);
             HBox buttons = new HBox(20, detailsButton, exportButton, closeTradeButton);
             buttons.setAlignment(Pos.BOTTOM_RIGHT);

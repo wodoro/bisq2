@@ -245,8 +245,8 @@ public class MuSigCreateOfferAmountController implements Controller {
         areBaseAndQuoteCurrenciesInvertedPin = EasyBind.subscribe(amountSelectionController.getAreBaseAndQuoteCurrenciesInverted(), areInverted -> {
             String quoteCode = model.getPriceQuote().get().getMarket().getQuoteCurrencyCode();
             model.getPriceTooltip().set(amountSelectionController.isUsingInvertedBaseAndQuoteCurrencies()
-                    ? Res.get("bisqEasy.component.amount.quoteSide.tooltip.fiatAmount.selectedPrice", quoteCode)
-                    : Res.get("bisqEasy.component.amount.baseSide.tooltip.btcAmount.selectedPrice"));
+                    ? Res.get("muSig.offer.wizard.amount.quoteSide.tooltip.fiatAmount.selectedPrice", quoteCode)
+                    : Res.get("muSig.offer.wizard.amount.baseSide.tooltip.btcAmount.selectedPrice"));
         });
 
         priceTooltipPin = EasyBind.subscribe(model.getPriceTooltip(), priceTooltip -> {
@@ -392,36 +392,36 @@ public class MuSigCreateOfferAmountController implements Controller {
         model.getLearnMoreVisible().set(true);
         if (model.getIsRangeAmountEnabled().get()) {
             // At range amount we use the min amount
-            String numSellers = Res.getPluralization("bisqEasy.tradeWizard.amount.buyer.numSellers", numPotentialTakersForMinAmount);
-            model.getAmountLimitInfo().set(Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo", numSellers));
-            model.setAmountLimitInfoLink(Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo.learnMore"));
+            String numSellers = Res.getPluralization("muSig.offer.create.amount.numSellers.buyer", numPotentialTakersForMinAmount);
+            model.getAmountLimitInfo().set(Res.get("muSig.offer.create.amount.limitInfo.buyer", numSellers));
+            model.setAmountLimitInfoLink(Res.get("muSig.offer.create.amount.limitInfo.learnMore.buyer"));
 
             String formattedMinAmount = formatQuoteAmountWithCode(minQuoteSideAmount);
-            String firstPart = Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo.overlay.info.firstPart", formattedMinAmount, requiredReputationScoreForMinAmount);
+            String firstPart = Res.get("muSig.offer.create.amount.limitInfo.overlay.info.firstPart.buyer", formattedMinAmount, requiredReputationScoreForMinAmount);
             String secondPart;
             if (numPotentialTakersForMinAmount == 0) {
                 model.getShouldShowWarningIcon().set(true);
-                secondPart = Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo.overlay.info.secondPart.noSellers");
+                secondPart = Res.get("muSig.offer.create.amount.limitInfo.overlay.info.secondPart.noSellers.buyer");
             } else {
                 secondPart = numPotentialTakersForMinAmount == 1
-                        ? Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo.overlay.info.secondPart.singular", numSellers)
-                        : Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo.overlay.info.secondPart.plural", numSellers);
+                        ? Res.get("muSig.offer.create.amount.limitInfo.overlay.info.secondPart.singular.buyer", numSellers)
+                        : Res.get("muSig.offer.create.amount.limitInfo.overlay.info.secondPart.plural.buyer", numSellers);
             }
             model.getAmountLimitInfoOverlayInfo().set(firstPart + "\n\n" + secondPart + "\n\n");
         } else {
             // Fixed amount
-            String numSellers = Res.getPluralization("bisqEasy.tradeWizard.amount.buyer.numSellers", numPotentialTakersForMaxOrFixedAmount);
-            model.getAmountLimitInfo().set(Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo", numSellers));
-            model.setAmountLimitInfoLink(Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo.learnMore"));
-            String firstPart = Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo.overlay.info.firstPart", formattedMaxOrFixedAmount, requiredReputationScoreForMaxOrFixedAmount);
+            String numSellers = Res.getPluralization("muSig.offer.create.amount.numSellers.buyer", numPotentialTakersForMaxOrFixedAmount);
+            model.getAmountLimitInfo().set(Res.get("muSig.offer.create.amount.limitInfo.buyer", numSellers));
+            model.setAmountLimitInfoLink(Res.get("muSig.offer.create.amount.limitInfo.learnMore.buyer"));
+            String firstPart = Res.get("muSig.offer.create.amount.limitInfo.overlay.info.firstPart.buyer", formattedMaxOrFixedAmount, requiredReputationScoreForMaxOrFixedAmount);
             String secondPart;
             if (numPotentialTakersForMaxOrFixedAmount == 0) {
                 model.getShouldShowWarningIcon().set(true);
-                secondPart = Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo.overlay.info.secondPart.noSellers");
+                secondPart = Res.get("muSig.offer.create.amount.limitInfo.overlay.info.secondPart.noSellers.buyer");
             } else {
                 secondPart = numPotentialTakersForMaxOrFixedAmount == 1
-                        ? Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo.overlay.info.secondPart.singular", numSellers)
-                        : Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo.overlay.info.secondPart.plural", numSellers);
+                        ? Res.get("muSig.offer.create.amount.limitInfo.overlay.info.secondPart.singular.buyer", numSellers)
+                        : Res.get("muSig.offer.create.amount.limitInfo.overlay.info.secondPart.plural.buyer", numSellers);
             }
             model.getAmountLimitInfoOverlayInfo().set(firstPart + "\n\n" + secondPart + "\n\n");
         }
@@ -466,8 +466,8 @@ public class MuSigCreateOfferAmountController implements Controller {
 
         if (isBuyer) {
             // Buyer case
-            model.setLinkToWikiText(Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo.overlay.linkToWikiText"));
-            model.setAmountLimitInfoLink(Res.get("bisqEasy.tradeWizard.amount.buyer.limitInfo.learnMore"));
+            model.setLinkToWikiText(Res.get("muSig.offer.create.amount.limitInfo.overlay.linkToWikiText.buyer"));
+            model.setAmountLimitInfoLink(Res.get("muSig.offer.create.amount.limitInfo.learnMore.buyer"));
 
             long highestScore = reputationService.getScoreByUserProfileId().entrySet().stream()
                     .filter(e -> userIdentityService.findUserIdentity(e.getKey()).isEmpty())
@@ -482,13 +482,13 @@ public class MuSigCreateOfferAmountController implements Controller {
             }
         } else {
             // Seller case
-            model.setLinkToWikiText(Res.get("bisqEasy.tradeWizard.amount.seller.limitInfo.overlay.linkToWikiText"));
-            model.setAmountLimitInfoLink(Res.get("bisqEasy.tradeWizard.amount.seller.limitInfo.link"));
+            model.setLinkToWikiText(Res.get("muSig.offer.create.amount.limitInfo.overlay.linkToWikiText.seller"));
+            model.setAmountLimitInfoLink(Res.get("muSig.offer.create.amount.limitInfo.link.seller"));
             Monetary reputationBasedQuoteSideAmount = model.getReputationBasedMaxAmount();
             long myReputationScore = model.getMyReputationScore();
             String formattedAmount = formatQuoteAmountWithCode(reputationBasedQuoteSideAmount.round(0));
-            model.getAmountLimitInfo().set(Res.get("bisqEasy.tradeWizard.amount.seller.limitInfo", formattedAmount));
-            model.getAmountLimitInfoOverlayInfo().set(Res.get("bisqEasy.tradeWizard.amount.seller.limitInfo.overlay", myReputationScore, formattedAmount));
+            model.getAmountLimitInfo().set(Res.get("muSig.offer.create.amount.limitInfo.seller", formattedAmount));
+            model.getAmountLimitInfoOverlayInfo().set(Res.get("muSig.offer.create.amount.limitInfo.overlay.seller", myReputationScore, formattedAmount));
             amountSelectionController.setRightMarkerQuoteSideValue(reputationBasedQuoteSideAmount);
             applyReputationBasedQuoteSideAmount();
         }

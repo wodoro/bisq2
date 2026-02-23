@@ -125,7 +125,7 @@ public class MuSigPriceInput {
         private final Model model;
         @Getter
         private final View view;
-        private final NumberValidator validator = new NumberValidator(Res.get("bisqEasy.price.warn.invalidPrice.numberFormatException"));
+        private final NumberValidator validator = new NumberValidator(Res.get("muSig.offer.create.price.warn.invalidPrice.numberFormatException"));
         private final MarketPriceService marketPriceService;
         private Pin marketPricePin;
         private Subscription quotePin, pricePin;

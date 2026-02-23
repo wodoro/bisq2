@@ -74,7 +74,7 @@ public final class MuSigOpenTradesController extends ChatController<MuSigOpenTra
     public void createDependencies(ChatChannelDomain chatChannelDomain) {
         muSigTradeStateController = new MuSigTradeStateController(serviceProvider);
         muSigOpenTradesWelcome = new MuSigOpenTradesWelcome();
-        muSigTradeDataHeader = new MuSigTradeDataHeader(serviceProvider, Res.get("bisqEasy.openTrades.chat.peer.description").toUpperCase());
+        muSigTradeDataHeader = new MuSigTradeDataHeader(serviceProvider, Res.get("muSig.trade.pending.chat.peer.description").toUpperCase());
     }
 
     @Override
@@ -179,7 +179,7 @@ public final class MuSigOpenTradesController extends ChatController<MuSigOpenTra
                 String peerUserName = peerUserProfile.getUserName();
 
                 String shortTradeId = tradeChannel.getTradeId().substring(0, 8);
-                model.getChatWindowTitle().set(Res.get("bisqEasy.openTrades.chat.window.title",
+                model.getChatWindowTitle().set(Res.get("muSig.trade.pending.chat.window.title",
                         serviceProvider.getConfig().getAppName(), peerUserName, shortTradeId));
 
                 model.getListItems().stream()
@@ -206,8 +206,8 @@ public final class MuSigOpenTradesController extends ChatController<MuSigOpenTra
 
     void onShowTradeRulesAcceptedWarning() {
         if (!model.getFilteredList().isEmpty() && !settingsService.getMuSigTradeRulesConfirmed().get()) {
-            new Popup().information(Res.get("muSig.tradeGuide.notConfirmed.warn"))
-                    .actionButtonText(Res.get("muSig.tradeGuide.open"))
+            new Popup().information(Res.get("muSig.trade.guide.notConfirmed.warn"))
+                    .actionButtonText(Res.get("muSig.trade.guide.open"))
                     .onAction(() -> Navigation.navigateTo(NavigationTarget.MU_SIG_GUIDE))
                     .show();
         }

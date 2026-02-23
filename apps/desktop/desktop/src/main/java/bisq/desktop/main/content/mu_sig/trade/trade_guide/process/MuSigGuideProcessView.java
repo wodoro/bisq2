@@ -41,13 +41,13 @@ public class MuSigGuideProcessView extends View<VBox, MuSigGuideProcessModel, Mu
         root.setSpacing(20);
         root.setAlignment(Pos.TOP_LEFT);
 
-        Label headline = new Label(Res.get("muSig.tradeGuide.process.headline"));
+        Label headline = new Label(Res.get("muSig.trade.guide.process.headline"));
         headline.getStyleClass().add("musig-trade-guide-headline");
 
-        Label content = new Label(Res.get("muSig.tradeGuide.process.content"));
+        Label content = new Label(Res.get("muSig.trade.guide.process.content"));
         content.setWrapText(true);
         content.getStyleClass().add("musig-trade-guide-content");
-        UnorderedList rules = new UnorderedList(Res.get("muSig.tradeGuide.process.steps"), "musig-trade-guide-content");
+        UnorderedList rules = new UnorderedList(Res.get("muSig.trade.guide.process.steps"), "musig-trade-guide-content");
         rules.setSpacing(5);
 
         backButton = new Button(Res.get("action.back"));

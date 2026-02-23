@@ -157,7 +157,7 @@ public class MuSigCreateOfferPriceController implements Controller {
         });
 
         String marketCodes = model.getMarket().getMarketCodes();
-        priceInput.setDescription(Res.get("bisqEasy.price.tradePrice.inputBoxText", marketCodes));
+        priceInput.setDescription(Res.get("muSig.offer.create.price.tradePrice.inputBoxText", marketCodes));
 
         model.getShouldShowFeedback().set(model.getDisplayDirection().isBuy());
 
@@ -189,7 +189,7 @@ public class MuSigCreateOfferPriceController implements Controller {
                 model.getPercentageInput().set(percentageAsString);
                 onPercentageInput(percentageAsString);
             } catch (Exception e) {
-                model.getErrorMessage().set(Res.get("bisqEasy.price.warn.invalidPrice.numberFormatException"));
+                model.getErrorMessage().set(Res.get("muSig.offer.create.price.warn.invalidPrice.numberFormatException"));
             }
         }
     }
@@ -240,9 +240,9 @@ public class MuSigCreateOfferPriceController implements Controller {
             }
             applyPriceSpec();
         } catch (NumberFormatException e) {
-            model.getErrorMessage().set(Res.get("bisqEasy.price.warn.invalidPrice.numberFormatException"));
+            model.getErrorMessage().set(Res.get("muSig.offer.create.price.warn.invalidPrice.numberFormatException"));
         } catch (Exception e) {
-            model.getErrorMessage().set(Res.get("bisqEasy.price.warn.invalidPrice.exception", e.getMessage()));
+            model.getErrorMessage().set(Res.get("muSig.offer.create.price.warn.invalidPrice.exception", e.getMessage()));
         }
     }
 
@@ -345,7 +345,7 @@ public class MuSigCreateOfferPriceController implements Controller {
             model.getErrorMessage().set(null);
             return true;
         } else {
-            model.getErrorMessage().set(Res.get("bisqEasy.price.warn.invalidPrice.outOfRange"));
+            model.getErrorMessage().set(Res.get("muSig.offer.create.price.warn.invalidPrice.outOfRange"));
             return false;
         }
     }
@@ -358,7 +358,7 @@ public class MuSigCreateOfferPriceController implements Controller {
             }
             return optionalPercentage.orElse(0d);
         } catch (Exception e) {
-            model.getErrorMessage().set(Res.get("bisqEasy.price.warn.invalidPrice.outOfRange"));
+            model.getErrorMessage().set(Res.get("muSig.offer.create.price.warn.invalidPrice.outOfRange"));
             return 0;
         }
     }
@@ -395,15 +395,15 @@ public class MuSigCreateOfferPriceController implements Controller {
             double percentageValue = percentage.get();
             String feedbackSentence;
             if (percentageValue < -0.05) {
-                feedbackSentence = getFeedbackSentence(Res.get("bisqEasy.price.feedback.sentence.veryLow"));
+                feedbackSentence = getFeedbackSentence(Res.get("muSig.offer.create.price.feedback.sentence.veryLow"));
             } else if (percentageValue < 0d) {
-                feedbackSentence = getFeedbackSentence(Res.get("bisqEasy.price.feedback.sentence.low"));
+                feedbackSentence = getFeedbackSentence(Res.get("muSig.offer.create.price.feedback.sentence.low"));
             } else if (percentageValue < 0.05) {
-                feedbackSentence = getFeedbackSentence(Res.get("bisqEasy.price.feedback.sentence.some"));
+                feedbackSentence = getFeedbackSentence(Res.get("muSig.offer.create.price.feedback.sentence.some"));
             } else if (percentageValue < 0.15) {
-                feedbackSentence = getFeedbackSentence(Res.get("bisqEasy.price.feedback.sentence.good"));
+                feedbackSentence = getFeedbackSentence(Res.get("muSig.offer.create.price.feedback.sentence.good"));
             } else {
-                feedbackSentence = getFeedbackSentence(Res.get("bisqEasy.price.feedback.sentence.veryGood"));
+                feedbackSentence = getFeedbackSentence(Res.get("muSig.offer.create.price.feedback.sentence.veryGood"));
             }
 
             model.getShouldShowWarningIcon().set(percentageValue < 0.05);
@@ -415,8 +415,8 @@ public class MuSigCreateOfferPriceController implements Controller {
 
     private String getFeedbackSentence(String adjective) {
         return model.getDisplayDirection().isBuy()
-                ? Res.get("bisqEasy.price.feedback.buyOffer.sentence", adjective)
-                : Res.get("bisqEasy.price.feedback.sellOffer.sentence", adjective);
+                ? Res.get("muSig.offer.create.price.feedback.buyOffer.sentence", adjective)
+                : Res.get("muSig.offer.create.price.feedback.sellOffer.sentence", adjective);
     }
 
     private void applyPriceFromCookie(String price) {

@@ -137,8 +137,8 @@ public class MuSigCreateOfferReviewController implements Controller {
         model.setPaymentMethods(paymentMethods);
         model.setPaymentMethodDescription(
                 paymentMethods.size() == 1
-                        ? Res.get("muSig.createOffer.review.paymentMethod.description")
-                        : Res.get("muSig.createOffer.review.paymentMethods.description")
+                        ? Res.get("muSig.offer.create.review.paymentMethod.description")
+                        : Res.get("muSig.offer.create.review.paymentMethods.description")
         );
         model.setPaymentMethodsDisplayString(PaymentMethodSpecFormatter.fromPaymentMethods(paymentMethods));
         List<String> accountNames = accounts.stream()
@@ -206,7 +206,7 @@ public class MuSigCreateOfferReviewController implements Controller {
         } catch (UserProfileBannedException e) {
             // We do not inform banned users about being banned
         } catch (RateLimitExceededException e) {
-            UIThread.run(() -> new Popup().warning(Res.get("muSig.createOffer.rateLimitsExceeded.publish.warning")).show());
+            UIThread.run(() -> new Popup().warning(Res.get("muSig.offer.create.rateLimitsExceeded.publish.warning")).show());
         }
     }
 
@@ -219,7 +219,7 @@ public class MuSigCreateOfferReviewController implements Controller {
 
         model.setPriceSpec(priceSpec);
         priceInput.setMarket(market);
-        priceInput.setDescription(Res.get("bisqEasy.tradeWizard.review.priceDescription.taker", marketCodes));
+        priceInput.setDescription(Res.get("muSig.offer.create.review.priceDescription.taker", marketCodes));
 
         Optional<PriceQuote> priceQuote = PriceUtil.findQuote(marketPriceService, priceSpec, market);
         priceQuote.ifPresent(priceInput::setQuote);
@@ -227,7 +227,7 @@ public class MuSigCreateOfferReviewController implements Controller {
                 .map(PriceFormatter::format)
                 .orElse("");
         String codes = priceQuote.map(e -> e.getMarket().getMarketCodes()).orElse("");
-        model.setPriceWithCode(Res.get("bisqEasy.tradeWizard.review.price", formattedPrice, codes));
+        model.setPriceWithCode(Res.get("muSig.offer.create.review.price", formattedPrice, codes));
         model.setPrice(formattedPrice);
         model.setPriceCode(codes);
 
@@ -302,16 +302,16 @@ public class MuSigCreateOfferReviewController implements Controller {
             model.setSecurityDepositAsBtc(calculateSecurityDeposit(market, fixBaseSideAmount, fixQuoteSideAmount));
         }
 
-        model.setHeadline(Res.get("bisqEasy.tradeWizard.review.headline.maker"));
-        model.setDetailsHeadline(Res.get("bisqEasy.tradeWizard.review.detailsHeadline.maker").toUpperCase());
+        model.setHeadline(Res.get("muSig.offer.create.review.headline.maker"));
+        model.setDetailsHeadline(Res.get("muSig.offer.create.review.detailsHeadline.maker").toUpperCase());
 
-        model.setPriceDescription(Res.get("bisqEasy.tradeWizard.review.priceDescription.maker"));
+        model.setPriceDescription(Res.get("muSig.offer.create.review.priceDescription.maker"));
         if (displayDirection.isSell()) {
-            toSendAmountDescription = Res.get("bisqEasy.tradeWizard.review.toSend");
+            toSendAmountDescription = Res.get("muSig.offer.create.review.toSend");
         } else {
-            toSendAmountDescription = Res.get("bisqEasy.tradeWizard.review.toPay");
+            toSendAmountDescription = Res.get("muSig.offer.create.review.toPay");
         }
-        toReceiveAmountDescription = Res.get("bisqEasy.tradeWizard.review.toReceive");
+        toReceiveAmountDescription = Res.get("muSig.offer.create.review.toReceive");
 
         String directionString = String.format("%s %s",
                 Res.get(displayDirection.isSell() ? "offer.sell" : "offer.buy").toUpperCase(),
@@ -346,11 +346,11 @@ public class MuSigCreateOfferReviewController implements Controller {
 
         Direction displayDirection = model.getOffer().getDisplayDirection();
         if (displayDirection.isSell()) {
-            model.setFee(Res.get("bisqEasy.tradeWizard.review.sellerPaysMinerFee"));
-            model.setFeeDetails(Res.get("bisqEasy.tradeWizard.review.noTradeFeesLong"));
+            model.setFee(Res.get("muSig.offer.create.review.sellerPaysMinerFee"));
+            model.setFeeDetails(Res.get("muSig.offer.create.review.noTradeFeesLong"));
         } else {
-            model.setFee(Res.get("bisqEasy.tradeWizard.review.noTradeFees"));
-            model.setFeeDetails(Res.get("bisqEasy.tradeWizard.review.sellerPaysMinerFeeLong"));
+            model.setFee(Res.get("muSig.offer.create.review.noTradeFees"));
+            model.setFeeDetails(Res.get("muSig.offer.create.review.sellerPaysMinerFeeLong"));
         }
     }
 
@@ -396,20 +396,20 @@ public class MuSigCreateOfferReviewController implements Controller {
         Optional<Double> percentFromMarketPrice = PriceUtil.findPercentFromMarketPrice(marketPriceService, priceSpec, market);
         double percent = percentFromMarketPrice.orElse(0d);
         if ((priceSpec instanceof FloatPriceSpec || priceSpec instanceof MarketPriceSpec) && percent == 0) {
-            model.setPriceDetails(Res.get("bisqEasy.tradeWizard.review.priceDetails"));
+            model.setPriceDetails(Res.get("muSig.offer.create.review.priceDetails"));
         } else {
             String aboveOrBelow = percent > 0 ? Res.get("offer.price.above") : Res.get("offer.price.below");
             String percentAsString = percentFromMarketPrice.map(Math::abs).map(PercentageFormatter::formatToPercentWithSymbol)
                     .orElseGet(() -> Res.get("data.na"));
             if (priceSpec instanceof FloatPriceSpec) {
-                model.setPriceDetails(Res.get("bisqEasy.tradeWizard.review.priceDetails.float",
+                model.setPriceDetails(Res.get("muSig.offer.create.review.priceDetails.float",
                         percentAsString, aboveOrBelow, marketPriceAsString));
             } else {
                 if (percent == 0) {
-                    model.setPriceDetails(Res.get("bisqEasy.tradeWizard.review.priceDetails.fix.atMarket",
+                    model.setPriceDetails(Res.get("muSig.offer.create.review.priceDetails.fix.atMarket",
                             marketPriceAsString));
                 } else {
-                    model.setPriceDetails(Res.get("bisqEasy.tradeWizard.review.priceDetails.fix",
+                    model.setPriceDetails(Res.get("muSig.offer.create.review.priceDetails.fix",
                             percentAsString, aboveOrBelow, marketPriceAsString));
                 }
             }

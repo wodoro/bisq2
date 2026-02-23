@@ -96,9 +96,9 @@ public class MuSigTradeDetailsController extends NavigationController implements
         model.setMe(String.format("%s (%s)", channel.getMyUserIdentity().getNickName(), MuSigTradeFormatter.getMakerTakerRole(trade).toLowerCase()));
         model.setPeer(channel.getPeer().getUserName());
         model.setOfferType(trade.getOffer().getDisplayDirection().isBuy()
-                ? Res.get("bisqEasy.openTrades.tradeDetails.offerTypeAndMarket.buyOffer")
-                : Res.get("bisqEasy.openTrades.tradeDetails.offerTypeAndMarket.sellOffer"));
-        model.setMarket(Res.get("bisqEasy.openTrades.tradeDetails.offerTypeAndMarket.fiatMarket",
+                ? Res.get("muSig.trade.details.offerTypeAndMarket.buyOffer")
+                : Res.get("muSig.trade.details.offerTypeAndMarket.sellOffer"));
+        model.setMarket(Res.get("muSig.trade.details.offerTypeAndMarket.fiatMarket",
                 trade.getOffer().getMarket().getNonBtcCurrencyCode()));
 
         model.setNonBtcAmount(MuSigTradeFormatter.formatNonBtcSideAmount(trade));
@@ -121,11 +121,11 @@ public class MuSigTradeDetailsController extends NavigationController implements
         model.setPaymentAccountDataEmpty(peersAccountPayload.isEmpty());
 
         model.setPeersPaymentAccountDataDescription(isBaseCurrencyBitcoin
-                ? Res.get("muSig.openTrades.tradeDetails.fiat.paymentAccountData")
-                : Res.get("muSig.openTrades.tradeDetails.crypto.paymentAccountData", market.getNonBtcCurrencyCode())
+                ? Res.get("muSig.trade.details.paymentAccountData.fiat")
+                : Res.get("muSig.trade.details.paymentAccountData.crypto", market.getNonBtcCurrencyCode())
         );
         model.setPeersPaymentAccountData(peersAccountPayload.isEmpty()
-                ? Res.get("bisqEasy.openTrades.tradeDetails.dataNotYetProvided")
+                ? Res.get("muSig.trade.details.dataNotYetProvided")
                 : peersAccountPayload.get().getAccountDataDisplayString());
 
         model.setAssignedMediator(channel.getMediator().map(UserProfile::getUserName).orElse(""));
@@ -133,7 +133,7 @@ public class MuSigTradeDetailsController extends NavigationController implements
 
 
         model.setDepositTxId(trade.getDepositTxId() == null
-                ? Res.get("bisqEasy.openTrades.tradeDetails.dataNotYetProvided")
+                ? Res.get("muSig.trade.details.dataNotYetProvided")
                 : trade.getDepositTxId());
         model.setDepositTxIdEmpty(trade.getDepositTxId() == null);
         model.setDepositTxIdVisible(trade.getDepositTxId() != null);

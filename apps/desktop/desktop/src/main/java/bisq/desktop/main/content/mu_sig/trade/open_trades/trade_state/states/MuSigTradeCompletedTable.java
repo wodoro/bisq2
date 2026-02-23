@@ -57,13 +57,13 @@ public class MuSigTradeCompletedTable extends VBox {
     public MuSigTradeCompletedTable() {
         waitingAnimation = new MuSigWaitingAnimation(MuSigWaitingState.TRADE_COMPLETED);
 
-        WrappingText headline = MuSigFormUtils.getHeadline(Res.get("muSig.tradeCompleted.title"));
-        WrappingText info = MuSigFormUtils.getInfo(Res.get("muSig.tradeCompleted.info"));
+        WrappingText headline = MuSigFormUtils.getHeadline(Res.get("muSig.trade.completed.title"));
+        WrappingText info = MuSigFormUtils.getInfo(Res.get("muSig.trade.completed.info"));
 
         HBox headerHBox = createWaitingInfo(waitingAnimation, headline, info);
         headerHBox.setAlignment(Pos.CENTER);
 
-        Label tableTitle = new Label(Res.get("bisqEasy.tradeCompleted.tableTitle").toUpperCase());
+        Label tableTitle = new Label(Res.get("muSig.trade.completed.tableTitle").toUpperCase());
         tableTitle.getStyleClass().addAll("trade-completed-table-title", "font-light");
 
         // Header
@@ -103,17 +103,17 @@ public class MuSigTradeCompletedTable extends VBox {
 
         copyTxIdButton = new BisqMenuItem("copy-grey", "copy-white");
         copyTxIdButton.useIconOnly();
-        copyTxIdButton.setTooltip(Res.get("bisqEasy.tradeCompleted.body.copy.txId.tooltip"));
+        copyTxIdButton.setTooltip(Res.get("muSig.trade.completed.body.copy.txId.tooltip"));
 
         copyTxExplorerLinkButton = new BisqMenuItem("link-grey", "link-white");
         copyTxExplorerLinkButton.useIconOnly();
-        copyTxExplorerLinkButton.setTooltip(Res.get("bisqEasy.tradeCompleted.body.copy.explorerLink.tooltip"));
+        copyTxExplorerLinkButton.setTooltip(Res.get("muSig.trade.completed.body.copy.explorerLink.tooltip"));
         copyTxExplorerLinkButton.setVisible(false);
         copyTxExplorerLinkButton.setManaged(false);
 
         openTxExplorerButton = new BisqMenuItem("open-link-grey", "open-link-white");
         openTxExplorerButton.useIconOnly();
-        openTxExplorerButton.setTooltip(Res.get("bisqEasy.tradeCompleted.body.txId.tooltip"));
+        openTxExplorerButton.setTooltip(Res.get("muSig.trade.completed.body.txId.tooltip"));
         openTxExplorerButton.setVisible(false);
         openTxExplorerButton.setManaged(false);
 
@@ -151,7 +151,7 @@ public class MuSigTradeCompletedTable extends VBox {
         int numColumns = isBaseCurrencyBitcoin ? 5 : 4;
         GridPaneUtil.setGridPaneMultiColumnsConstraints(headerGridPane, numColumns);
 
-        Label tradeWith = new Label(Res.get("bisqEasy.tradeCompleted.header.tradeWith").toUpperCase());
+        Label tradeWith = new Label(Res.get("muSig.trade.completed.header.tradeWith").toUpperCase());
         tradeWith.getStyleClass().addAll("dimmed-text");
         headerGridPane.add(tradeWith, col, rowTitle);
         headerGridPane.add(tradeWithValue, col, rowValue);
@@ -163,11 +163,11 @@ public class MuSigTradeCompletedTable extends VBox {
         ++col;
         if (isBaseCurrencyBitcoin) {
             if (isBuyer) {
-                btcSideDirection.setText(Res.get("bisqEasy.tradeCompleted.header.myDirection.buyer").toUpperCase());
-                nonBtcSideDirection.setText(Res.get("bisqEasy.tradeCompleted.header.myOutcome.buyer").toUpperCase());
+                btcSideDirection.setText(Res.get("muSig.trade.completed.header.myDirection.buyer").toUpperCase());
+                nonBtcSideDirection.setText(Res.get("muSig.trade.completed.header.myOutcome.buyer").toUpperCase());
             } else {
-                btcSideDirection.setText(Res.get("bisqEasy.tradeCompleted.header.myDirection.seller").toUpperCase());
-                nonBtcSideDirection.setText(Res.get("bisqEasy.tradeCompleted.header.myOutcome.seller").toUpperCase());
+                btcSideDirection.setText(Res.get("muSig.trade.completed.header.myDirection.seller").toUpperCase());
+                nonBtcSideDirection.setText(Res.get("muSig.trade.completed.header.myOutcome.seller").toUpperCase());
             }
             headerGridPane.add(btcSideDirection, col, rowTitle);
             headerGridPane.add(bitcoinAmountDisplay, col, rowValue);
@@ -177,11 +177,11 @@ public class MuSigTradeCompletedTable extends VBox {
 
         } else {
             if (isBuyer) {
-                nonBtcSideDirection.setText(Res.get("bisqEasy.tradeCompleted.header.myDirection.buyer").toUpperCase());
-                btcSideDirection.setText(Res.get("bisqEasy.tradeCompleted.header.myOutcome.buyer").toUpperCase());
+                nonBtcSideDirection.setText(Res.get("muSig.trade.completed.header.myDirection.buyer").toUpperCase());
+                btcSideDirection.setText(Res.get("muSig.trade.completed.header.myOutcome.buyer").toUpperCase());
             } else {
-                nonBtcSideDirection.setText(Res.get("bisqEasy.tradeCompleted.header.myDirection.seller").toUpperCase());
-                btcSideDirection.setText(Res.get("bisqEasy.tradeCompleted.header.myOutcome.seller").toUpperCase());
+                nonBtcSideDirection.setText(Res.get("muSig.trade.completed.header.myDirection.seller").toUpperCase());
+                btcSideDirection.setText(Res.get("muSig.trade.completed.header.myOutcome.seller").toUpperCase());
             }
             headerGridPane.add(nonBtcSideDirection, col, rowTitle);
             headerGridPane.add(nonBtcHBox, col, rowValue);
@@ -191,7 +191,7 @@ public class MuSigTradeCompletedTable extends VBox {
         }
 
         ++col;
-        Label tradePriceLabel = new Label(Res.get("bisqEasy.tradeCompleted.header.tradePrice").toUpperCase());
+        Label tradePriceLabel = new Label(Res.get("muSig.trade.completed.header.tradePrice").toUpperCase());
         tradePriceLabel.getStyleClass().addAll("dimmed-text");
         Label tradePriceValue = new Label(tradePrice);
         tradePriceValue.getStyleClass().add("medium-text");
@@ -204,7 +204,7 @@ public class MuSigTradeCompletedTable extends VBox {
 
         if (isBaseCurrencyBitcoin) {
             ++col;
-            paymentMethodLabel.setText(Res.get("bisqEasy.tradeCompleted.header.paymentMethod").toUpperCase());
+            paymentMethodLabel.setText(Res.get("muSig.trade.completed.header.paymentMethod").toUpperCase());
             paymentMethodValue.setText(paymentMethod);
             headerGridPane.add(paymentMethodLabel, col, rowTitle);
             headerGridPane.add(paymentMethodValue, col, rowValue);
@@ -215,7 +215,7 @@ public class MuSigTradeCompletedTable extends VBox {
         int colValue = 1;
         int row = 0;
 
-        Label tradeDateLabel = new Label(Res.get("bisqEasy.tradeCompleted.body.date"));
+        Label tradeDateLabel = new Label(Res.get("muSig.trade.completed.body.date"));
         tradeDateLabel.getStyleClass().addAll("dimmed-text");
         Label dateValue = new Label(tradeDate);
         dateValue.getStyleClass().add("medium-text");
@@ -225,7 +225,7 @@ public class MuSigTradeCompletedTable extends VBox {
         // For completed trades before v2.1.4 we do not get the tradeDuration set
         if (!tradeDuration.isEmpty()) {
             ++row;
-            Label tradeDurationLabel = new Label(Res.get("bisqEasy.tradeCompleted.body.tradeDuration"));
+            Label tradeDurationLabel = new Label(Res.get("muSig.trade.completed.body.tradeDuration"));
             tradeDurationLabel.getStyleClass().addAll("dimmed-text");
             Label tradeDurationValue = new Label(tradeDuration);
             tradeDurationValue.getStyleClass().add("medium-text");
@@ -234,7 +234,7 @@ public class MuSigTradeCompletedTable extends VBox {
         }
 
         ++row;
-        Label tradeIdLabel = new Label(Res.get("bisqEasy.tradeCompleted.body.tradeId"));
+        Label tradeIdLabel = new Label(Res.get("muSig.trade.completed.body.tradeId"));
         tradeIdLabel.getStyleClass().addAll("dimmed-text");
         Label tradeIdValue = new Label(tradeId);
         tradeIdValue.getStyleClass().add("medium-text");
@@ -242,9 +242,9 @@ public class MuSigTradeCompletedTable extends VBox {
         bodyGridPane.add(tradeIdValue, colValue, row);
 
        /* ++row;
-        Label tradeFee = new Label(Res.get("muSig.tradeCompleted.body.tradeFee"));
+        Label tradeFee = new Label(Res.get("muSig.trade.completed.body.tradeFee"));
         tradeFee.getStyleClass().addAll("dimmed-text");
-        Label tradeFeeValue = new Label(Res.get("muSig.tradeCompleted.body.tradeFee.value"));
+        Label tradeFeeValue = new Label(Res.get("muSig.trade.completed.body.tradeFee.value"));
         tradeFeeValue.getStyleClass().add("medium-text");
         bodyGridPane.add(tradeFee, colTitle, row);
         bodyGridPane.add(tradeFeeValue, colValue, row);*/

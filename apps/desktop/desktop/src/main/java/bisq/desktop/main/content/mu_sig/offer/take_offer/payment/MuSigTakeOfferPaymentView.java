@@ -96,11 +96,11 @@ public class MuSigTakeOfferPaymentView extends View<StackPane, MuSigTakeOfferPay
 
         // noAccount overlay
         noAccountOverlayCloseButton = new Button(Res.get("action.close"));
-        createAccountButton = new Button(Res.get("muSig.takeOffer.paymentMethod.noAccountOverlay.createAccount"));
+        createAccountButton = new Button(Res.get("muSig.offer.taker.payment.noAccountOverlay.createAccount"));
         createAccountButton.setDefaultButton(true);
         noAccountOverlay = new WizardOverlay(root)
                 .warning()
-                .descriptionFromI18nKey("muSig.takeOffer.paymentMethod.noAccountOverlay.subTitle")
+                .descriptionFromI18nKey("muSig.offer.taker.payment.noAccountOverlay.subTitle")
                 .buttons(noAccountOverlayCloseButton, createAccountButton)
                 .build();
 
@@ -118,8 +118,8 @@ public class MuSigTakeOfferPaymentView extends View<StackPane, MuSigTakeOfferPay
         noPaymentMethodSelectedOverlayCloseButton = new Button(Res.get("action.close"));
         noPaymentMethodSelectedOverlay = new WizardOverlay(root)
                 .warning()
-                .headline("muSig.takeOffer.paymentMethods.noPaymentMethodSelectedWizardOverlay.title")
-                .descriptionFromI18nKey("muSig.takeOffer.paymentMethods.noPaymentMethodSelectedWizardOverlay.subtitle")
+                .headline("muSig.offer.taker.payment.noPaymentMethodSelectedWizardOverlay.title")
+                .descriptionFromI18nKey("muSig.offer.taker.payment.noPaymentMethodSelectedWizardOverlay.subtitle")
                 .buttons(noPaymentMethodSelectedOverlayCloseButton)
                 .build();
 
@@ -290,7 +290,7 @@ public class MuSigTakeOfferPaymentView extends View<StackPane, MuSigTakeOfferPay
     }
 
     private VBox createAndGetContentBox() {
-        Label subtitleLabel = new Label(Res.get("muSig.takeOffer.paymentMethod.multipleAccountOverlay.subTitle"));
+        Label subtitleLabel = new Label(Res.get("muSig.offer.taker.payment.multipleAccountOverlay.subTitle"));
         subtitleLabel.setMinWidth(WizardOverlay.OVERLAY_WIDTH - 100);
         subtitleLabel.setMaxWidth(subtitleLabel.getMinWidth());
         subtitleLabel.getStyleClass().addAll("normal-text", "wrap-text", "text-fill-grey-dimmed");

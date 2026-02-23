@@ -41,7 +41,7 @@ public class TradeLimitsTab2View extends View<VBox, TradeLimitsTab2Model, TradeL
 
         root.setPadding(new Insets(20, 0, 0, 0));
 
-       /* Label headline = new Label(Res.get("muSig.tradeLimits.tab2.headline"));
+       /* Label headline = new Label(Res.get("muSig.trade.limits.tab2.headline"));
         headline.getStyleClass().add("bisq-text-headline-2");*/
 
         backButton = new Button(Res.get("action.back"));

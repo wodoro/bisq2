@@ -70,7 +70,9 @@ public class MuSigDashboardTopPanel {
         private final MarketPriceService marketPriceService;
         private final Model model;
         private final UserProfileService userProfileService;
+        //TODO
         private final BisqEasyOfferbookChannelService bisqEasyOfferbookChannelService;
+        //TODO
         private final BisqEasyOfferbookMessageService bisqEasyOfferbookMessageService;
         private Pin selectedMarketPin, marketPricePin, getNumUserProfilesPin;
         private final Set<Pin> channelsPins = new HashSet<>();

@@ -39,17 +39,17 @@ public class TradeLimitsTab1View extends View<VBox, TradeLimitsTab1Model, TradeL
                                TradeLimitsTab1Controller controller) {
         super(new VBox(), model, controller);
 
-        Label headline = new Label(Res.get("muSig.tradeLimits.tab1.headline"));
+        Label headline = new Label(Res.get("muSig.trade.limits.tab1.headline"));
         headline.getStyleClass().add("bisq-text-headline-2");
 
-        Label info = new Label(Res.get("muSig.tradeLimits.tab1.info"));
+        Label info = new Label(Res.get("muSig.trade.limits.tab1.info"));
         info.setWrapText(true);
         info.getStyleClass().addAll("bisq-text-13");
 
-        Label headline2 = new Label(Res.get("muSig.tradeLimits.tab1.headline2"));
+        Label headline2 = new Label(Res.get("muSig.trade.limits.tab1.headline2"));
         headline2.getStyleClass().add("bisq-text-headline-2");
 
-        Label info2 = new Label(Res.get("muSig.tradeLimits.tab1.info2"));
+        Label info2 = new Label(Res.get("muSig.trade.limits.tab1.info2"));
         info2.setWrapText(true);
         info2.getStyleClass().addAll("bisq-text-13");
 

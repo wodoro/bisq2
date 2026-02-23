@@ -55,11 +55,11 @@ public class MuSigMyOffersView extends View<VBox, MuSigMyOffersModel, MuSigMyOff
 
         muSigMyOffersListView = new RichTableView<>(
                 model.getSortedMuSigMyOffersListItems(),
-                Res.get("muSig.myOffers.headline"),
-                Res.get("muSig.myOffers.numOffers"),
+                Res.get("muSig.offer.mine.headline"),
+                Res.get("muSig.offer.mine.numOffers"),
                 controller::applySearchPredicate);
         muSigMyOffersListView.getStyleClass().add("mu-sig-my-offers-table");
-        createOfferButton = new Button(Res.get("muSig.myOffers.createOfferButton"));
+        createOfferButton = new Button(Res.get("muSig.offer.mine.createOfferButton"));
         createOfferButton.getStyleClass().addAll("create-offer-button", "normal-text");
         HBox.setMargin(createOfferButton, new Insets(0, 0, 0, 15));
         muSigMyOffersListView.getHeaderBox().getChildren().add(createOfferButton);
@@ -80,11 +80,11 @@ public class MuSigMyOffersView extends View<VBox, MuSigMyOffersModel, MuSigMyOff
         createOfferButton.setOnAction(e -> controller.onCreateOffer());
 
         List<String> csvHeaders = muSigMyOffersListView.buildCsvHeaders();
-        csvHeaders.add(Res.get("muSig.myOffers.table.header.market").toUpperCase());
-        csvHeaders.add(Res.get("muSig.myOffers.table.header.myProfile").toUpperCase());
-        csvHeaders.add(Res.get("muSig.myOffers.table.header.baseAmount").toUpperCase());
-        csvHeaders.add(Res.get("muSig.myOffers.table.header.price").toUpperCase());
-        csvHeaders.add(Res.get("muSig.myOffers.table.header.paymentMethods").toUpperCase());
+        csvHeaders.add(Res.get("muSig.offer.mine.table.header.market").toUpperCase());
+        csvHeaders.add(Res.get("muSig.offer.mine.table.header.myProfile").toUpperCase());
+        csvHeaders.add(Res.get("muSig.offer.mine.table.header.baseAmount").toUpperCase());
+        csvHeaders.add(Res.get("muSig.offer.mine.table.header.price").toUpperCase());
+        csvHeaders.add(Res.get("muSig.offer.mine.table.header.paymentMethods").toUpperCase());
         muSigMyOffersListView.setCsvHeaders(Optional.of(csvHeaders));
 
         List<List<String>> csvData = muSigMyOffersListView.getItems().stream()
@@ -125,7 +125,7 @@ public class MuSigMyOffersView extends View<VBox, MuSigMyOffersModel, MuSigMyOff
         muSigMyOffersListView.getColumns().add(muSigMyOffersListView.getTableView().getSelectionMarkerColumn());
 
         muSigMyOffersListView.getColumns().add(new BisqTableColumn.Builder<MuSigOfferListItem>()
-                .title(Res.get("muSig.myOffers.table.header.market"))
+                .title(Res.get("muSig.offer.mine.table.header.market"))
                 .left()
                 .fixWidth(81)
                 .comparator(Comparator.comparing(MuSigOfferListItem::getMarket))
@@ -134,7 +134,7 @@ public class MuSigMyOffersView extends View<VBox, MuSigMyOffersModel, MuSigMyOff
                 .build());
 
         myProfileColumn = new BisqTableColumn.Builder<MuSigOfferListItem>()
-                .title(Res.get("muSig.myOffers.table.header.myProfile"))
+                .title(Res.get("muSig.offer.mine.table.header.myProfile"))
                 .left()
                 .minWidth(140)
                 .comparator(Comparator.comparing(item -> item.getMakerUserProfile().getNickName()))
@@ -144,7 +144,7 @@ public class MuSigMyOffersView extends View<VBox, MuSigMyOffersModel, MuSigMyOff
         muSigMyOffersListView.getColumns().add(myProfileColumn);
 
         muSigMyOffersListView.getColumns().add(new BisqTableColumn.Builder<MuSigOfferListItem>()
-                .title(Res.get("muSig.myOffers.table.header.offerId"))
+                .title(Res.get("muSig.offer.mine.table.header.offerId"))
                 .left()
                 .minWidth(100)
                 .comparator(Comparator.comparing(MuSigOfferListItem::getOfferId))
@@ -152,7 +152,7 @@ public class MuSigMyOffersView extends View<VBox, MuSigMyOffersModel, MuSigMyOff
                 .build());
 
         BisqTableColumn<MuSigOfferListItem> dateColumn = new BisqTableColumn.Builder<MuSigOfferListItem>()
-                .title(Res.get("muSig.myOffers.table.header.date"))
+                .title(Res.get("muSig.offer.mine.table.header.date"))
                 .left()
                 .minWidth(160)
                 .comparator(Comparator.comparing(MuSigOfferListItem::getOfferDate))
@@ -163,7 +163,7 @@ public class MuSigMyOffersView extends View<VBox, MuSigMyOffersModel, MuSigMyOff
         muSigMyOffersListView.getSortOrder().add(dateColumn);
 
         muSigMyOffersListView.getColumns().add(new BisqTableColumn.Builder<MuSigOfferListItem>()
-                .title(Res.get("muSig.myOffers.table.header.offerType"))
+                .title(Res.get("muSig.offer.mine.table.header.offerType"))
                 .left()
                 .minWidth(100)
                 .comparator(Comparator.comparing(MuSigOfferListItem::getOfferIntentText))
@@ -171,7 +171,7 @@ public class MuSigMyOffersView extends View<VBox, MuSigMyOffersModel, MuSigMyOff
                 .build());
 
         muSigMyOffersListView.getColumns().add(new BisqTableColumn.Builder<MuSigOfferListItem>()
-                .title(Res.get("muSig.myOffers.table.header.baseAmount"))
+                .title(Res.get("muSig.offer.mine.table.header.baseAmount"))
                 .left()
                 .minWidth(140)
                 .comparator(Comparator.comparing(MuSigOfferListItem::getBaseAmountWithSymbol))
@@ -180,7 +180,7 @@ public class MuSigMyOffersView extends View<VBox, MuSigMyOffersModel, MuSigMyOff
                 .build());
 
         muSigMyOffersListView.getColumns().add(new BisqTableColumn.Builder<MuSigOfferListItem>()
-                .title(Res.get("muSig.myOffers.table.header.quoteAmount"))
+                .title(Res.get("muSig.offer.mine.table.header.quoteAmount"))
                 .left()
                 .minWidth(130)
                 .comparator(Comparator.comparing(MuSigOfferListItem::getQuoteAmountWithSymbol))
@@ -188,7 +188,7 @@ public class MuSigMyOffersView extends View<VBox, MuSigMyOffersModel, MuSigMyOff
                 .build());
 
         muSigMyOffersListView.getColumns().add(new BisqTableColumn.Builder<MuSigOfferListItem>()
-                .title(Res.get("muSig.myOffers.table.header.price"))
+                .title(Res.get("muSig.offer.mine.table.header.price"))
                 .left()
                 .fixWidth(180)
                 .comparator(Comparator.comparing(MuSigOfferListItem::getPrice))
@@ -197,7 +197,7 @@ public class MuSigMyOffersView extends View<VBox, MuSigMyOffersModel, MuSigMyOff
                 .build());
 
         muSigMyOffersListView.getColumns().add(new BisqTableColumn.Builder<MuSigOfferListItem>()
-                .title(Res.get("muSig.myOffers.table.header.deposit"))
+                .title(Res.get("muSig.offer.mine.table.header.deposit"))
                 .left()
                 .minWidth(80)
                 .comparator(Comparator.comparing(MuSigOfferListItem::getDeposit))
@@ -205,7 +205,7 @@ public class MuSigMyOffersView extends View<VBox, MuSigMyOffersModel, MuSigMyOff
                 .build());
 
         muSigMyOffersListView.getColumns().add(new BisqTableColumn.Builder<MuSigOfferListItem>()
-                .title(Res.get("muSig.myOffers.table.header.paymentMethods"))
+                .title(Res.get("muSig.offer.mine.table.header.paymentMethods"))
                 .left()
                 .minWidth(140)
                 .setCellFactory(MuSigOfferUtil.getPaymentCellFactory())
@@ -266,7 +266,7 @@ public class MuSigMyOffersView extends View<VBox, MuSigMyOffersModel, MuSigMyOff
                 editOfferMenuItem.setTooltip(Res.get("offer.edit"));
 
                 goToOfferMenuItem.useIconOnly();
-                goToOfferMenuItem.setTooltip(Res.get("muSig.myOffers.table.cell.actionButtons.goToOffer.tooltip"));
+                goToOfferMenuItem.setTooltip(Res.get("muSig.offer.mine.table.cell.actionButtons.goToOffer.tooltip"));
             }
 
             @Override

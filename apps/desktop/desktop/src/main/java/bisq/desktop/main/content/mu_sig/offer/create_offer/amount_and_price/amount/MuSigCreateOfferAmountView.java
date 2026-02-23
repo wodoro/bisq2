@@ -75,9 +75,9 @@ public class MuSigCreateOfferAmountView extends View<VBox, MuSigCreateOfferAmoun
         amountLimitInfoHBox.setAlignment(Pos.CENTER);
 
         // Amount model selection
-        fixedAmount = new Button(Res.get("bisqEasy.tradeWizard.amount.amountModel.fixedAmount"));
+        fixedAmount = new Button(Res.get("muSig.offer.create.amount.amountModel.fixedAmount"));
         fixedAmount.getStyleClass().add("model-selection-item");
-        rangeAmount = new Button(Res.get("bisqEasy.tradeWizard.amount.amountModel.rangeAmount"));
+        rangeAmount = new Button(Res.get("muSig.offer.create.amount.amountModel.rangeAmount"));
         rangeAmount.getStyleClass().add("model-selection-item");
         Label separator = new Label("|");
 
@@ -92,15 +92,15 @@ public class MuSigCreateOfferAmountView extends View<VBox, MuSigCreateOfferAmoun
         amountModelsBox.getStyleClass().addAll("selection-models", "bisq-text-3");
 
         amountLimitInfoOverlayInfo = new Label();
-        closeOverlayButton = new Button(Res.get("bisqEasy.tradeWizard.amount.limitInfo.overlay.close"));
-        learnHowToBuildReputation = new Button(Res.get("bisqEasy.tradeWizard.amount.limitInfo.overlay.learnHowToBuildReputation"));
+        closeOverlayButton = new Button(Res.get("muSig.offer.create.amount.limitInfo.overlay.close"));
+        learnHowToBuildReputation = new Button(Res.get("muSig.offer.create.amount.limitInfo.overlay.learnHowToBuildReputation"));
         learnHowToBuildReputation.getStyleClass().add("outlined-button");
         learnHowToBuildReputationBox = new HBox(learnHowToBuildReputation);
         linkToWikiText = new Label();
         linkToWiki = new Hyperlink("https://bisq.wiki/Reputation");
         overlay = new WizardOverlay(root)
                 .warning()
-                .headline("bisqEasy.tradeWizard.amount.limitInfo.overlay.headline")
+                .headline("muSig.offer.create.amount.limitInfo.overlay.headline")
                 .description(createAndGetOverlayContent(amountLimitInfoOverlayInfo, linkToWikiText, linkToWiki, learnHowToBuildReputationBox))
                 .buttons(closeOverlayButton)
                 .build();

@@ -323,7 +323,7 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
         muSigOfferListView.getColumns().add(muSigOfferListView.getTableView().getSelectionMarkerColumn());
 
         muSigOfferListView.getColumns().add(new BisqTableColumn.Builder<MuSigOfferListItem>()
-                .title(Res.get("muSig.offerbook.table.header.peer"))
+                .title(Res.get("muSig.offer.listing.table.header.peer"))
                 .left()
                 .comparator(Comparator.comparingLong(MuSigOfferListItem::getTotalScore).reversed())
                 .setCellFactory(MuSigOfferUtil.getUserProfileCellFactory())
@@ -356,7 +356,7 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
 
         muSigOfferListView.getColumns().add(new BisqTableColumn.Builder<MuSigOfferListItem>()
                 .left()
-                .title(Res.get("muSig.offerbook.table.header.paymentMethod"))
+                .title(Res.get("muSig.offer.listing.table.header.paymentMethod"))
                 .setCellFactory(MuSigOfferUtil.getPaymentCellFactory())
                 .minWidth(140)
                 .comparator(Comparator.comparing(MuSigOfferListItem::getPaymentMethodsAsString))
@@ -388,13 +388,13 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
         withOffersRemoveFilterActiveIcon = ImageUtil.getImageViewById("close-mini-white");
         removeWithOffersFilter = createAndGetRemoveFilterLabel(withOffersRemoveFilterDefaultIcon);
         withOffersDisplayHint = createAndGetDisplayHintHBox(
-                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.withOffers"), removeWithOffersFilter);
+                Res.get("muSig.offer.listing.dropdownMenu.sortAndFilterMarkets.withOffers"), removeWithOffersFilter);
 
         favouritesRemoveFilterDefaultIcon = ImageUtil.getImageViewById("close-mini-grey");
         favouritesRemoveFilterActiveIcon = ImageUtil.getImageViewById("close-mini-white");
         removeFavouritesFilter = createAndGetRemoveFilterLabel(favouritesRemoveFilterDefaultIcon);
         onlyFavouritesDisplayHint = createAndGetDisplayHintHBox(
-                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.favourites"), removeFavouritesFilter);
+                Res.get("muSig.offer.listing.dropdownMenu.sortAndFilterMarkets.favourites"), removeFavouritesFilter);
 
         appliedFiltersSection = new HBox(withOffersDisplayHint, onlyFavouritesDisplayHint);
         appliedFiltersSection.setAlignment(Pos.CENTER_RIGHT);
@@ -498,8 +498,8 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
                 Tooltip.install(vBox, marketDetailsTooltip);
 
                 favouritesTooltip.textProperty().set(isFavouritesTableView
-                        ? Res.get("bisqEasy.offerbook.marketListCell.favourites.tooltip.removeFromFavourites")
-                        : Res.get("bisqEasy.offerbook.marketListCell.favourites.tooltip.addToFavourites"));
+                        ? Res.get("muSig.offer.listing.marketListCell.favourites.tooltip.removeFromFavourites")
+                        : Res.get("muSig.offer.listing.marketListCell.favourites.tooltip.addToFavourites"));
                 ImageView star = ImageUtil.getImageViewById(isFavouritesTableView
                         ? "star-yellow"
                         : "star-grey-hollow");
@@ -540,18 +540,18 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
         }
         return String.format("(%s)",
                 numOffers > 1
-                        ? Res.get("bisqEasy.offerbook.marketListCell.numOffers.many", numOffers)
-                        : Res.get("bisqEasy.offerbook.marketListCell.numOffers.one", numOffers)
+                        ? Res.get("muSig.offer.listing.marketListCell.numOffers.many", numOffers)
+                        : Res.get("muSig.offer.listing.marketListCell.numOffers.one", numOffers)
         );
     }
 
     private static String getFormattedTooltip(long numOffers, String quoteCurrencyName) {
         if (numOffers == 0) {
-            return Res.get("bisqEasy.offerbook.marketListCell.numOffers.tooltip.none", quoteCurrencyName);
+            return Res.get("muSig.offer.listing.marketListCell.numOffers.tooltip.none", quoteCurrencyName);
         }
         return numOffers > 1
-                ? Res.get("bisqEasy.offerbook.marketListCell.numOffers.tooltip.many", numOffers, quoteCurrencyName)
-                : Res.get("bisqEasy.offerbook.marketListCell.numOffers.tooltip.one", numOffers, quoteCurrencyName);
+                ? Res.get("muSig.offer.listing.marketListCell.numOffers.tooltip.many", numOffers, quoteCurrencyName)
+                : Res.get("muSig.offer.listing.marketListCell.numOffers.tooltip.one", numOffers, quoteCurrencyName);
     }
 
     private Callback<TableColumn<MuSigOfferListItem, MuSigOfferListItem>, TableCell<MuSigOfferListItem, MuSigOfferListItem>> getActionButtonsCellFactory() {
@@ -562,7 +562,7 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
             private final Button takeOfferButton = new Button();
             private final HBox myOfferMainBox = new HBox();
             private final HBox myOfferLabelBox = new HBox();
-            private final Label myOfferLabel = new Label(Res.get("muSig.offerbook.table.cell.myOffer"));
+            private final Label myOfferLabel = new Label(Res.get("muSig.offer.listing.table.cell.myOffer"));
             private final HBox myOfferActionsMenuBox = new HBox(5);
             private final BisqMenuItem removeOfferMenuItem = new BisqMenuItem("delete-t-grey", "delete-t-red");
             private final BisqMenuItem copyOfferMenuItem = new BisqMenuItem("copy-grey", "copy-white");
@@ -773,13 +773,13 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
     }
 
     private void setupOffersVBox() {
-        allOffersToggleButton = new ToggleButton(Res.get("muSig.offerbook.offerListSubheader.offersToggleGroup.allOffers"));
+        allOffersToggleButton = new ToggleButton(Res.get("muSig.offer.listing.offerListSubheader.offersToggleGroup.allOffers"));
         allOffersToggleButton.getStyleClass().add("offerlist-toggle-button-all-offers");
-        buyToggleButton = new ToggleButton(Res.get("muSig.offerbook.offerListSubheader.offersToggleGroup.buy"));
+        buyToggleButton = new ToggleButton(Res.get("muSig.offer.listing.offerListSubheader.offersToggleGroup.buy"));
         buyToggleButton.getStyleClass().add("offerlist-toggle-button-buy");
-        sellToggleButton = new ToggleButton(Res.get("muSig.offerbook.offerListSubheader.offersToggleGroup.sell"));
+        sellToggleButton = new ToggleButton(Res.get("muSig.offer.listing.offerListSubheader.offersToggleGroup.sell"));
         sellToggleButton.getStyleClass().add("offerlist-toggle-button-sell");
-        myOffersToggleButton = new ToggleButton(Res.get("muSig.offerbook.offerListSubheader.offersToggleGroup.myOffers"));
+        myOffersToggleButton = new ToggleButton(Res.get("muSig.offer.listing.offerListSubheader.offersToggleGroup.myOffers"));
         myOffersToggleButton.getStyleClass().add("offerlist-toggle-button-my-offers");
 
         offerFiltersToggleGroup = new ToggleGroup();
@@ -859,39 +859,39 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
 
     private DropdownMenu createAndGetSortAndFilterMarketsMenu() {
         DropdownMenu dropdownMenu = new DropdownMenu("sort-grey", "sort-white", true);
-        dropdownMenu.setTooltip(Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.tooltip"));
+        dropdownMenu.setTooltip(Res.get("muSig.offer.listing.dropdownMenu.sortAndFilterMarkets.tooltip"));
         dropdownMenu.getStyleClass().add("market-selection-dropdown-menu");
 
         // Sorting options
         DropdownTitleMenuItem sortTitle = new DropdownTitleMenuItem(
-                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.sortTitle"));
+                Res.get("muSig.offer.listing.dropdownMenu.sortAndFilterMarkets.sortTitle"));
         sortByMostOffers = new SortAndFilterDropdownMenuItem<>("check-white", "check-white",
-                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.mostOffers"), MuSigMarketSortType.NUM_OFFERS);
+                Res.get("muSig.offer.listing.dropdownMenu.sortAndFilterMarkets.mostOffers"), MuSigMarketSortType.NUM_OFFERS);
         sortByNameAZ = new SortAndFilterDropdownMenuItem<>("check-white", "check-white",
-                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.nameAZ"), MuSigMarketSortType.ASC);
+                Res.get("muSig.offer.listing.dropdownMenu.sortAndFilterMarkets.nameAZ"), MuSigMarketSortType.ASC);
         sortByNameZA = new SortAndFilterDropdownMenuItem<>("check-white", "check-white",
-                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.nameZA"), MuSigMarketSortType.DESC);
+                Res.get("muSig.offer.listing.dropdownMenu.sortAndFilterMarkets.nameZA"), MuSigMarketSortType.DESC);
 
         // Separator
         SeparatorMenuItem separator = new SeparatorMenuItem();
 
         // Filter options
         DropdownTitleMenuItem filterTitle = new DropdownTitleMenuItem(
-                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.filterTitle"));
+                Res.get("muSig.offer.listing.dropdownMenu.sortAndFilterMarkets.filterTitle"));
         filterWithOffers = new SortAndFilterDropdownMenuItem<>("check-white", "check-white",
-                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.withOffers"), MuSigFilters.MarketFilter.WITH_OFFERS);
+                Res.get("muSig.offer.listing.dropdownMenu.sortAndFilterMarkets.withOffers"), MuSigFilters.MarketFilter.WITH_OFFERS);
         filterFavourites = new SortAndFilterDropdownMenuItem<>("check-white", "check-white",
-                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.favourites"), MuSigFilters.MarketFilter.FAVOURITES);
+                Res.get("muSig.offer.listing.dropdownMenu.sortAndFilterMarkets.favourites"), MuSigFilters.MarketFilter.FAVOURITES);
         filterShowAll = new SortAndFilterDropdownMenuItem<>("check-white", "check-white",
-                Res.get("bisqEasy.offerbook.dropdownMenu.sortAndFilterMarkets.all"), MuSigFilters.MarketFilter.ALL);
+                Res.get("muSig.offer.listing.dropdownMenu.sortAndFilterMarkets.all"), MuSigFilters.MarketFilter.ALL);
 
         dropdownMenu.addMenuItems(sortTitle, sortByMostOffers, sortByNameAZ, sortByNameZA, separator, filterTitle,
                 filterWithOffers, filterFavourites, filterShowAll);
         return dropdownMenu;
     }
 
-    private void updateSelectedMarketFilter(MuSigFilters.MarketFilter bisqEasyMarketFilter) {
-        if (bisqEasyMarketFilter == null) {
+    private void updateSelectedMarketFilter(MuSigFilters.MarketFilter marketFilter) {
+        if (marketFilter == null) {
             return;
         }
 
@@ -900,7 +900,7 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
                 .filter(menuItem -> menuItem instanceof SortAndFilterDropdownMenuItem &&
                         ((SortAndFilterDropdownMenuItem<?>) menuItem).getMenuItem() instanceof MuSigFilters.MarketFilter)
                 .map(menuItem -> (SortAndFilterDropdownMenuItem<MuSigFilters.MarketFilter>) menuItem)
-                .forEach(menuItem -> menuItem.updateSelection(bisqEasyMarketFilter == menuItem.getMenuItem()));
+                .forEach(menuItem -> menuItem.updateSelection(marketFilter == menuItem.getMenuItem()));
 
         marketListView.getSelectionModel().select(model.getSelectedMarketItem().get());
     }
@@ -961,7 +961,7 @@ public final class MuSigOfferbookView extends View<VBox, MuSigOfferbookModel, Mu
 
         SeparatorMenuItem separator = new SeparatorMenuItem();
         DropdownBisqMenuItem clearFilters = new DropdownBisqMenuItem("delete-t-grey", "delete-t-white",
-                Res.get("muSig.offerbook.offerListSubheader.paymentMethods.clearFilters"));
+                Res.get("muSig.offer.listing.offerListSubheader.paymentMethods.clearFilters"));
         clearFilters.setHideOnClick(false);
         clearFilters.setOnAction(e -> controller.onClearPaymentFilters());
         paymentsFilterMenu.addMenuItems(separator, clearFilters);

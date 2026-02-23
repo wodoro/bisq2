@@ -134,7 +134,7 @@ class MuSigTradePhaseBox {
                     .getPaymentMethod()
                     .getPaymentRail()
                     .getTradeDuration();
-            model.getMaxPeriod().set(Res.get("muSig.tradeState.maxPeriod", tradeDuration.getDisplayString()));
+            model.getMaxPeriod().set(Res.get("muSig.trade.period.maxPeriod", tradeDuration.getDisplayString()));
 
             long maxTradeDurationTime = tradeDuration.getTime();
             unbindSecondTickPin();
@@ -145,18 +145,18 @@ class MuSigTradePhaseBox {
             boolean isBaseCurrencyBitcoin = market.isBaseCurrencyBitcoin();
             String phase2, phase3;
             if (isBaseCurrencyBitcoin) {
-                phase2 = Res.get("muSig.tradeState.fiat.phase2").toUpperCase();
-                phase3 = Res.get("muSig.tradeState.fiat.phase3").toUpperCase();
+                phase2 = Res.get("muSig.trade.state.progress.phase2.fiat").toUpperCase();
+                phase3 = Res.get("muSig.trade.state.progress.phase3.fiat").toUpperCase();
             } else {
                 String code = market.getBaseCurrencyCode();
-                phase2 = Res.get("muSig.tradeState.crypto.phase2", code).toUpperCase();
-                phase3 = Res.get("muSig.tradeState.crypto.phase3", code).toUpperCase();
+                phase2 = Res.get("muSig.trade.state.progress.phase2.crypto", code).toUpperCase();
+                phase3 = Res.get("muSig.trade.state.progress.phase3.crypto", code).toUpperCase();
             }
 
-            model.getPhase1Info().set(Res.get("muSig.tradeState.phase1").toUpperCase());
+            model.getPhase1Info().set(Res.get("muSig.trade.state.progress.phase1").toUpperCase());
             model.getPhase2Info().set(phase2);
             model.getPhase3Info().set(phase3);
-            model.getPhase4Info().set(Res.get("muSig.tradeState.phase4").toUpperCase());
+            model.getPhase4Info().set(Res.get("muSig.trade.state.progress.phase4").toUpperCase());
 
             muSigTradeStatePin = trade.tradeStateObservable().addObserver(state -> UIThread.run(() -> {
                 model.getRequestMediationButtonVisible().set(!state.isFinalState());
@@ -199,9 +199,9 @@ class MuSigTradePhaseBox {
             model.getRemainingTime().set(progress);
             if (progress < 1) {
                 String formatted = TimeFormatter.formatAge(remaining);
-                model.getFormattedRemainingTime().set(Res.get("muSig.tradeState.remainingTime", formatted));
+                model.getFormattedRemainingTime().set(Res.get("muSig.trade.period.remainingTime", formatted));
             } else {
-                model.getFormattedRemainingTime().set(Res.get("muSig.tradeState.remainingTime.exceeded"));
+                model.getFormattedRemainingTime().set(Res.get("muSig.trade.period.remainingTime.exceeded"));
             }
         }
 
@@ -319,7 +319,7 @@ class MuSigTradePhaseBox {
             remainingTimeLabel = new Label();
             remainingTimeLabel.getStyleClass().addAll("bisq-text-4");
 
-            openTradeGuide = new BisqMenuItem("trade-guide-grey", "trade-guide-white", Res.get("muSig.tradeGuide.open"));
+            openTradeGuide = new BisqMenuItem("trade-guide-grey", "trade-guide-white", Res.get("muSig.trade.guide.open"));
 
             VBox.setMargin(maxPeriod, new Insets(0, 0, 10, 0));
             VBox.setMargin(remainingTimeLabel, new Insets(5, 0, 30, 0));
@@ -330,7 +330,7 @@ class MuSigTradePhaseBox {
                     openTradeGuide);
             tradeOptionsVBox.setPadding(new Insets(0, 30, 0, 0));
 
-            requestMediationButton = new Button(Res.get("bisqEasy.tradeState.requestMediation"));
+            requestMediationButton = new Button(Res.get("muSig.trade.requestMediation"));
             requestMediationButton.getStyleClass().addAll("outlined-button", "request-mediation-button");
 
             VBox.setMargin(phase1HBox, new Insets(25, 0, 0, 0));

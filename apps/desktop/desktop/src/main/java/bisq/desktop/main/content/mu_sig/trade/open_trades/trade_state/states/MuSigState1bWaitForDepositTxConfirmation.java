@@ -106,11 +106,11 @@ public class MuSigState1bWaitForDepositTxConfirmation extends MuSigBaseState {
             model.setTxId(trade.getDepositTxId());
 
             if (trade.isBuyer()) {
-                model.setInfo(Res.get("muSig.tradeState.info.phase1b.info.buyer", model.getNonBtcCurrencyCode()));
+                model.setInfo(Res.get("muSig.trade.state.phase1b.info.buyer", model.getNonBtcCurrencyCode()));
             } else {
                 model.setInfo(trade.getOffer().getMarket().isBaseCurrencyBitcoin()
-                        ? Res.get("muSig.tradeState.info.phase1b.info.seller.fiat", model.getNonBtcCurrencyCode())
-                        : Res.get("muSig.tradeState.info.phase1b.info.seller.crypto", model.getNonBtcCurrencyCode()));
+                        ? Res.get("muSig.trade.state.phase1b.info.fiat", model.getNonBtcCurrencyCode())
+                        : Res.get("muSig.trade.state.phase1b.info.crypto", model.getNonBtcCurrencyCode()));
             }
 
             if (model.getConfirmationState().get() == null) {
@@ -119,7 +119,7 @@ public class MuSigState1bWaitForDepositTxConfirmation extends MuSigBaseState {
             }
 
             if (model.getConfirmationState().get() == Model.ConfirmationState.CONFIRMED) {
-                model.getButtonText().set(Res.get("bisqEasy.tradeState.info.phase3b.button.next"));
+                model.getButtonText().set(Res.get("muSig.trade.state.phase3b.button.next"));
             } else {
                 model.getButtonText().set("SKIP (just for dev)");
             }
@@ -158,15 +158,15 @@ public class MuSigState1bWaitForDepositTxConfirmation extends MuSigBaseState {
                 Tx tx = CONFIRMED_TX_CACHE.get(paymentProof);
                 model.getIsConfirmed().set(tx.getStatus().isConfirmed());
                 model.getConfirmationState().set(Model.ConfirmationState.CONFIRMED);
-                model.getButtonText().set(Res.get("bisqEasy.tradeState.info.phase3b.button.next"));
-                model.getConfirmationInfo().set(Res.get("bisqEasy.tradeState.info.phase3b.balance.help.confirmed"));
+                model.getButtonText().set(Res.get("muSig.trade.state.phase3b.button.next"));
+                model.getConfirmationInfo().set(Res.get("muSig.trade.state.phase3b.balance.help.confirmed"));
                 if (scheduler != null) {
                     scheduler.stop();
                 }
                 return;
             }
 
-            model.getConfirmationInfo().set(Res.get("bisqEasy.tradeState.info.phase3b.balance.help.explorerLookup",
+            model.getConfirmationInfo().set(Res.get("muSig.trade.state.phase3b.balance.help.explorerLookup",
                     explorerService.getSelectedProviderBaseUrl()));
             requestFuture = explorerService.requestTx(paymentProof)
                     .whenComplete((tx, throwable) -> UIThread.run(() -> {
@@ -178,20 +178,20 @@ public class MuSigState1bWaitForDepositTxConfirmation extends MuSigBaseState {
                             if (tx.getStatus().isConfirmed()) {
                                 CONFIRMED_TX_CACHE.put(paymentProof, tx);
                                 model.getConfirmationState().set(Model.ConfirmationState.CONFIRMED);
-                                model.getButtonText().set(Res.get("bisqEasy.tradeState.info.phase3b.button.next"));
-                                model.getConfirmationInfo().set(Res.get("bisqEasy.tradeState.info.phase3b.balance.help.confirmed"));
+                                model.getButtonText().set(Res.get("muSig.trade.state.phase3b.button.next"));
+                                model.getConfirmationInfo().set(Res.get("muSig.trade.state.phase3b.balance.help.confirmed"));
                                 if (scheduler != null) {
                                     scheduler.stop();
                                 }
                             } else {
                                 model.getConfirmationState().set(Model.ConfirmationState.IN_MEMPOOL);
-                                model.getConfirmationInfo().set(Res.get("bisqEasy.tradeState.info.phase3b.balance.help.notConfirmed"));
+                                model.getConfirmationInfo().set(Res.get("muSig.trade.state.phase3b.balance.help.notConfirmed"));
                                 scheduler = UIScheduler.run(this::requestTx).after(20, TimeUnit.SECONDS);
                             }
                         } else {
                             model.getConfirmationState().set(Model.ConfirmationState.FAILED);
                             Throwable rootCause = ExceptionUtil.getRootCause(throwable);
-                            model.getConfirmationInfo().set(Res.get("bisqEasy.tradeState.info.phase3b.txId.failed",
+                            model.getConfirmationInfo().set(Res.get("muSig.trade.state.phase3b.txId.failed",
                                     explorerService.getSelectedProviderBaseUrl(),
                                     rootCause.getClass().getSimpleName(),
                                     ExceptionUtil.getRootCauseMessage(rootCause)));
@@ -243,16 +243,16 @@ public class MuSigState1bWaitForDepositTxConfirmation extends MuSigBaseState {
         private View(Model model, Controller controller) {
             super(model, controller);
 
-            WrappingText headline = MuSigFormUtils.getHeadline(Res.get("muSig.tradeState.info.phase1b.headline"));
+            WrappingText headline = MuSigFormUtils.getHeadline(Res.get("muSig.trade.state.phase1b.headline"));
             info = MuSigFormUtils.getInfo();
             waitingAnimation = new MuSigWaitingAnimation(MuSigWaitingState.BITCOIN_CONFIRMATION);
             HBox waitingInfo = createWaitingInfo(waitingAnimation, headline, info);
 
-            txId = MuSigFormUtils.getTextField(Res.get("muSig.tradeState.info.phase1b.txId"), "", false);
-            txId.setHelpText(Res.get("bisqEasy.tradeState.info.phase3b.balance.help.explorerLookup"));
-            txId.setPromptText(Res.get("muSig.tradeState.info.phase1b.txId.prompt"));
+            txId = MuSigFormUtils.getTextField(Res.get("muSig.trade.state.phase1b.txId"), "", false);
+            txId.setHelpText(Res.get("muSig.trade.state.phase3b.balance.help.explorerLookup"));
+            txId.setPromptText(Res.get("muSig.trade.state.phase1b.txId.prompt"));
             txId.setIcon(AwesomeIcon.EXTERNAL_LINK);
-            txId.setIconTooltip(Res.get("muSig.tradeState.info.phase1b.txId.tooltip"));
+            txId.setIconTooltip(Res.get("muSig.trade.state.phase1b.txId.tooltip"));
             txId.setValidator(new BitcoinTransactionValidator());
             txId.filterMouseEventOnNonEditableText();
 

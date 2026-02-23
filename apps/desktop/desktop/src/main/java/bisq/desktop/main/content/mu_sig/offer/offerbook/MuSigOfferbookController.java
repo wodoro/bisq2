@@ -370,7 +370,7 @@ public class MuSigOfferbookController implements Controller {
     }
 
     void onRemoveOffer(MuSigOffer muSigOffer) {
-        new Popup().warning(Res.get("muSig.offerbook.removeOffer.confirmation"))
+        new Popup().warning(Res.get("muSig.offer.listing.removeOffer.confirmation"))
                 .actionButtonText(Res.get("confirmation.yes"))
                 .onAction(() -> doRemoveOffer(muSigOffer))
                 .closeButtonText(Res.get("confirmation.no"))
@@ -391,7 +391,8 @@ public class MuSigOfferbookController implements Controller {
         updateActiveMarketPaymentsCount();
         settingsService.setCookie(CookieKey.MU_SIG_OFFER_PAYMENT_FILTERS, getCookieSubKey(),
                 Joiner.on(",").join(model.getSelectedPaymentMethods().stream()
-                        .map(payment -> payment.getPaymentRail().name()).collect(Collectors.toList())));
+                        .map(payment -> payment.getPaymentRail().name())
+                        .collect(Collectors.toList())));
     }
 
     void onClearPaymentFilters() {
@@ -445,7 +446,7 @@ public class MuSigOfferbookController implements Controller {
             });
         } catch (RateLimitExceededException e) {
             UIThread.run(() -> {
-                new Popup().warning(Res.get("muSig.offerbook.rateLimitsExceeded.removeOffer.warning")).show();
+                new Popup().warning(Res.get("muSig.offer.listing.rateLimitsExceeded.removeOffer.warning")).show();
             });
         }
     }
@@ -470,16 +471,16 @@ public class MuSigOfferbookController implements Controller {
         if (selectedMarketItem != null) {
             Market selectedMarket = selectedMarketItem.getMarket();
             if (selectedMarket != null) {
-                model.getMarketTitle().set(Res.get("muSig.offerbook.marketHeader.title", selectedMarket.getMarketDisplayName()));
+                model.getMarketTitle().set(Res.get("muSig.offer.listing.marketHeader.title", selectedMarket.getMarketDisplayName()));
                 model.getMarketDescription().set(selectedMarket.getMarketCodes());
                 marketPriceService
                         .findMarketPrice(selectedMarket)
                         .ifPresentOrElse(
                                 marketPrice -> model.getMarketPrice().set(PriceFormatter.format(marketPrice.getPriceQuote(), true)),
                                 () -> model.getMarketPrice().set(""));
-                model.getBaseCodeTitle().set(Res.get("muSig.offerbook.table.header.amount", selectedMarket.getBaseCurrencyCode()).toUpperCase());
-                model.getQuoteCodeTitle().set(Res.get("muSig.offerbook.table.header.amount", selectedMarket.getQuoteCurrencyCode()).toUpperCase());
-                model.getPriceTitle().set(Res.get("muSig.offerbook.table.header.price", selectedMarket.getMarketCodes()).toUpperCase());
+                model.getBaseCodeTitle().set(Res.get("muSig.offer.listing.table.header.amount", selectedMarket.getBaseCurrencyCode()).toUpperCase());
+                model.getQuoteCodeTitle().set(Res.get("muSig.offer.listing.table.header.amount", selectedMarket.getQuoteCurrencyCode()).toUpperCase());
+                model.getPriceTitle().set(Res.get("muSig.offer.listing.table.header.price", selectedMarket.getMarketCodes()).toUpperCase());
                 model.getQuoteCurrencyIconId().set(selectedMarket.getQuoteCurrencyCode());
             }
         } else {
@@ -490,7 +491,7 @@ public class MuSigOfferbookController implements Controller {
     }
 
     private String getMarketListTitleString(CryptoAsset cryptoAsset) {
-        String key = "muSig.offerbook.marketListTitle." + cryptoAsset.getCode().toLowerCase(Locale.ROOT);
+        String key = "muSig.offer.listing.marketListTitle." + cryptoAsset.getCode().toLowerCase(Locale.ROOT);
         return Res.get(key);
     }
 
@@ -562,8 +563,8 @@ public class MuSigOfferbookController implements Controller {
     }
 
     private void updatePaymentFilterTitle(int count) {
-        String hint = count == 0 ? Res.get("muSig.offerbook.offerListSubheader.paymentMethods.all") : String.valueOf(count);
-        model.getPaymentFilterTitle().set(Res.get("muSig.offerbook.offerListSubheader.paymentMethods", hint));
+        String hint = count == 0 ? Res.get("muSig.offer.listing.offerListSubheader.paymentMethods.all") : String.valueOf(count);
+        model.getPaymentFilterTitle().set(Res.get("muSig.offer.listing.offerListSubheader.paymentMethods", hint));
     }
 
     private void saveMuSigMarketPreferences(Market market) {

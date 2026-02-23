@@ -74,13 +74,13 @@ public class MuSigState3aSellerConfirmPaymentReceipt extends MuSigBaseState {
 
             AccountPayload<?> peersAccountPayload = trade.getPeer().getAccountPayload().orElseThrow();
             if (peersAccountPayload instanceof CryptoAssetAccountPayload cryptoAssetAccountPayload) {
-                model.setInfo(Res.get("muSig.tradeState.info.crypto.phase3a.verifyReceipt.account",
+                model.setInfo(Res.get("muSig.trade.state.phase3a.verifyReceipt.account.crypto",
                         model.getNonBtcCurrencyCode(), cryptoAssetAccountPayload.getAddress()));
             } else {
                 String accountName = account
                         .map(Account::getAccountName)
                         .orElse(Res.get("data.na"));
-                model.setInfo(Res.get("muSig.tradeState.info.fiat.phase3a.verifyReceipt.account", accountName));
+                model.setInfo(Res.get("muSig.trade.state.phase3a.verifyReceipt.account.fiat", accountName));
             }
         }
 
@@ -90,7 +90,7 @@ public class MuSigState3aSellerConfirmPaymentReceipt extends MuSigBaseState {
         }
 
         private void onPaymentReceiptConfirmed() {
-            sendTradeLogMessage(Res.encode("bisqEasy.tradeState.info.seller.phase2b.tradeLogMessage",
+            sendTradeLogMessage(Res.encode("muSig.trade.state.phase2b.logMessage",
                     model.getChannel().getMyUserIdentity().getUserName(), model.getFormattedNonBtcAmount()));
             muSigTradeService.paymentReceiptConfirmed(model.getTrade());
         }
@@ -126,9 +126,9 @@ public class MuSigState3aSellerConfirmPaymentReceipt extends MuSigBaseState {
         protected void onViewAttached() {
             super.onViewAttached();
 
-            headline.setText(Res.get("muSig.tradeState.info.phase3a.headline", model.getFormattedNonBtcAmount()));
+            headline.setText(Res.get("muSig.trade.state.phase3a.headline", model.getFormattedNonBtcAmount()));
             info.setText(model.getInfo());
-            confirmPaymentReceiptButton.setText(Res.get("muSig.tradeState.info.phase3a.fiatReceivedButton"));
+            confirmPaymentReceiptButton.setText(Res.get("muSig.trade.state.phase3a.fiatReceivedButton"));
             confirmPaymentReceiptButton.setOnAction(e -> controller.onPaymentReceiptConfirmed());
         }
 

@@ -71,7 +71,7 @@ public class MuSigCreateOfferPaymentView extends View<StackPane, MuSigCreateOffe
         root.setAlignment(Pos.CENTER);
         root.getStyleClass().add("bisq-easy-trade-wizard-payment-methods-step");
 
-        Label headlineLabel = new Label(Res.get("muSig.createOffer.paymentMethods.headline"));
+        Label headlineLabel = new Label(Res.get("muSig.offer.create.paymentMethods.headline"));
         headlineLabel.getStyleClass().add("bisq-text-headline-2");
 
         gridPane = GridPaneUtil.getGridPane(10, 10, new Insets(0));
@@ -87,11 +87,11 @@ public class MuSigCreateOfferPaymentView extends View<StackPane, MuSigCreateOffe
 
         // noAccount overlay
         noAccountOverlayCloseButton = new Button(Res.get("action.close"));
-        createAccountButton = new Button(Res.get("muSig.createOffer.paymentMethod.noAccountOverlay.createAccount"));
+        createAccountButton = new Button(Res.get("muSig.offer.create.paymentMethod.noAccountOverlay.createAccount"));
         createAccountButton.setDefaultButton(true);
         noAccountOverlay = new WizardOverlay(root)
                 .warning()
-                .descriptionFromI18nKey("muSig.createOffer.paymentMethod.noAccountOverlay.subTitle")
+                .descriptionFromI18nKey("muSig.offer.create.paymentMethod.noAccountOverlay.subTitle")
                 .buttons(noAccountOverlayCloseButton, createAccountButton)
                 .build();
 
@@ -114,7 +114,7 @@ public class MuSigCreateOfferPaymentView extends View<StackPane, MuSigCreateOffe
         noPaymentMethodSelectedOverlayCloseButton = new Button(Res.get("action.close"));
         noPaymentMethodSelectedOverlay = new WizardOverlay(root)
                 .warning()
-                .headline("muSig.createOffer.paymentMethods.noPaymentMethodSelectedOverlay.headline")
+                .headline("muSig.offer.create.paymentMethods.noPaymentMethodSelectedOverlay.headline")
                 .description(new VBox(noPaymentMethodSelectedOverlayLabel))
                 .buttons(noPaymentMethodSelectedOverlayCloseButton)
                 .build();
@@ -255,7 +255,7 @@ public class MuSigCreateOfferPaymentView extends View<StackPane, MuSigCreateOffe
     }
 
     private VBox createAndGetContentBox() {
-        Label subtitleLabel = new Label(Res.get("muSig.createOffer.paymentMethod.multipleAccountOverlay.subTitle"));
+        Label subtitleLabel = new Label(Res.get("muSig.offer.create.paymentMethod.multipleAccountOverlay.subTitle"));
         subtitleLabel.setMinWidth(WizardOverlay.OVERLAY_WIDTH - 100);
         subtitleLabel.setMaxWidth(subtitleLabel.getMinWidth());
         subtitleLabel.getStyleClass().addAll("normal-text", "wrap-text", "text-fill-grey-dimmed");

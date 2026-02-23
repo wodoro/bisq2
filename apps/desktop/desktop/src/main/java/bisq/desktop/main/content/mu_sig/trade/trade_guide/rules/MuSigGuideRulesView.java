@@ -46,17 +46,17 @@ public class MuSigGuideRulesView extends View<VBox, MuSigGuideRulesModel, MuSigG
         root.setSpacing(20);
         root.setAlignment(Pos.TOP_LEFT);
 
-        Label headline = new Label(Res.get("muSig.tradeGuide.rules.headline"));
+        Label headline = new Label(Res.get("muSig.trade.guide.rules.headline"));
         headline.getStyleClass().add("musig-trade-guide-headline");
 
-        UnorderedList content = new UnorderedList(Res.get("muSig.tradeGuide.rules.content"), "musig-trade-guide-content");
+        UnorderedList content = new UnorderedList(Res.get("muSig.trade.guide.rules.content"), "musig-trade-guide-content");
         content.setSpacing(5);
 
         learnMore = new BisqHyperlink(Res.get("action.learnMore"), "https://bisq.wiki/MuSig");
 
         backButton = new Button(Res.get("action.back"));
         closeButton = new Button(Res.get("action.close"));
-        confirmCheckBox = new CheckBox(Res.get("muSig.tradeGuide.rules.confirm"));
+        confirmCheckBox = new CheckBox(Res.get("muSig.trade.guide.rules.confirm"));
 
         HBox buttons = new HBox(20, backButton, closeButton);
         VBox.setMargin(headline, new Insets(10, 0, -5, 0));

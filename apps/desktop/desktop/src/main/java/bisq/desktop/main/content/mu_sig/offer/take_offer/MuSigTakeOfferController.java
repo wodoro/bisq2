@@ -105,8 +105,8 @@ public class MuSigTakeOfferController extends NavigationController implements In
 
         boolean isBaseCurrencyBitcoin = muSigOffer.getMarket().isBaseCurrencyBitcoin();
         model.setPaymentMethodProgressLabel(isBaseCurrencyBitcoin
-                ? Res.get("muSig.offerWizard.progress.fiat.account")
-                : Res.get("muSig.offerWizard.progress.crypto.account"));
+                ? Res.get("muSig.offer.wizard.progress.account.fiat")
+                : Res.get("muSig.offer.wizard.progress.account.crypto"));
 
         model.setAmountVisible(muSigOffer.hasAmountRange());
         List<PaymentMethodSpec<?>> baseSidePaymentMethodSpecs = muSigOffer.getBaseSidePaymentMethodSpecs();
@@ -189,7 +189,7 @@ public class MuSigTakeOfferController extends NavigationController implements In
         model.getCloseButtonVisible().set(true);
         boolean isTakeOfferReview = navigationTarget == NavigationTarget.MU_SIG_TAKE_OFFER_REVIEW;
         model.getNextButtonText().set(isTakeOfferReview ?
-                Res.get("bisqEasy.takeOffer.review.takeOffer") :
+                Res.get("muSig.offer.taker.review.takeOffer") :
                 Res.get("action.next"));
         model.getShowProgressBox().set(!isTakeOfferReview);
         setMainButtonsVisibleState(true);

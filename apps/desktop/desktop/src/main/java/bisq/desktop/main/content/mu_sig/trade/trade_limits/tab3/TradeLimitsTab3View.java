@@ -45,10 +45,10 @@ public class TradeLimitsTab3View extends View<VBox, TradeLimitsTab3Model, TradeL
                                Pane userProfileSelection) {
         super(new VBox(), model, controller);
 
-        Label headline = new Label(Res.get("muSig.tradeLimits.tab3.headline"));
+        Label headline = new Label(Res.get("muSig.trade.limits.tab3.headline"));
         headline.getStyleClass().add("bisq-text-headline-2");
 
-        OrderedList info = new OrderedList(Res.get("muSig.tradeLimits.tab3.info"), "bisq-text-13", 7, 5);
+        OrderedList info = new OrderedList(Res.get("muSig.trade.limits.tab3.info"), "bisq-text-13", 7, 5);
 
         Label userProfileSelectLabel = new Label(Res.get("user.bondedRoles.userProfile.select").toUpperCase());
         userProfileSelectLabel.getStyleClass().add("bisq-text-4");

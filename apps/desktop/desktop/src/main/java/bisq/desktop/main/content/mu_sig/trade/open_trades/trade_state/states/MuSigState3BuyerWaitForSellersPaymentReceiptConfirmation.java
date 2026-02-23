@@ -64,11 +64,11 @@ public class MuSigState3BuyerWaitForSellersPaymentReceiptConfirmation extends Mu
             super.onActivate();
 
             if (model.getMarket().isBaseCurrencyBitcoin()) {
-                model.setHeadline(Res.get("muSig.tradeState.info.fiat.phase3.headline"));
-                model.setInfo(Res.get("muSig.tradeState.info.fiat.phase3.info", model.getFormattedNonBtcAmount()));
+                model.setHeadline(Res.get("muSig.trade.state.phase3.headline.fiat"));
+                model.setInfo(Res.get("muSig.trade.state.phase3.info.fiat", model.getFormattedNonBtcAmount()));
             } else {
-                model.setHeadline(Res.get("muSig.tradeState.info.crypto.phase3.headline"));
-                model.setInfo(Res.get("muSig.tradeState.info.crypto.phase3.info", model.getFormattedNonBtcAmount()));
+                model.setHeadline(Res.get("muSig.trade.state.phase3.headline.crypto"));
+                model.setInfo(Res.get("muSig.trade.state.phase3.info.crypto", model.getFormattedNonBtcAmount()));
             }
         }
 

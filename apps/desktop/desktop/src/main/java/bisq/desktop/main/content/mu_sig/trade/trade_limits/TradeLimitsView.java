@@ -45,13 +45,13 @@ public class TradeLimitsView extends TabView<TradeLimitsModel, TradeLimitsContro
         lineAndMarker.setPadding(new Insets(0, 0, 0, 0));
 
         Styles styles = new Styles("bisq-text-grey-9", "bisq-text-white", "bisq-text-green", "bisq-text-grey-9");
-        addTab(Res.get("muSig.tradeLimits.tab1"),
+        addTab(Res.get("muSig.trade.limits.tab1"),
                 NavigationTarget.MU_SIG_TRADE_LIMITS_TAB_1,
                 styles);
-        addTab(Res.get("muSig.tradeLimits.tab2"),
+        addTab(Res.get("muSig.trade.limits.tab2"),
                 NavigationTarget.MU_SIG_TRADE_LIMITS_TAB_2,
                 styles);
-        addTab(Res.get("muSig.tradeLimits.tab3"),
+        addTab(Res.get("muSig.trade.limits.tab3"),
                 NavigationTarget.MU_SIG_TRADE_LIMITS_TAB_3,
                 styles);
     }
@@ -81,7 +81,7 @@ public class TradeLimitsView extends TabView<TradeLimitsModel, TradeLimitsContro
 
         closeButton = BisqIconButton.createIconButton("close");
 
-        headline.setText(Res.get("muSig.tradeLimits"));
+        headline.setText(Res.get("muSig.trade.limits"));
 
         HBox.setMargin(headline, new Insets(0, 0, 0, -2));
         HBox hBox = new HBox(headline, Spacer.fillHBox(), closeButton);
