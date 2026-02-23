@@ -27,7 +27,7 @@ import bisq.desktop.components.containers.Spacer;
 import bisq.desktop.components.containers.WizardOverlay;
 import bisq.desktop.components.controls.AutoCompleteComboBox;
 import bisq.desktop.components.controls.BisqTooltip;
-import bisq.desktop.main.content.mu_sig.components.offer.PaymentMethodChipButton;
+import bisq.desktop.main.content.mu_sig.components.offer.MuSigPaymentMethodChipButton;
 import bisq.i18n.Res;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
@@ -59,7 +59,7 @@ public class MuSigCreateOfferPaymentView extends View<StackPane, MuSigCreateOffe
     private final AutoCompleteComboBox<Account<?, ?>> accountSelection;
     private final Set<ImageView> closeIcons = new HashSet<>();
     private final Label noPaymentMethodSelectedOverlayLabel;
-    private final List<PaymentMethodChipButton> paymentMethodChipButtons = new ArrayList<>();
+    private final List<MuSigPaymentMethodChipButton> paymentMethodChipButtons = new ArrayList<>();
     private final ListChangeListener<PaymentMethod<?>> paymentMethodListener;
     private final ListChangeListener<PaymentMethod<?>> selectedPaymentMethodsListener;
     private Subscription shouldShowNoAccountOverlayPin, shouldShowMultipleAccountsOverlayPin, shouldShowNoPaymentMethodSelectedOverlayPin;
@@ -164,7 +164,7 @@ public class MuSigCreateOfferPaymentView extends View<StackPane, MuSigCreateOffe
         shouldShowMultipleAccountsOverlayPin.unsubscribe();
         shouldShowNoPaymentMethodSelectedOverlayPin.unsubscribe();
 
-        paymentMethodChipButtons.forEach(PaymentMethodChipButton::dispose);
+        paymentMethodChipButtons.forEach(MuSigPaymentMethodChipButton::dispose);
 
         model.getPaymentMethods().removeListener(paymentMethodListener);
 
@@ -197,7 +197,7 @@ public class MuSigCreateOfferPaymentView extends View<StackPane, MuSigCreateOffe
         for (; i < paymentMethodsCount; ++i) {
             PaymentMethod<?> paymentMethod = model.getSortedPaymentMethods().get(i);
 
-            PaymentMethodChipButton button = new PaymentMethodChipButton(paymentMethod);
+            MuSigPaymentMethodChipButton button = new MuSigPaymentMethodChipButton(paymentMethod);
             if (!paymentMethod.getShortDisplayString().equals(paymentMethod.getDisplayString())) {
                 button.setTooltip(new BisqTooltip(paymentMethod.getDisplayString()));
             }
@@ -221,7 +221,7 @@ public class MuSigCreateOfferPaymentView extends View<StackPane, MuSigCreateOffe
         }
     }
 
-    private Optional<PaymentMethodChipButton> findPaymentMethodChipButton(PaymentMethod<?> paymentMethod) {
+    private Optional<MuSigPaymentMethodChipButton> findPaymentMethodChipButton(PaymentMethod<?> paymentMethod) {
         return paymentMethodChipButtons.stream()
                 .filter(button -> button.getPaymentMethod().equals(paymentMethod))
                 .findAny();

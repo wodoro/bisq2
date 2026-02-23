@@ -28,7 +28,7 @@ import bisq.desktop.ServiceProvider;
 import bisq.desktop.common.threading.UIScheduler;
 import bisq.desktop.common.threading.UIThread;
 import bisq.desktop.common.view.Controller;
-import bisq.desktop.main.content.mu_sig.components.offer.PriceInput;
+import bisq.desktop.main.content.mu_sig.components.offer.MuSigPriceInput;
 import bisq.i18n.Res;
 import bisq.offer.Direction;
 import bisq.presentation.formatters.AmountFormatter;
@@ -45,7 +45,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
-public class AmountSelectionController implements Controller {
+public class MuSigAmountSelectionController implements Controller {
     private static final String SLIDER_TRACK_DEFAULT_COLOR = "-bisq-dark-grey-50";
     private static final String SLIDER_TRACK_MARKER_COLOR = "-bisq2-green";
     private static final int RANGE_INPUT_TEXT_MAX_LENGTH = 11;
@@ -63,18 +63,18 @@ public class AmountSelectionController implements Controller {
         CHAR_WIDTH_MAP.put(17, 16);
     }
 
-    final AmountSelectionModel model;
+    final MuSigAmountSelectionModel model;
     @Getter
-    private final AmountSelectionView view;
+    private final MuSigAmountSelectionView view;
     private final MarketPriceService marketPriceService;
-    private final BigNumberAmountInputBox maxOrFixedQuoteSideAmountInput, minQuoteSideAmountInput, invertedMinBaseSideAmountInput,
+    private final MuSigBigAmountNumberBox maxOrFixedQuoteSideAmountInput, minQuoteSideAmountInput, invertedMinBaseSideAmountInput,
             invertedMaxOrFixedBaseSideAmountInput;
-    private final SmallNumberDisplayBox maxOrFixedBaseSideAmountDisplay, minBaseSideAmountDisplay, invertedMinQuoteSideAmountDisplay,
+    private final MuSigSmallAmountNumberBox maxOrFixedBaseSideAmountDisplay, minBaseSideAmountDisplay, invertedMinQuoteSideAmountDisplay,
             invertedMaxOrFixedQuoteSideAmountDisplay;
     private final ChangeListener<Monetary> maxOrFixedQuoteSideAmountFromModelListener, minQuoteSideAmountFromModelListener,
             maxOrFixedBaseSideAmountFromModelListener, minBaseSideAmountFromModelListener;
     private final ChangeListener<PriceQuote> quoteListener;
-    private final PriceInput price;
+    private final MuSigPriceInput price;
     private final ChangeListener<Number> maxOrFixedSliderListener, minSliderListener;
     private Subscription maxOrFixedQuoteAmountFromModelPin, maxOrFixedBaseAmountFromCompPin, invertedMaxOrFixedBaseAmountFromCompPin,
             maxOrFixedQuoteAmountFromCompPin, invertedMaxOrFixedQuoteAmountFromCompPin, invertedMinBaseSideAmountValidPin,
@@ -85,27 +85,27 @@ public class AmountSelectionController implements Controller {
             maxOrFixedQuoteSideAmountInputLengthPin, minQuoteSideAmountInputLengthPin, invertedMaxOrFixedBaseSideAmountInputFocusPin,
             invertedMaxOrFixedBaseSideAmountInputLengthPin, invertedMinBaseSideAmountInputFocusPin, invertedMinBaseSideAmountInputLengthPin;
 
-    public AmountSelectionController(ServiceProvider serviceProvider) {
+    public MuSigAmountSelectionController(ServiceProvider serviceProvider) {
         marketPriceService = serviceProvider.getBondedRolesService().getMarketPriceService();
 
         // max or fixed amount
-        maxOrFixedQuoteSideAmountInput = new BigNumberAmountInputBox(false, true);
-        maxOrFixedBaseSideAmountDisplay = new SmallNumberDisplayBox(true, true);
+        maxOrFixedQuoteSideAmountInput = new MuSigBigAmountNumberBox(false, true);
+        maxOrFixedBaseSideAmountDisplay = new MuSigSmallAmountNumberBox(true, true);
         // inverted to select amount using base
-        invertedMaxOrFixedQuoteSideAmountDisplay = new SmallNumberDisplayBox(false, true);
-        invertedMaxOrFixedBaseSideAmountInput = new BigNumberAmountInputBox(true, true);
+        invertedMaxOrFixedQuoteSideAmountDisplay = new MuSigSmallAmountNumberBox(false, true);
+        invertedMaxOrFixedBaseSideAmountInput = new MuSigBigAmountNumberBox(true, true);
 
         // min amount (only applies when selecting a range)
-        minQuoteSideAmountInput = new BigNumberAmountInputBox(false, false);
-        minBaseSideAmountDisplay = new SmallNumberDisplayBox(true, false);
+        minQuoteSideAmountInput = new MuSigBigAmountNumberBox(false, false);
+        minBaseSideAmountDisplay = new MuSigSmallAmountNumberBox(true, false);
         // inverted to select amount using base
-        invertedMinQuoteSideAmountDisplay = new SmallNumberDisplayBox(false, false);
-        invertedMinBaseSideAmountInput = new BigNumberAmountInputBox(true, false);
+        invertedMinQuoteSideAmountDisplay = new MuSigSmallAmountNumberBox(false, false);
+        invertedMinBaseSideAmountInput = new MuSigBigAmountNumberBox(true, false);
 
-        price = new PriceInput(serviceProvider.getBondedRolesService().getMarketPriceService());
+        price = new MuSigPriceInput(serviceProvider.getBondedRolesService().getMarketPriceService());
 
-        model = new AmountSelectionModel();
-        view = new AmountSelectionView(model,
+        model = new MuSigAmountSelectionModel();
+        view = new MuSigAmountSelectionView(model,
                 this,
                 maxOrFixedBaseSideAmountDisplay.getRoot(),
                 maxOrFixedQuoteSideAmountInput.getRoot(),
@@ -521,8 +521,8 @@ public class AmountSelectionController implements Controller {
         }
     }
 
-    private int getCount(BigNumberAmountInputBox minSideAmountInput,
-                         BigNumberAmountInputBox maxOrFixedSideAmountInput) {
+    private int getCount(MuSigBigAmountNumberBox minSideAmountInput,
+                         MuSigBigAmountNumberBox maxOrFixedSideAmountInput) {
         int count = model.getIsRangeAmountEnabled().get()
                 ? minSideAmountInput.getTextInputLength() + maxOrFixedSideAmountInput.getTextInputLength() + 1 // 1 for the dash
                 : maxOrFixedSideAmountInput.getTextInputLength();
@@ -546,8 +546,8 @@ public class AmountSelectionController implements Controller {
         return (double) (amountValue - min) / base;
     }
 
-    private void initializeQuoteSideAmount(BigNumberAmountInputBox quoteSideAmountInput,
-                                           SmallNumberDisplayBox smallNumberDisplayBox) {
+    private void initializeQuoteSideAmount(MuSigBigAmountNumberBox quoteSideAmountInput,
+                                           MuSigSmallAmountNumberBox smallNumberDisplayBox) {
         PriceQuote priceQuote = price.getQuote().get();
         if (priceQuote != null) {
             Monetary minRangeQuoteSideValue = model.getMinRangeQuoteSideValue().get();
@@ -568,7 +568,7 @@ public class AmountSelectionController implements Controller {
         }
     }
 
-    private Subscription subscribeToAmountValidity(BigNumberAmountInputBox amountInput, Runnable autocorrect) {
+    private Subscription subscribeToAmountValidity(MuSigBigAmountNumberBox amountInput, Runnable autocorrect) {
         return EasyBind.subscribe(amountInput.isAmountValidProperty(), isAmountValid -> {
             if (!amountInput.isAmountValidProperty().get()) {
                 autocorrect.run();
@@ -702,8 +702,8 @@ public class AmountSelectionController implements Controller {
     }
 
     private void applySliderValue(double sliderValue,
-                                  BigNumberAmountInputBox quoteAmountInput,
-                                  BigNumberAmountInputBox invertedBaseAmountInput) {
+                                  MuSigBigAmountNumberBox quoteAmountInput,
+                                  MuSigBigAmountNumberBox invertedBaseAmountInput) {
         if (isUsingInvertedBaseAndQuoteCurrencies()) {
             if (model.getMinRangeBaseSideValue().get() != null && model.getMaxRangeBaseSideValue().get() != null) {
                 long min = model.getMinRangeBaseSideValue().get().getValue();
@@ -806,7 +806,7 @@ public class AmountSelectionController implements Controller {
         }
     }
 
-    private void updateMaxOrFixedBaseSideAmount(Monetary amount, AmountNumberBox amountNumberBox) {
+    private void updateMaxOrFixedBaseSideAmount(Monetary amount, MuSigAmountNumberBox amountNumberBox) {
         Monetary minRangeValue = model.getMinRangeBaseSideValue().get();
         Monetary maxRangeValue = model.getMaxRangeBaseSideValue().get();
         if (amount != null && amount.getValue() > maxRangeValue.getValue()) {
@@ -822,7 +822,7 @@ public class AmountSelectionController implements Controller {
         }
     }
 
-    private void updateMinBaseAmount(Monetary amount, AmountNumberBox amountNumberBox) {
+    private void updateMinBaseAmount(Monetary amount, MuSigAmountNumberBox amountNumberBox) {
         Monetary minRangeValue = model.getMinRangeBaseSideValue().get();
         Monetary maxRangeValue = model.getMaxRangeBaseSideValue().get();
         if (amount != null && amount.getValue() > maxRangeValue.getValue()) {
@@ -838,7 +838,7 @@ public class AmountSelectionController implements Controller {
         }
     }
 
-    private void updateMaxOrFixedQuoteSideAmount(Monetary amount, AmountNumberBox amountNumberBox) {
+    private void updateMaxOrFixedQuoteSideAmount(Monetary amount, MuSigAmountNumberBox amountNumberBox) {
         Monetary minRangeValue = model.getMinRangeQuoteSideValue().get();
         Monetary maxRangeValue = model.getMaxRangeQuoteSideValue().get();
         if (maxRangeValue != null && amount != null && amount.getValue() > maxRangeValue.getValue()) {
@@ -854,7 +854,7 @@ public class AmountSelectionController implements Controller {
         }
     }
 
-    private void updateMinQuoteSideAmount(Monetary amount, AmountNumberBox amountNumberBox) {
+    private void updateMinQuoteSideAmount(Monetary amount, MuSigAmountNumberBox amountNumberBox) {
         Monetary minRangeValue = model.getMinRangeQuoteSideValue().get();
         Monetary maxRangeValue = model.getMaxRangeQuoteSideValue().get();
         if (maxRangeValue != null && amount != null && amount.getValue() > maxRangeValue.getValue()) {
@@ -881,12 +881,12 @@ public class AmountSelectionController implements Controller {
         }
     }
 
-    private void applyPrefWidth(int charCount, BigNumberAmountInputBox amountInputBox) {
+    private void applyPrefWidth(int charCount, MuSigBigAmountNumberBox amountInputBox) {
         int length = getCalculatedTextInputLength(amountInputBox);
         amountInputBox.setTextInputPrefWidth(length == 0 ? 1 : length * getFontCharWidth(charCount));
     }
 
-    private int getCalculatedTextInputLength(BigNumberAmountInputBox quoteAmountInputBox) {
+    private int getCalculatedTextInputLength(MuSigBigAmountNumberBox quoteAmountInputBox) {
         // If using an integer we need to count one more char since a dot occupies much less space.
         return !quoteAmountInputBox.getTextInput().contains(".")
                 ? quoteAmountInputBox.getTextInputLength() + 1

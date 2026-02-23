@@ -37,7 +37,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class AmountSelectionModel implements Model {
+public class MuSigAmountSelectionModel implements Model {
     private final double sliderMin = 0;
     private final double sliderMax = 1;
     public final int amountBoxWidth = 300;

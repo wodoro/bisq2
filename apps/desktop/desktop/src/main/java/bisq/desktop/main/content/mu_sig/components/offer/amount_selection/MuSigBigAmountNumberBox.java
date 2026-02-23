@@ -45,10 +45,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Optional;
 
 @Slf4j
-public class BigNumberAmountInputBox implements AmountNumberBox {
+public class MuSigBigAmountNumberBox implements MuSigAmountNumberBox {
     private final Controller controller;
 
-    public BigNumberAmountInputBox(boolean isBaseCurrency, boolean showCurrencyCode) {
+    public MuSigBigAmountNumberBox(boolean isBaseCurrency, boolean showCurrencyCode) {
         controller = new Controller(isBaseCurrency, showCurrencyCode);
     }
 

@@ -47,10 +47,10 @@ import org.fxmisc.easybind.Subscription;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Slf4j
-public class PriceInput {
+public class MuSigPriceInput {
     private final Controller controller;
 
-    public PriceInput(MarketPriceService marketPriceService) {
+    public MuSigPriceInput(MarketPriceService marketPriceService) {
         controller = new Controller(marketPriceService);
     }
 
@@ -260,13 +260,13 @@ public class PriceInput {
     public static class View extends bisq.desktop.common.view.View<Pane, Model, Controller> {
         private final static int WIDTH = 250;
 
-        private final PriceInputBox textInput;
+        private final MuSigPriceInputBox textInput;
         private Subscription focusedPin, doResetValidationPin;
 
         private View(Model model, Controller controller, NumberValidator validator) {
             super(new VBox(), model, controller);
 
-            textInput = new PriceInputBox(model.description.get(), Res.get("component.priceInput.prompt"),
+            textInput = new MuSigPriceInputBox(model.description.get(), Res.get("component.priceInput.prompt"),
                     BisqEasyViewUtils.POSITIVE_NUMERIC_WITH_DECIMAL_REGEX);
             textInput.setPrefWidth(WIDTH);
             textInput.setValidator(validator);

@@ -44,7 +44,7 @@ import org.fxmisc.easybind.EasyBind;
 import org.fxmisc.easybind.Subscription;
 
 @Slf4j
-public class SmallNumberDisplayBox implements AmountNumberBox {
+public class MuSigSmallAmountNumberBox implements MuSigAmountNumberBox {
     private static final double ICON_SCALE = 0.85;
     private static final double ICON_OPACITY = 0.5;
     private static final String DEFAULT_TOOLTIP = "bisqEasy.component.amount.baseSide.tooltip.btcAmount.marketPrice";
@@ -52,7 +52,7 @@ public class SmallNumberDisplayBox implements AmountNumberBox {
 
     private final Controller controller;
 
-    public SmallNumberDisplayBox(boolean isBaseCurrency, boolean showCurrencyCode) {
+    public MuSigSmallAmountNumberBox(boolean isBaseCurrency, boolean showCurrencyCode) {
         controller = new Controller(isBaseCurrency, showCurrencyCode);
     }
 

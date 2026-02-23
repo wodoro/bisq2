@@ -26,7 +26,7 @@ import bisq.desktop.components.containers.WizardOverlay;
 import bisq.desktop.components.controls.UnorderedList;
 import bisq.desktop.components.controls.validator.PercentageValidator;
 import bisq.desktop.main.content.bisq_easy.BisqEasyViewUtils;
-import bisq.desktop.main.content.mu_sig.components.offer.PriceInputBox;
+import bisq.desktop.main.content.mu_sig.components.offer.MuSigPriceInputBox;
 import bisq.i18n.Res;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.geometry.Insets;
@@ -52,7 +52,7 @@ public class MuSigCreateOfferPriceView extends View<VBox, MuSigCreateOfferPriceM
     private static final String SELECTED_PRICE_MODEL_STYLE_CLASS = "selected-model";
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("00");
 
-    private final PriceInputBox percentageInputBox;
+    private final MuSigPriceInputBox percentageInputBox;
     @Getter
     private final VBox overlay;
     private final Pane priceInputBox;
@@ -95,7 +95,7 @@ public class MuSigCreateOfferPriceView extends View<VBox, MuSigCreateOfferPriceM
         pricingModels.getStyleClass().addAll("selection-models", "bisq-text-3");
 
         // Input box
-        percentageInputBox = new PriceInputBox(Res.get("bisqEasy.price.percentage.inputBoxText"),
+        percentageInputBox = new MuSigPriceInputBox(Res.get("bisqEasy.price.percentage.inputBoxText"),
                 BisqEasyViewUtils.NUMERIC_WITH_DECIMAL_REGEX);
         percentageInputBox.setValidator(new PercentageValidator());
         percentageInputBox.textInputSymbolTextProperty().set("%");

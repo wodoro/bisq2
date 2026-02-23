@@ -33,7 +33,7 @@ import lombok.Getter;
 
 import javax.annotation.Nullable;
 
-public class PaymentMethodChipButton extends StackPane {
+public class MuSigPaymentMethodChipButton extends StackPane {
     private final static int TRUNCATION_LENGTH = 18;
     @Getter
     private final ChipButton chipButton;
@@ -45,7 +45,7 @@ public class PaymentMethodChipButton extends StackPane {
     private String accountName;
     private boolean explicitTooltipSet;
 
-    public PaymentMethodChipButton(PaymentMethod<?> paymentMethod) {
+    public MuSigPaymentMethodChipButton(PaymentMethod<?> paymentMethod) {
         this.paymentMethod = paymentMethod;
         setAlignment(Pos.BOTTOM_RIGHT);
         paymentMethodDisplayString = paymentMethod.getShortDisplayString();

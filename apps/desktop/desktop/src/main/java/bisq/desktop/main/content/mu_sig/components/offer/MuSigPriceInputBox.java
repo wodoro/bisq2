@@ -26,7 +26,7 @@ import javafx.scene.layout.HBox;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class PriceInputBox extends MaterialTextField {
+public class MuSigPriceInputBox extends MaterialTextField {
     public static final int AMOUNT_BOX_HEIGHT = 127;
     private static final int INPUT_TEXT_MAX_LENGTH = 14;
     private static final String INPUT_TEXT_9_STYLE_CLASS = "input-text-9";
@@ -42,7 +42,7 @@ public class PriceInputBox extends MaterialTextField {
     private final HBox textInputAndSymbolHBox;
     private final ChangeListener<String> textInputTextListener;
 
-    public PriceInputBox(String description, String prompt, String numericRegex) {
+    public MuSigPriceInputBox(String description, String prompt, String numericRegex) {
         super(description, prompt);
 
         bg.getStyleClass().setAll("bisq-dual-amount-bg");
@@ -78,7 +78,7 @@ public class PriceInputBox extends MaterialTextField {
         initialize();
     }
 
-    public PriceInputBox(String description, String numericRegex) {
+    public MuSigPriceInputBox(String description, String numericRegex) {
         this(description, null, numericRegex);
     }
 

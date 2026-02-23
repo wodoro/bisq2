@@ -19,6 +19,6 @@ package bisq.desktop.main.content.mu_sig.components.offer.amount_selection;
 
 import bisq.common.monetary.Monetary;
 
-public interface AmountNumberBox {
+public interface MuSigAmountNumberBox {
     void setAmount(Monetary value);
 }

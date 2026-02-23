@@ -24,7 +24,7 @@ import bisq.desktop.ServiceProvider;
 import bisq.desktop.common.utils.KeyHandlerUtil;
 import bisq.desktop.common.view.Controller;
 import bisq.desktop.components.overlay.Popup;
-import bisq.desktop.main.content.mu_sig.components.offer.PriceInput;
+import bisq.desktop.main.content.mu_sig.components.offer.MuSigPriceInput;
 import bisq.i18n.Res;
 import bisq.offer.Direction;
 import bisq.offer.price.PriceUtil;
@@ -56,7 +56,7 @@ public class MuSigCreateOfferPriceController implements Controller {
     private final MuSigCreateOfferPriceModel model;
     @Getter
     private final MuSigCreateOfferPriceView view;
-    private final PriceInput priceInput;
+    private final MuSigPriceInput priceInput;
     private final Region owner;
     private final Consumer<Boolean> navigationButtonsVisibleHandler;
     private final MarketPriceService marketPriceService;
@@ -68,7 +68,7 @@ public class MuSigCreateOfferPriceController implements Controller {
                                            Consumer<Boolean> navigationButtonsVisibleHandler) {
         marketPriceService = serviceProvider.getBondedRolesService().getMarketPriceService();
         settingsService = serviceProvider.getSettingsService();
-        priceInput = new PriceInput(serviceProvider.getBondedRolesService().getMarketPriceService());
+        priceInput = new MuSigPriceInput(serviceProvider.getBondedRolesService().getMarketPriceService());
         this.owner = owner;
         this.navigationButtonsVisibleHandler = navigationButtonsVisibleHandler;
         model = new MuSigCreateOfferPriceModel();

@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class AmountSelectionView extends View<VBox, AmountSelectionModel, AmountSelectionController> {
+public class MuSigAmountSelectionView extends View<VBox, MuSigAmountSelectionModel, MuSigAmountSelectionController> {
     private static final Insets SLIDER_INDICATORS_RANGE_MARGIN = new Insets(-15, 0, 0, 0);
     private static final Insets SLIDER_INDICATORS_FIXED_MARGIN = new Insets(2.5, 0, 0, 0);
     @SuppressWarnings("UnnecessaryUnicodeEscape")
@@ -78,16 +78,16 @@ public class AmountSelectionView extends View<VBox, AmountSelectionModel, Amount
     private Subscription shouldFocusInputTextFieldPin, sliderTrackStylePin, isRangeAmountEnabledPin,
             shouldApplyNewInputTextFontStylePin;
 
-    AmountSelectionView(AmountSelectionModel model,
-                        AmountSelectionController controller,
-                        Pane maxOrFixedBaseAmount,
-                        Pane maxOrFixedQuoteAmount,
-                        Pane invertedMaxOrFixedQuoteAmount,
-                        Pane invertedMaxOrFixedBaseAmount,
-                        Pane minBaseAmount,
-                        Pane minQuoteAmount,
-                        Pane invertedMinQuoteAmount,
-                        Pane invertedMinBaseAmount) {
+    MuSigAmountSelectionView(MuSigAmountSelectionModel model,
+                             MuSigAmountSelectionController controller,
+                             Pane maxOrFixedBaseAmount,
+                             Pane maxOrFixedQuoteAmount,
+                             Pane invertedMaxOrFixedQuoteAmount,
+                             Pane invertedMaxOrFixedBaseAmount,
+                             Pane minBaseAmount,
+                             Pane minQuoteAmount,
+                             Pane invertedMinQuoteAmount,
+                             Pane invertedMinBaseAmount) {
         super(new VBox(10), model, controller);
 
         // max or fixed component

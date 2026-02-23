@@ -33,7 +33,7 @@ import bisq.desktop.common.utils.KeyHandlerUtil;
 import bisq.desktop.common.view.Controller;
 import bisq.desktop.common.view.Navigation;
 import bisq.desktop.components.overlay.Popup;
-import bisq.desktop.main.content.mu_sig.components.offer.PaymentMethodChipButton;
+import bisq.desktop.main.content.mu_sig.components.offer.MuSigPaymentMethodChipButton;
 import bisq.desktop.navigation.NavigationTarget;
 import bisq.desktop.overlay.OverlayController;
 import bisq.i18n.Res;
@@ -166,7 +166,7 @@ public class MuSigCreateOfferPaymentController implements Controller {
         paymentMethodWithMultipleAccountsPin.unsubscribe();
     }
 
-    void onTogglePaymentMethod(PaymentMethod<?> paymentMethod, PaymentMethodChipButton button) {
+    void onTogglePaymentMethod(PaymentMethod<?> paymentMethod, MuSigPaymentMethodChipButton button) {
         if (button.isSelected()) {
             if (!model.getSelectedPaymentMethods().contains(paymentMethod)) {
                 if (model.getSelectedPaymentMethods().size() >= MAX_NUM_PAYMENT_METHODS) {
