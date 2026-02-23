@@ -25,7 +25,7 @@ import bisq.desktop.ServiceProvider;
 import bisq.desktop.common.Browser;
 import bisq.desktop.common.utils.KeyHandlerUtil;
 import bisq.desktop.common.view.Controller;
-import bisq.desktop.main.content.bisq_easy.components.offer.amount_selection.AmountSelectionController;
+import bisq.desktop.main.content.mu_sig.components.offer.amount_selection.AmountSelectionController;
 import bisq.i18n.Res;
 import bisq.offer.Direction;
 import bisq.offer.amount.OfferAmountUtil;

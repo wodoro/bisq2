@@ -32,7 +32,7 @@ import bisq.desktop.common.threading.UIScheduler;
 import bisq.desktop.common.threading.UIThread;
 import bisq.desktop.common.view.Controller;
 import bisq.desktop.components.overlay.Popup;
-import bisq.desktop.main.content.bisq_easy.components.offer.PriceInput;
+import bisq.desktop.main.content.mu_sig.components.offer.PriceInput;
 import bisq.desktop.main.content.mu_sig.components.offer.MuSigReviewDataDisplay;
 import bisq.desktop.navigation.NavigationTarget;
 import bisq.i18n.Res;
