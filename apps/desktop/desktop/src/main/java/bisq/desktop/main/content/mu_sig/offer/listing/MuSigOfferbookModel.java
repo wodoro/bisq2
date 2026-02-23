@@ -21,7 +21,7 @@ import bisq.account.payment_method.fiat.FiatPaymentMethod;
 import bisq.common.asset.CryptoAsset;
 import bisq.common.market.Market;
 import bisq.desktop.common.view.Model;
-import bisq.desktop.main.content.mu_sig.MuSigOfferListItem;
+import bisq.desktop.main.content.mu_sig.offer.MuSigOfferListItem;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;

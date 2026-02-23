@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig;
+package bisq.desktop.main.content.mu_sig.offer;
 
 import bisq.account.payment_method.PaymentMethod;
 import bisq.common.data.Pair;
@@ -23,6 +23,7 @@ import bisq.desktop.common.utils.ImageUtil;
 import bisq.desktop.components.controls.BisqTooltip;
 import bisq.desktop.components.controls.BitcoinAmountDisplay;
 import bisq.desktop.main.content.components.UserProfileDisplay;
+import bisq.desktop.main.content.mu_sig.MuSigViewUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;

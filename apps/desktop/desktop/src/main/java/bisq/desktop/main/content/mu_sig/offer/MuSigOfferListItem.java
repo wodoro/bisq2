@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig;
+package bisq.desktop.main.content.mu_sig.offer;
 
 import bisq.account.AccountService;
 import bisq.account.accounts.fiat.UserDefinedFiatAccount;
