@@ -27,9 +27,9 @@ enum MuSigMarketSortType {
     ASC(MuSigMarketItemUtil.sortByMarketNameAsc()),
     DESC(MuSigMarketItemUtil.sortByMarketNameDesc());
 
-    private final Comparator<MarketItem> comparator;
+    private final Comparator<MuSigMarketItem> comparator;
 
-    MuSigMarketSortType(Comparator<MarketItem> comparator) {
+    MuSigMarketSortType(Comparator<MuSigMarketItem> comparator) {
         this.comparator = comparator;
     }
 }

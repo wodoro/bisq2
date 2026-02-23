@@ -26,12 +26,12 @@ import java.util.List;
 public class MuSigMarketItemUtil {
     static final List<Market> majorMarkets = MarketRepository.getMajorFiatMarkets();
     
-    static Comparator<MarketItem> sortByNumOffers() {
-        return Comparator.<MarketItem>comparingLong(o -> o.getNumOffers().get()).reversed()
+    static Comparator<MuSigMarketItem> sortByNumOffers() {
+        return Comparator.<MuSigMarketItem>comparingLong(o -> o.getNumOffers().get()).reversed()
                 .thenComparing(o -> o.getMarket().toString());
     }
 
-    static Comparator<MarketItem> sortByMajorMarkets() {
+    static Comparator<MuSigMarketItem> sortByMajorMarkets() {
         return (lhs, rhs) -> {
             int index1 = majorMarkets.indexOf(lhs.getMarket());
             if (index1 == -1) {
@@ -45,15 +45,15 @@ public class MuSigMarketItemUtil {
         };
     }
 
-    static Comparator<MarketItem> sortByMarketNameAsc() {
-        return Comparator.comparing(MarketItem::toString);
+    static Comparator<MuSigMarketItem> sortByMarketNameAsc() {
+        return Comparator.comparing(MuSigMarketItem::toString);
     }
 
-    static Comparator<MarketItem> sortByMarketNameDesc() {
-        return Comparator.comparing(MarketItem::toString).reversed();
+    static Comparator<MuSigMarketItem> sortByMarketNameDesc() {
+        return Comparator.comparing(MuSigMarketItem::toString).reversed();
     }
 
-    static Comparator<MarketItem> sortByMarketActivity() {
+    static Comparator<MuSigMarketItem> sortByMarketActivity() {
         return (lhs, rhs) -> sortByNumOffers()
                 .thenComparing(sortByMajorMarkets())
                 .thenComparing(sortByMarketNameAsc())

@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 
 @Getter
 public class MuSigMarketFilterPredicateProvider {
-    public static Predicate<MarketItem> getPredicate(MuSigFilters.MarketFilter marketFilter) {
+    public static Predicate<MuSigMarketItem> getPredicate(MuSigFilters.MarketFilter marketFilter) {
         return switch (marketFilter) {
             case ALL -> item -> true;
             case FAVOURITES -> item -> item.getIsFavourite().get();

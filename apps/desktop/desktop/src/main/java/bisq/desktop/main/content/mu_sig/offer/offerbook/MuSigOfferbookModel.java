@@ -82,12 +82,12 @@ public class MuSigOfferbookModel implements Model {
     private Predicate<MuSigOfferListItem> paymentMethodFilterPredicate = item -> true;
 
     private final ObjectProperty<CryptoAsset> selectedBaseCryptoAsset = new SimpleObjectProperty<>();
-    private final ObservableList<MarketItem> marketItems = FXCollections.observableArrayList();
-    private final FilteredList<MarketItem> filteredMarketItems = new FilteredList<>(marketItems);
-    private final SortedList<MarketItem> sortedMarketItems = new SortedList<>(filteredMarketItems);
-    private final FilteredList<MarketItem> favouriteMarketItems = new FilteredList<>(marketItems);
-    private final SortedList<MarketItem> sortedFavouriteMarketItems = new SortedList<>(favouriteMarketItems, MuSigMarketItemUtil.sortByMarketNameAsc());
-    private final ObjectProperty<MarketItem> selectedMarketItem = new SimpleObjectProperty<>();
+    private final ObservableList<MuSigMarketItem> marketItems = FXCollections.observableArrayList();
+    private final FilteredList<MuSigMarketItem> filteredMarketItems = new FilteredList<>(marketItems);
+    private final SortedList<MuSigMarketItem> sortedMarketItems = new SortedList<>(filteredMarketItems);
+    private final FilteredList<MuSigMarketItem> favouriteMarketItems = new FilteredList<>(marketItems);
+    private final SortedList<MuSigMarketItem> sortedFavouriteMarketItems = new SortedList<>(favouriteMarketItems, MuSigMarketItemUtil.sortByMarketNameAsc());
+    private final ObjectProperty<MuSigMarketItem> selectedMarketItem = new SimpleObjectProperty<>();
 
     private final StringProperty marketListTitle = new SimpleStringProperty();
     private final StringProperty marketsSearchBoxText = new SimpleStringProperty();
@@ -97,16 +97,16 @@ public class MuSigOfferbookModel implements Model {
     private final BooleanProperty shouldShowFavouritesListView = new SimpleBooleanProperty();
     private final BooleanProperty favouritesListViewNeedsHeightUpdate = new SimpleBooleanProperty();
 
-    private final Predicate<MarketItem> marketItemsPredicate = item ->
+    private final Predicate<MuSigMarketItem> marketItemsPredicate = item ->
             getMarketFilterPredicate().test(item)
                     && getMarketSearchTextPredicate().test(item)
                     && getMarketPricePredicate().test(item)
                     && !item.getIsFavourite().get();
-    private final Predicate<MarketItem> favouriteMarketItemsPredicate = item -> item.getIsFavourite().get();;
+    private final Predicate<MuSigMarketItem> favouriteMarketItemsPredicate = item -> item.getIsFavourite().get();;
     @Setter
-    private Predicate<MarketItem> marketFilterPredicate = item -> true;
+    private Predicate<MuSigMarketItem> marketFilterPredicate = item -> true;
     @Setter
-    private Predicate<MarketItem> marketSearchTextPredicate = item -> true;
+    private Predicate<MuSigMarketItem> marketSearchTextPredicate = item -> true;
     @Setter
-    private Predicate<MarketItem> marketPricePredicate = item -> true;
+    private Predicate<MuSigMarketItem> marketPricePredicate = item -> true;
 }

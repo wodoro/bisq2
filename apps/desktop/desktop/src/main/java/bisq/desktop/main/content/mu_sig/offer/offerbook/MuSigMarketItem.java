@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
-public class MarketItem {
+public class MuSigMarketItem {
     public static final ColorAdjust DIMMED = new ColorAdjust(0, -0.2, -0.4, -0.1);
     public static final ColorAdjust SELECTED = new ColorAdjust(0, 0, -0.1, 0);
     @SuppressWarnings("UnnecessaryUnicodeEscape")
@@ -55,11 +55,11 @@ public class MarketItem {
     private final SimpleStringProperty numMarketNotifications = new SimpleStringProperty();
     private Pin offersPin;
 
-    MarketItem(Market market,
-               FavouriteMarketsService favouriteMarketsService,
-               MarketPriceService marketPriceService,
-               UserProfileService userProfileService,
-               MuSigService muSigService) {
+    MuSigMarketItem(Market market,
+                    FavouriteMarketsService favouriteMarketsService,
+                    MarketPriceService marketPriceService,
+                    UserProfileService userProfileService,
+                    MuSigService muSigService) {
         this.market = market;
         this.favouriteMarketsService = favouriteMarketsService;
         this.marketPriceService = marketPriceService;
