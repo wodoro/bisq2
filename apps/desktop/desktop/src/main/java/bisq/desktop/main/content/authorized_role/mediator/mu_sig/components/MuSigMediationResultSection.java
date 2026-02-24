@@ -58,7 +58,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.fxmisc.easybind.EasyBind;
 import org.fxmisc.easybind.Subscription;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class MuSigMediationResultSection {
     private final Controller controller;
@@ -92,11 +94,7 @@ public class MuSigMediationResultSection {
 
         private final MuSigMediatorService muSigMediatorService;
         private Optional<MuSigMediationPayoutDistributionCalculator.PayoutContext> payoutContext = Optional.empty();
-        private Subscription selectedPayoutDistributionTypePin;
-        private Subscription payoutAdjustmentPercentagePin;
-        private Subscription buyerPayoutAmountPin;
-        private Subscription sellerPayoutAmountPin;
-        private Subscription hasRequiredSelectionsPin;
+        private final Set<Subscription> subscriptions = new HashSet<>();
 
         private Controller(ServiceProvider serviceProvider) {
             model = new Model();
@@ -154,7 +152,7 @@ public class MuSigMediationResultSection {
                     payoutDistributionType != null && shouldUsePenaltyDescription(payoutDistributionType));
             model.getPayoutAmountsEditable().set(false);
             payoutContext = resolvePayoutContext();
-            hasRequiredSelectionsPin = EasyBind.subscribe(
+            subscriptions.add(EasyBind.subscribe(
                     EasyBind.combine(
                             model.getSelectedReason(),
                             model.getSelectedPayoutDistributionType(),
@@ -163,29 +161,21 @@ public class MuSigMediationResultSection {
                             model.getPayoutAdjustmentPercentageValue(),
                             (selectedReason, selectedPayoutDistributionType, buyerPayoutAmountAsCoin, sellerPayoutAmountAsCoin, payoutAdjustmentPercentageValue) ->
                                     hasRequiredSelections()),
-                    model.getHasRequiredSelections()::set);
+                    model.getHasRequiredSelections()::set));
 
             if (caseOpen) {
-                selectedPayoutDistributionTypePin = EasyBind.subscribe(model.getSelectedPayoutDistributionType(), this::onPayoutDistributionTypeChanged);
-                payoutAdjustmentPercentagePin = EasyBind.subscribe(model.getPayoutAdjustmentPercentage(),
-                        this::onPayoutAdjustmentPercentageChanged);
-                buyerPayoutAmountPin = EasyBind.subscribe(model.getBuyerPayoutAmount(), this::onBuyerPayoutAmountChanged);
-                sellerPayoutAmountPin = EasyBind.subscribe(model.getSellerPayoutAmount(), this::onSellerPayoutAmountChanged);
+                subscriptions.add(EasyBind.subscribe(model.getSelectedPayoutDistributionType(), this::onPayoutDistributionTypeChanged));
+                subscriptions.add(EasyBind.subscribe(model.getPayoutAdjustmentPercentage(),
+                        this::onPayoutAdjustmentPercentageChanged));
+                subscriptions.add(EasyBind.subscribe(model.getBuyerPayoutAmount(), this::onBuyerPayoutAmountChanged));
+                subscriptions.add(EasyBind.subscribe(model.getSellerPayoutAmount(), this::onSellerPayoutAmountChanged));
             }
         }
 
         @Override
         public void onDeactivate() {
-            unsubscribe(selectedPayoutDistributionTypePin);
-            unsubscribe(payoutAdjustmentPercentagePin);
-            unsubscribe(buyerPayoutAmountPin);
-            unsubscribe(sellerPayoutAmountPin);
-            unsubscribe(hasRequiredSelectionsPin);
-            selectedPayoutDistributionTypePin = null;
-            payoutAdjustmentPercentagePin = null;
-            buyerPayoutAmountPin = null;
-            sellerPayoutAmountPin = null;
-            hasRequiredSelectionsPin = null;
+            subscriptions.forEach(Subscription::unsubscribe);
+            subscriptions.clear();
             payoutContext = Optional.empty();
         }
 
@@ -343,12 +333,6 @@ public class MuSigMediationResultSection {
             return payoutDistributionType == MediationPayoutDistributionType.CUSTOM_PAYOUT;
         }
 
-        private static void unsubscribe(Subscription subscription) {
-            if (subscription != null) {
-                subscription.unsubscribe();
-            }
-        }
-
         private boolean hasRequiredSelections() {
             MediationPayoutDistributionType payoutDistributionType = model.getSelectedPayoutDistributionType().get();
             return model.getSelectedReason().get() != null &&
@@ -476,15 +460,10 @@ public class MuSigMediationResultSection {
 
         private final AutoCompleteComboBox<MediationPayoutDistributionType> payoutDistributionTypeSelection;
         private final MaterialTextField payoutDistributionTypeDisplay;
-        private Subscription selectedPayoutDistributionTypePin;
 
         private final AutoCompleteComboBox<MediationResultReason> reasonSelection;
         private final MaterialTextField reasonDisplay;
-        private Subscription selectedReasonPin;
-        private Subscription buyerPayoutFocusPin;
-        private Subscription sellerPayoutFocusPin;
-        private Subscription payoutAdjustmentPercentageDescriptionPin;
-        private Subscription payoutAmountsEditablePin;
+        private final Set<Subscription> subscriptions = new HashSet<>();
 
         private final MaterialTextField buyerPayoutAmount;
         private final MaterialTextField sellerPayoutAmount;
@@ -592,7 +571,7 @@ public class MuSigMediationResultSection {
                     controller.onSelectPayoutDistributionType(payoutDistributionTypeSelection.getSelectionModel().getSelectedItem());
                 });
 
-                selectedPayoutDistributionTypePin = EasyBind.subscribe(model.getSelectedPayoutDistributionType(),
+                subscriptions.add(EasyBind.subscribe(model.getSelectedPayoutDistributionType(),
                         payoutDistributionType -> {
                             if (payoutDistributionType != null) {
                                 payoutDistributionTypeSelection.getSelectionModel().select(payoutDistributionType);
@@ -600,7 +579,7 @@ public class MuSigMediationResultSection {
                                 payoutDistributionTypeSelection.getSelectionModel().clearSelection();
                             }
                             updatePayoutDistributionTypeDisplay(payoutDistributionType);
-                        });
+                        }));
 
                 reasonSelection.setOnChangeConfirmed(e -> {
                     if (reasonSelection.getSelectionModel().getSelectedItem() == null) {
@@ -610,7 +589,7 @@ public class MuSigMediationResultSection {
                     controller.onSelectReason(reasonSelection.getSelectionModel().getSelectedItem());
                 });
 
-                selectedReasonPin = EasyBind.subscribe(model.getSelectedReason(),
+                subscriptions.add(EasyBind.subscribe(model.getSelectedReason(),
                         reason -> {
                             if (reason != null) {
                                 reasonSelection.getSelectionModel().select(reason);
@@ -618,18 +597,18 @@ public class MuSigMediationResultSection {
                                 reasonSelection.getSelectionModel().clearSelection();
                             }
                             updateReasonDisplay(reason);
-                        });
-                buyerPayoutFocusPin = EasyBind.subscribe(buyerPayoutAmount.textInputFocusedProperty(),
-                        controller::onBuyerPayoutAmountFocusChanged);
-                sellerPayoutFocusPin = EasyBind.subscribe(sellerPayoutAmount.textInputFocusedProperty(),
-                        controller::onSellerPayoutAmountFocusChanged);
-                payoutAmountsEditablePin = EasyBind.subscribe(model.getPayoutAmountsEditable(),
+                        }));
+                subscriptions.add(EasyBind.subscribe(buyerPayoutAmount.textInputFocusedProperty(),
+                        controller::onBuyerPayoutAmountFocusChanged));
+                subscriptions.add(EasyBind.subscribe(sellerPayoutAmount.textInputFocusedProperty(),
+                        controller::onSellerPayoutAmountFocusChanged));
+                subscriptions.add(EasyBind.subscribe(model.getPayoutAmountsEditable(),
                         editable -> {
                             buyerPayoutAmount.setEditable(editable);
                             sellerPayoutAmount.setEditable(editable);
-                        });
-                payoutAdjustmentPercentageDescriptionPin = EasyBind.subscribe(model.getUsePenaltyDescription(),
-                        this::applyPayoutAdjustmentPercentageDescription);
+                        }));
+                subscriptions.add(EasyBind.subscribe(model.getUsePenaltyDescription(),
+                        this::applyPayoutAdjustmentPercentageDescription));
             }
 
             updatePayoutDistributionTypeDisplay(model.getSelectedPayoutDistributionType().get());
@@ -663,19 +642,9 @@ public class MuSigMediationResultSection {
         @Override
         protected void onViewDetached() {
             payoutDistributionTypeSelection.setOnChangeConfirmed(null);
-            unsubscribe(selectedPayoutDistributionTypePin);
-            selectedPayoutDistributionTypePin = null;
             reasonSelection.setOnChangeConfirmed(null);
-            unsubscribe(selectedReasonPin);
-            selectedReasonPin = null;
-            unsubscribe(buyerPayoutFocusPin);
-            buyerPayoutFocusPin = null;
-            unsubscribe(sellerPayoutFocusPin);
-            sellerPayoutFocusPin = null;
-            unsubscribe(payoutAdjustmentPercentageDescriptionPin);
-            payoutAdjustmentPercentageDescriptionPin = null;
-            unsubscribe(payoutAmountsEditablePin);
-            payoutAmountsEditablePin = null;
+            subscriptions.forEach(Subscription::unsubscribe);
+            subscriptions.clear();
 
             summaryNotes.textProperty().unbindBidirectional(model.getSummaryNotes());
             buyerPayoutAmount.textProperty().unbindBidirectional(model.getBuyerPayoutAmount());
@@ -711,12 +680,6 @@ public class MuSigMediationResultSection {
             reasonDisplay.setText(reason == null
                     ? ""
                     : Res.get("authorizedRole.mediator.mediationResult.reason." + reason.name()));
-        }
-
-        private static void unsubscribe(Subscription subscription) {
-            if (subscription != null) {
-                subscription.unsubscribe();
-            }
         }
     }
 }
