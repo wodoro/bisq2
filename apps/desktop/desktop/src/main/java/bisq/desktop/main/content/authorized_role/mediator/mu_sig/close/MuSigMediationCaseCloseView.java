@@ -36,13 +36,15 @@ import lombok.extern.slf4j.Slf4j;
 public class MuSigMediationCaseCloseView extends NavigationView<VBox, MuSigMediationCaseCloseModel, MuSigMediationCaseCloseController> {
     private final Button closeButton, closeCaseButton;
 
-
     public MuSigMediationCaseCloseView(MuSigMediationCaseCloseModel model,
                                        MuSigMediationCaseCloseController controller,
                                        VBox mediationCaseOverviewComponent,
                                        VBox mediationCaseDetailComponent,
-                                       VBox mediationCaseProposalComponent) {
-        super(new VBox(), model, controller);
+                                       VBox mediationResultComponent) {
+        super(new VBox(10), model, controller);
+
+        root.setPrefWidth(OverlayModel.WIDTH);
+        root.setPrefHeight(OverlayModel.HEIGHT);
 
         closeButton = BisqIconButton.createIconButton("close");
         HBox closeButtonRow = new HBox(Spacer.fillHBox(), closeButton);
@@ -62,31 +64,23 @@ public class MuSigMediationCaseCloseView extends NavigationView<VBox, MuSigMedia
         VBox content = new VBox(10,
                 mediationCaseOverviewComponent,
                 mediationCaseDetailComponent,
-                mediationCaseProposalComponent,
+                mediationResultComponent,
                 closeCaseButtonRow
         );
-        VBox.setMargin(mediationCaseProposalComponent, new Insets(10, 0, 0, 0));
+        VBox.setMargin(mediationResultComponent, new Insets(10, 0, 0, 0));
         content.setAlignment(Pos.CENTER_LEFT);
         content.setPadding(new Insets(0, 20, 0, 0));
 
-        ScrollPane scrollPane = new ScrollPane(content);
+        ScrollPane scrollPane = new ScrollPane();
         scrollPane.setFitToWidth(true);
-        scrollPane.setFitToHeight(true);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setMaxHeight(OverlayModel.HEIGHT - 120);
-        scrollPane.setPrefHeight(OverlayModel.HEIGHT - 120);
-
-        root.setAlignment(Pos.TOP_CENTER);
-        root.setPrefWidth(OverlayModel.WIDTH);
-        root.setPrefHeight(OverlayModel.HEIGHT);
-
-        VBox contentWrapper = new VBox(10, headline, scrollPane);
-        contentWrapper.setAlignment(Pos.CENTER_LEFT);
+        scrollPane.setContent(content);
+        VBox.setMargin(scrollPane, new Insets(0, 80, 40, 80));
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
         VBox.setMargin(headline, new Insets(-5, 0, 5, 0));
-        VBox.setMargin(contentWrapper, new Insets(-10, 80, 0, 80));
-        VBox.setVgrow(scrollPane, Priority.ALWAYS);
-        root.getChildren().addAll(closeButtonRow, contentWrapper);
+        root.getChildren().addAll(closeButtonRow, headline, scrollPane);
     }
 
     @Override

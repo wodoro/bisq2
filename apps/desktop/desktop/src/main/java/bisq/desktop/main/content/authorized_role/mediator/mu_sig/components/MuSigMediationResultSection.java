@@ -543,7 +543,7 @@ public class MuSigMediationResultSection {
             // summary notes
 
             summaryNotes = new MaterialTextArea(Res.get("authorizedRole.mediator.mediationResult.summaryNotes"));
-            summaryNotes.setFixedHeight(80);
+            summaryNotes.setFixedHeight(70);
 
             VBox content = new VBox(10,
                     payoutDistributionTypeSelection,

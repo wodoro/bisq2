@@ -26,21 +26,30 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
+
+import static bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationCaseDetailsViewHelper.getLine;
 
 @Slf4j
 public class MuSigMediationCaseDetailsView extends NavigationView<VBox, MuSigMediationCaseDetailsModel, MuSigMediationCaseDetailsController> {
     private final Button closeButton;
-
+    private final VBox mediationResultContainer;
 
     public MuSigMediationCaseDetailsView(MuSigMediationCaseDetailsModel model,
                                          MuSigMediationCaseDetailsController controller,
                                          VBox mediationCaseOverviewComponent,
                                          VBox mediationCaseDetailComponent) {
-        super(new VBox(), model, controller);
+        super(new VBox(10), model, controller);
+
+        root.setPrefWidth(OverlayModel.WIDTH);
+        root.setPrefHeight(OverlayModel.HEIGHT);
 
         closeButton = BisqIconButton.createIconButton("close");
         HBox closeButtonRow = new HBox(Spacer.fillHBox(), closeButton);
@@ -53,20 +62,55 @@ public class MuSigMediationCaseDetailsView extends NavigationView<VBox, MuSigMed
 
         VBox.setMargin(headline, new Insets(-5, 0, 5, 0));
 
+        VBox overviewSection = createSection(Res.get("bisqEasy.openTrades.tradeDetails.overview"),
+                0,
+                mediationCaseOverviewComponent);
+        VBox detailsSection = createSection(Res.get("bisqEasy.openTrades.tradeDetails.details"),
+                15,
+                mediationCaseDetailComponent);
+
+        mediationResultContainer = new VBox();
+        VBox mediationResultSection = createSection(Res.get("authorizedRole.mediator.mediationCaseDetails.mediationResult"),
+                15,
+                mediationResultContainer);
+        mediationResultSection.setVisible(false);
+        mediationResultSection.setManaged(false);
+
         VBox content = new VBox(10,
-                headline,
-                mediationCaseOverviewComponent,
-                mediationCaseDetailComponent
+                overviewSection,
+                detailsSection,
+                mediationResultSection
         );
-        content.setAlignment(Pos.CENTER_LEFT);
+        content.setPadding(new Insets(0, 20, 0, 0));
 
-        root.setAlignment(Pos.TOP_CENTER);
-        root.setPrefWidth(OverlayModel.WIDTH);
-        root.setPrefHeight(OverlayModel.HEIGHT);
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setFitToWidth(true);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setContent(content);
+        VBox.setMargin(scrollPane, new Insets(0, 80, 40, 80));
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
-        VBox.setMargin(content, new Insets(-40, 80, 0, 80));
-        VBox.setVgrow(content, Priority.ALWAYS);
-        root.getChildren().addAll(closeButtonRow, content);
+        root.getChildren().addAll(closeButtonRow, headline, scrollPane);
+    }
+
+    public void setMediationResultComponent(Optional<VBox> optionalMediationResultComponent) {
+        mediationResultContainer.getChildren().clear();
+        optionalMediationResultComponent.ifPresent(component -> mediationResultContainer.getChildren().add(component));
+        boolean hasMediationResultComponent = optionalMediationResultComponent.isPresent();
+        Region mediationResultSection = (Region) mediationResultContainer.getParent();
+        mediationResultSection.setManaged(hasMediationResultComponent);
+        mediationResultSection.setVisible(hasMediationResultComponent);
+    }
+
+    private static VBox createSection(String sectionLabelText, double sectionLabelTopMargin, VBox sectionContent) {
+        Label sectionLabel = new Label(sectionLabelText.toUpperCase());
+        sectionLabel.getStyleClass().addAll("text-fill-grey-dimmed", "font-light", "medium-text");
+        VBox.setMargin(sectionLabel, new Insets(sectionLabelTopMargin, 0, -5, 0));
+        Region sectionLine = getLine();
+        VBox section = new VBox(10, sectionLabel, sectionLine, sectionContent);
+        section.setAlignment(Pos.CENTER_LEFT);
+        return section;
     }
 
     @Override

@@ -40,7 +40,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,7 +50,6 @@ import java.util.stream.Collectors;
 import static bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationCaseDetailsViewHelper.createAndGetDescriptionAndValueBox;
 import static bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationCaseDetailsViewHelper.getCopyButton;
 import static bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationCaseDetailsViewHelper.getDescriptionLabel;
-import static bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationCaseDetailsViewHelper.getLine;
 import static bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationCaseDetailsViewHelper.getValueLabel;
 
 public class MuSigMediationCaseOverviewSection {
@@ -235,12 +233,6 @@ public class MuSigMediationCaseOverviewSection {
             VBox content;
 
             if (!model.isCompactView()) {
-                Region overviewLine = getLine();
-                Label overviewLabel = new Label(Res.get("bisqEasy.openTrades.tradeDetails.overview").toUpperCase());
-                overviewLabel.getStyleClass().addAll("text-fill-grey-dimmed", "font-light", "medium-text");
-
-                VBox.setMargin(overviewLabel, new Insets(0, 0, -5, 0));
-
                 // UserNames
                 buyerUserNameLabel = getValueLabel();
                 buyerUserNameCopyButton = getCopyButton(Res.get("authorizedRole.mediator.mediationCaseDetails.buyerUserName.copy"));
@@ -267,8 +259,6 @@ public class MuSigMediationCaseOverviewSection {
                         depositTxDetailsLabel, depositTxCopyButton);
 
                 content = new VBox(10,
-                        overviewLabel,
-                        overviewLine,
                         buyerUserNameBox,
                         sellerUserNameBox,
                         amountAndPriceBox,
