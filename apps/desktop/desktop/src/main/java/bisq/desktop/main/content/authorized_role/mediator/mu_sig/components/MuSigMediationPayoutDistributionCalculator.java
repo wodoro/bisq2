@@ -27,6 +27,8 @@ import bisq.trade.mu_sig.MuSigTradeUtils;
 
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 final class MuSigMediationPayoutDistributionCalculator {
     static final double MIN_REFUND_PERCENTAGE = 0.05; // 5%
 
@@ -160,6 +162,10 @@ final class MuSigMediationPayoutDistributionCalculator {
 
     private static Optional<Long> getRequestedRefundAmount(long tradeAmount, Optional<Double> payoutAdjustmentPercentageValue) {
         return payoutAdjustmentPercentageValue
-                .map(percentage -> MathUtils.roundDoubleToLong(tradeAmount * percentage));
+                .map(percentage -> {
+                    checkArgument(percentage >= 0 && percentage <= 1,
+                            "payoutAdjustmentPercentageValue must be within [0, 1]");
+                    return MathUtils.roundDoubleToLong(tradeAmount * percentage);
+                });
     }
 }
