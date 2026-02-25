@@ -24,8 +24,10 @@ import bisq.desktop.common.view.NavigationController;
 import bisq.desktop.main.content.authorized_role.mediator.mu_sig.MuSigMediationCaseListItem;
 import bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationCaseDetailSection;
 import bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationCaseOverviewSection;
+import bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationResultSection;
 import bisq.desktop.navigation.NavigationTarget;
 import bisq.desktop.overlay.OverlayController;
+import bisq.support.mediation.MediationCaseState;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -51,11 +53,13 @@ public class MuSigMediationCaseDetailsController extends NavigationController im
     @Getter
     private final MuSigMediationCaseDetailsView view;
 
+    private final ServiceProvider serviceProvider;
     private final MuSigMediationCaseOverviewSection muSigMediationCaseOverviewSection;
     private final MuSigMediationCaseDetailSection muSigMediationCaseDetailSection;
 
     public MuSigMediationCaseDetailsController(ServiceProvider serviceProvider) {
         super(NavigationTarget.MU_SIG_MEDIATION_CASE_DETAILS);
+        this.serviceProvider = serviceProvider;
 
         muSigMediationCaseOverviewSection = new MuSigMediationCaseOverviewSection(serviceProvider, false);
         muSigMediationCaseDetailSection = new MuSigMediationCaseDetailSection(serviceProvider, false);
@@ -73,6 +77,18 @@ public class MuSigMediationCaseDetailsController extends NavigationController im
         model.setMuSigMediationCaseListItem(initData.muSigMediationCaseListItem);
         muSigMediationCaseOverviewSection.setMediationCaseListItem(initData.muSigMediationCaseListItem);
         muSigMediationCaseDetailSection.setMediationCaseListItem(initData.muSigMediationCaseListItem);
+
+        boolean isClosed = initData.muSigMediationCaseListItem
+                .getMuSigMediationCase()
+                .getMediationCaseState()
+                .get() == MediationCaseState.CLOSED;
+        if (isClosed) {
+            MuSigMediationResultSection mediationResultSection = new MuSigMediationResultSection(serviceProvider);
+            mediationResultSection.setMediationCaseListItem(initData.muSigMediationCaseListItem);
+            view.setMediationResultComponent(Optional.of(mediationResultSection.getRoot()));
+        } else {
+            view.setMediationResultComponent(Optional.empty());
+        }
     }
 
     @Override

@@ -35,11 +35,9 @@ import bisq.presentation.formatters.PercentageFormatter;
 import bisq.support.mediation.mu_sig.MuSigMediationCase;
 import bisq.support.mediation.mu_sig.MuSigMediationRequest;
 import bisq.trade.mu_sig.MuSigTradeUtils;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,7 +48,6 @@ import java.util.Optional;
 import static bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationCaseDetailsViewHelper.createAndGetDescriptionAndValueBox;
 import static bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationCaseDetailsViewHelper.getCopyButton;
 import static bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationCaseDetailsViewHelper.getDescriptionLabel;
-import static bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationCaseDetailsViewHelper.getLine;
 import static bisq.desktop.main.content.authorized_role.mediator.mu_sig.components.MuSigMediationCaseDetailsViewHelper.getValueLabel;
 
 public class MuSigMediationCaseDetailSection {
@@ -209,12 +206,6 @@ public class MuSigMediationCaseDetailSection {
             VBox content;
 
             if (!model.isCompactView()) {
-                Label detailsLabel = new Label(Res.get("bisqEasy.openTrades.tradeDetails.details").toUpperCase());
-                detailsLabel.getStyleClass().addAll("text-fill-grey-dimmed", "font-light", "medium-text");
-                Region detailsLine = getLine();
-
-                VBox.setMargin(detailsLabel, new Insets(15, 0, -5, 0));
-
                 // Trade ID
                 tradeIdLabel = getValueLabel();
                 tradeIdCopyButton = getCopyButton(Res.get("bisqEasy.openTrades.tradeDetails.tradeId.copy"));
@@ -242,8 +233,6 @@ public class MuSigMediationCaseDetailSection {
                 HBox sellerNetworkAddressBox = createAndGetDescriptionAndValueBox("authorizedRole.mediator.mediationCaseDetails.sellerNetworkAddress",
                         sellerNetworkAddressLabel, sellerNetworkAddressCopyButton);
                 content = new VBox(10,
-                        detailsLabel,
-                        detailsLine,
                         tradeIdBox,
                         tradeDateBox,
                         offerTypeAndMarketBox,
