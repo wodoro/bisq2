@@ -15,64 +15,62 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.trade.trade_limits.tab2;
+package bisq.desktop.main.content.mu_sig.trade.trade_limits.overview;
 
-import bisq.desktop.common.threading.UIThread;
 import bisq.desktop.common.view.View;
 import bisq.desktop.components.containers.Spacer;
 import bisq.desktop.components.controls.BisqHyperlink;
+import bisq.desktop.components.controls.UnorderedList;
 import bisq.i18n.Res;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TradeLimitsTab2View extends View<VBox, TradeLimitsTab2Model, TradeLimitsTab2Controller> {
-    private final Button backButton, nextButton;
+public class TradeLimitsOverviewView extends View<VBox, TradeLimitsOverviewModel, TradeLimitsOverviewController> {
+    private final Button nextButton;
     private final Hyperlink learnMore;
 
-    public TradeLimitsTab2View(TradeLimitsTab2Model model, TradeLimitsTab2Controller controller, GridPane preview) {
+    public TradeLimitsOverviewView(TradeLimitsOverviewModel model,
+                                   TradeLimitsOverviewController controller) {
         super(new VBox(), model, controller);
 
-        root.setPadding(new Insets(20, 0, 0, 0));
+        Label headline = new Label(Res.get("muSig.trade.limits.overview.headline"));
+        headline.getStyleClass().add("bisq-text-headline-2");
 
-       /* Label headline = new Label(Res.get("muSig.trade.limits.tab2.headline"));
-        headline.getStyleClass().add("bisq-text-headline-2");*/
-
-        backButton = new Button(Res.get("action.back"));
+        UnorderedList info = new UnorderedList(Res.get("muSig.trade.limits.overview.info"), "bisq-text-13");
 
         nextButton = new Button(Res.get("action.next"));
         nextButton.setDefaultButton(true);
 
         learnMore = new BisqHyperlink(Res.get("action.learnMore"), "https://bisq.wiki/Reputation");
 
-        HBox buttons = new HBox(20, backButton, nextButton, Spacer.fillHBox(), learnMore);
+        HBox buttons = new HBox(20, nextButton, Spacer.fillHBox(), learnMore);
         buttons.setAlignment(Pos.BOTTOM_RIGHT);
 
-        VBox contentBox = new VBox(15);
-        VBox.setMargin(preview, new Insets(10,0,10,0));
-        contentBox.getChildren().addAll(preview, buttons);
+        VBox.setMargin(headline, new Insets(10, 0, 0, 0));
+        VBox.setMargin(buttons, new Insets(10, 0, 0, 0));
+
+        VBox contentBox = new VBox(20, headline, info, buttons);
         contentBox.getStyleClass().addAll("bisq-common-bg", "common-line-spacing");
         root.getChildren().addAll(contentBox);
+
+        root.setPadding(new Insets(20, 0, 0, 0));
     }
 
     @Override
     protected void onViewAttached() {
-        backButton.setOnAction(e -> controller.onBack());
         nextButton.setOnAction(e -> controller.onNext());
         learnMore.setOnAction(e -> controller.onLearnMore());
-
-        UIThread.runOnNextRenderFrame(root::requestFocus);
     }
 
     @Override
     protected void onViewDetached() {
-        backButton.setOnAction(null);
         nextButton.setOnAction(null);
         learnMore.setOnAction(null);
     }

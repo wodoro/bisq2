@@ -15,20 +15,13 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.trade.trade_limits.tab3;
+package bisq.desktop.main.content.mu_sig.trade.trade_limits.algorithm;
 
 import bisq.desktop.common.view.Model;
-import bisq.user.identity.UserIdentity;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class TradeLimitsTab3Model implements Model {
-    private final ObjectProperty<UserIdentity> selectedChatUserIdentity = new SimpleObjectProperty<>();
-    private final StringProperty pubKeyHash = new SimpleStringProperty();
+public class MuSigTradeLimitsAlgorithmModel implements Model {
 }

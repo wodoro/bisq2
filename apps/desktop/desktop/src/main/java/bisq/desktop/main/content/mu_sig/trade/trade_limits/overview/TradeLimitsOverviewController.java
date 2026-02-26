@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.trade.trade_limits.tab1;
+package bisq.desktop.main.content.mu_sig.trade.trade_limits.overview;
 
 import bisq.desktop.ServiceProvider;
 import bisq.desktop.common.Browser;
@@ -26,13 +26,13 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TradeLimitsTab1Controller implements Controller {
+public class TradeLimitsOverviewController implements Controller {
     @Getter
-    private final TradeLimitsTab1View view;
+    private final TradeLimitsOverviewView view;
 
-    public TradeLimitsTab1Controller(ServiceProvider serviceProvider) {
-        TradeLimitsTab1Model model = new TradeLimitsTab1Model();
-        view = new TradeLimitsTab1View(model, this);
+    public TradeLimitsOverviewController(ServiceProvider serviceProvider) {
+        TradeLimitsOverviewModel model = new TradeLimitsOverviewModel();
+        view = new TradeLimitsOverviewView(model, this);
     }
 
     @Override
@@ -48,6 +48,6 @@ public class TradeLimitsTab1Controller implements Controller {
     }
 
     void onNext() {
-        Navigation.navigateTo(NavigationTarget.MU_SIG_TRADE_LIMITS_TAB_2);
+        Navigation.navigateTo(NavigationTarget.MU_SIG_TRADE_LIMITS_SIMULATION);
     }
 }

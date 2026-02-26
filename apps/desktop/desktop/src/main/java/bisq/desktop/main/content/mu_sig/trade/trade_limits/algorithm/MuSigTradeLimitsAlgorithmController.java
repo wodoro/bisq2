@@ -15,25 +15,29 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.trade.trade_limits.tab2;
+package bisq.desktop.main.content.mu_sig.trade.trade_limits.algorithm;
 
 import bisq.desktop.ServiceProvider;
 import bisq.desktop.common.Browser;
+import bisq.desktop.common.utils.ClipboardUtil;
 import bisq.desktop.common.view.Controller;
 import bisq.desktop.common.view.Navigation;
 import bisq.desktop.navigation.NavigationTarget;
+import bisq.desktop.overlay.OverlayController;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TradeLimitsTab2Controller implements Controller {
-    @Getter
-    private final TradeLimitsTab2View view;
+public class MuSigTradeLimitsAlgorithmController implements Controller {
 
-    public TradeLimitsTab2Controller(ServiceProvider serviceProvider) {
-        TradeLimitsTab2Model model = new TradeLimitsTab2Model();
-        TradeLimitsPreview preview = new TradeLimitsPreview();
-        view = new TradeLimitsTab2View(model, this, preview.getViewRoot());
+    private final MuSigTradeLimitsAlgorithmModel model;
+    @Getter
+    private final MuSigTradeLimitsAlgorithmView view;
+
+    public MuSigTradeLimitsAlgorithmController(ServiceProvider serviceProvider) {
+
+        model = new MuSigTradeLimitsAlgorithmModel();
+        view = new MuSigTradeLimitsAlgorithmView(model, this);
     }
 
     @Override
@@ -45,14 +49,18 @@ public class TradeLimitsTab2Controller implements Controller {
     }
 
     void onBack() {
-        Navigation.navigateTo(NavigationTarget.MU_SIG_TRADE_LIMITS_TAB_1);
-    }
-
-    void onNext() {
-        Navigation.navigateTo(NavigationTarget.MU_SIG_TRADE_LIMITS_TAB_3);
+        Navigation.navigateTo(NavigationTarget.MU_SIG_TRADE_LIMITS_SIMULATION);
     }
 
     void onLearnMore() {
-        Browser.open("https://bisq.wiki/MuSig-trade-limits");
+        Browser.open("https://bisq.wiki/Reputation");
+    }
+
+    void onCopyToClipboard(String pubKeyHash) {
+        ClipboardUtil.copyToClipboard(pubKeyHash);
+    }
+
+    void onClose() {
+        OverlayController.hide();
     }
 }
