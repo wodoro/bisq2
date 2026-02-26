@@ -169,8 +169,8 @@ class MuSigTakeOfferReviewView extends View<StackPane, MuSigTakeOfferReviewModel
         takeOfferSendMessageWaitingAnimation = new MuSigProtocolWaitingAnimation(MuSigProtocolWaitingState.TAKE_OFFER);
         sendTakeOfferMessageOverlay = new WizardOverlay(root)
                 .headlineIcon(takeOfferSendMessageWaitingAnimation)
-                .headline("muSig.offer.taker.review.sendTakeOfferMessageFeedback.headline")
-                .description("muSig.offer.taker.review.sendTakeOfferMessageFeedback.subTitle",
+                .headlineFromI18nKey("muSig.offer.taker.review.sendTakeOfferMessageFeedback.headline")
+                .descriptionFromI18nKeys("muSig.offer.taker.review.sendTakeOfferMessageFeedback.subTitle",
                         "muSig.offer.taker.review.sendTakeOfferMessageFeedback.info")
                 .build();
 
@@ -178,8 +178,8 @@ class MuSigTakeOfferReviewView extends View<StackPane, MuSigTakeOfferReviewModel
         takeOfferSuccessButton.setDefaultButton(true);
         takeOfferSuccessOverlay = new WizardOverlay(root)
                 .info()
-                .headline("muSig.offer.taker.review.takeOfferSuccess.headline")
-                .description("muSig.offer.taker.review.takeOfferSuccess.subTitle")
+                .headlineFromI18nKey("muSig.offer.taker.review.takeOfferSuccess.headline")
+                .descriptionFromI18nKey("muSig.offer.taker.review.takeOfferSuccess.subTitle")
                 .buttons(takeOfferSuccessButton)
                 .build();
 

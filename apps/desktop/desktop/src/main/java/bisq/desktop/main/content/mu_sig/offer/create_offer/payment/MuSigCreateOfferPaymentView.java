@@ -114,7 +114,7 @@ public class MuSigCreateOfferPaymentView extends View<StackPane, MuSigCreateOffe
         noPaymentMethodSelectedOverlayCloseButton = new Button(Res.get("action.close"));
         noPaymentMethodSelectedOverlay = new WizardOverlay(root)
                 .warning()
-                .headline("muSig.offer.create.paymentMethods.noPaymentMethodSelectedOverlay.headline")
+                .headlineFromI18nKey("muSig.offer.create.paymentMethods.noPaymentMethodSelectedOverlay.headline")
                 .description(new VBox(noPaymentMethodSelectedOverlayLabel))
                 .buttons(noPaymentMethodSelectedOverlayCloseButton)
                 .build();
