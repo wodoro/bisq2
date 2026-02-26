@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.trade.trade_limits.tab2;
+package bisq.desktop.main.content.mu_sig.trade.trade_limits.simulation;
 
 import bisq.account.payment_method.PaymentRail;
 import bisq.account.payment_method.fiat.FiatPaymentMethodChargebackRisk;
@@ -56,11 +56,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class TradeLimitsPreview {
+public class MuSigTradeLimitsSimulation {
 
     private final Controller controller;
 
-    public TradeLimitsPreview() {
+    public MuSigTradeLimitsSimulation() {
         controller = new Controller();
     }
 
@@ -82,14 +82,14 @@ public class TradeLimitsPreview {
                     .toList();
             model = new Model(fiatPaymentRails);
             view = new View(model, this);
+
+            applySelectFiatPaymentRail(FiatPaymentRail.SEPA);
         }
 
         @Override
         public void onActivate() {
             pins.add(EasyBind.subscribe(model.getAccountAge(), value -> updateLimits()));
             pins.add(EasyBind.subscribe(model.getReputationScore(), value -> updateLimits()));
-
-            applySelectFiatPaymentRail(FiatPaymentRail.SEPA);
         }
 
         @Override
@@ -112,7 +112,7 @@ public class TradeLimitsPreview {
         private void applySelectFiatPaymentRail(FiatPaymentRail fiatPaymentRail) {
             model.getSelectedFiatPaymentRail().set(fiatPaymentRail);
             String maxTradeLimit = MuSigTradeAmountLimits.getFormattedMaxTradeLimit(fiatPaymentRail);
-            model.getFiatPaymentRailMaxLimit().set(Res.get("muSig.trade.limits.tab2.preview.fiatRail.maxLimit", maxTradeLimit));
+            model.getFiatPaymentRailMaxLimit().set(Res.get("muSig.trade.limits.simulation.fiatRail.maxLimit", maxTradeLimit));
             updateLimits();
         }
 
@@ -218,7 +218,7 @@ public class TradeLimitsPreview {
 
             int rowIndex = 0;
 
-            paymentRailSelection = new AutoCompleteComboBox<>(model.getFiatPaymentRails(), Res.get("muSig.trade.limits.tab2.preview.fiatRail"));
+            paymentRailSelection = new AutoCompleteComboBox<>(model.getFiatPaymentRails(), Res.get("muSig.trade.limits.simulation.fiatRail"));
             paymentRailSelection.setMaxWidth(Double.MAX_VALUE);
             paymentRailSelection.setConverter(new StringConverter<>() {
                 @Override
@@ -239,7 +239,7 @@ public class TradeLimitsPreview {
             GridPane.setHgrow(paymentRailSelectionBox, Priority.ALWAYS);
             root.add(paymentRailSelectionBox, 0, rowIndex);
 
-            hasBisq1AccountAgeWitness = new Switch(Res.get("muSig.trade.limits.tab2.preview.hasBisq1AccountAgeWitness"));
+            hasBisq1AccountAgeWitness = new Switch(Res.get("muSig.trade.limits.simulation.hasBisq1AccountAgeWitness"));
 
             GridPane.setHgrow(hasBisq1AccountAgeWitness, Priority.ALWAYS);
             GridPane.setMargin(hasBisq1AccountAgeWitness, new Insets(0, 0, 37.5, 0));
@@ -248,7 +248,7 @@ public class TradeLimitsPreview {
             // Row 2
             rowIndex++;
             accountAge = new SliderWithValue(0, 0, 60,
-                    "muSig.trade.limits.tab2.preview.accountAge",
+                    "muSig.trade.limits.simulation.accountAge",
                     value -> String.valueOf(MathUtils.roundDouble(value, 0)),
                     new LongStringConverter(0),
                     1);
@@ -256,7 +256,7 @@ public class TradeLimitsPreview {
             root.add(accountAge.getViewRoot(), 0, rowIndex);
 
             reputationScore = new SliderWithValue(0, 0, 200000,
-                    "muSig.trade.limits.tab2.preview.reputationScore",
+                    "muSig.trade.limits.simulation.reputationScore",
                     value -> String.valueOf(MathUtils.roundDouble(value, 0)),
                     new LongStringConverter(0),
                     1);
@@ -264,9 +264,9 @@ public class TradeLimitsPreview {
             root.add(reputationScore.getViewRoot(), 1, rowIndex);
 
 
-            tradeLimit = new MaterialTextField(Res.get("muSig.trade.limits.tab2.preview.tradeLimit"));
+            tradeLimit = new MaterialTextField(Res.get("muSig.trade.limits.simulation.tradeLimit"));
             tradeLimit.setEditable(false);
-            rateLimit = new MaterialTextField(Res.get("muSig.trade.limits.tab2.preview.rateLimit"));
+            rateLimit = new MaterialTextField(Res.get("muSig.trade.limits.simulation.rateLimit"));
             rateLimit.setEditable(false);
 
             // Row 3

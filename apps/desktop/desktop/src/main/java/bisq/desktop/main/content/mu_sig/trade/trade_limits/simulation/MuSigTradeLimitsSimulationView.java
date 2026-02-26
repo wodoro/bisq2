@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.trade.trade_limits.tab2;
+package bisq.desktop.main.content.mu_sig.trade.trade_limits.simulation;
 
 import bisq.desktop.common.threading.UIThread;
 import bisq.desktop.common.view.View;
@@ -32,11 +32,11 @@ import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TradeLimitsTab2View extends View<VBox, TradeLimitsTab2Model, TradeLimitsTab2Controller> {
+public class MuSigTradeLimitsSimulationView extends View<VBox, MuSigTradeLimitsSimulationModel, MuSigTradeLimitsSimulationController> {
     private final Button backButton, nextButton;
     private final Hyperlink learnMore;
 
-    public TradeLimitsTab2View(TradeLimitsTab2Model model, TradeLimitsTab2Controller controller, GridPane preview) {
+    public MuSigTradeLimitsSimulationView(MuSigTradeLimitsSimulationModel model, MuSigTradeLimitsSimulationController controller, GridPane preview) {
         super(new VBox(), model, controller);
 
         root.setPadding(new Insets(20, 0, 0, 0));

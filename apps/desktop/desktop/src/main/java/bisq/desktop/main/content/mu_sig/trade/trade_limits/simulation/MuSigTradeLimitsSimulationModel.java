@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.trade.trade_limits.tab2;
+package bisq.desktop.main.content.mu_sig.trade.trade_limits.simulation;
 
 import bisq.desktop.common.view.Model;
 import lombok.Getter;
@@ -23,5 +23,5 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class TradeLimitsTab2Model implements Model {
+public class MuSigTradeLimitsSimulationModel implements Model {
 }

@@ -15,13 +15,11 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.trade.trade_limits.tab3;
+package bisq.desktop.main.content.mu_sig.trade.trade_limits.algorithm;
 
 import bisq.desktop.common.view.View;
 import bisq.desktop.components.containers.Spacer;
 import bisq.desktop.components.controls.BisqHyperlink;
-import bisq.desktop.components.controls.MaterialTextField;
-import bisq.desktop.components.controls.OrderedList;
 import bisq.i18n.Res;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -29,34 +27,23 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TradeLimitsTab3View extends View<VBox, TradeLimitsTab3Model, TradeLimitsTab3Controller> {
-    private final MaterialTextField pubKeyHash;
+public class MuSigTradeLimitsAlgorithmView extends View<VBox, MuSigTradeLimitsAlgorithmModel, MuSigTradeLimitsAlgorithmController> {
     private final Button closeButton, backButton;
     private final Hyperlink learnMore;
 
-    public TradeLimitsTab3View(TradeLimitsTab3Model model,
-                               TradeLimitsTab3Controller controller,
-                               Pane userProfileSelection) {
+    public MuSigTradeLimitsAlgorithmView(MuSigTradeLimitsAlgorithmModel model,
+                                         MuSigTradeLimitsAlgorithmController controller) {
         super(new VBox(), model, controller);
 
-        Label headline = new Label(Res.get("muSig.trade.limits.tab3.headline"));
+        Label headline = new Label(Res.get("muSig.trade.limits.algorithm.headline"));
         headline.getStyleClass().add("bisq-text-headline-2");
 
-        OrderedList info = new OrderedList(Res.get("muSig.trade.limits.tab3.info"), "bisq-text-13", 7, 5);
 
-        Label userProfileSelectLabel = new Label(Res.get("user.bondedRoles.userProfile.select").toUpperCase());
-        userProfileSelectLabel.getStyleClass().add("bisq-text-4");
-        userProfileSelectLabel.setAlignment(Pos.TOP_LEFT);
 
-        pubKeyHash = new MaterialTextField(Res.get("reputation.pubKeyHash"), "");
-        pubKeyHash.setEditable(false);
-        pubKeyHash.showCopyIcon();
 
         backButton = new Button(Res.get("action.back"));
 
@@ -68,14 +55,11 @@ public class TradeLimitsTab3View extends View<VBox, TradeLimitsTab3Model, TradeL
         HBox buttons = new HBox(20, backButton, closeButton, Spacer.fillHBox(), learnMore);
         buttons.setAlignment(Pos.BOTTOM_RIGHT);
 
-        VBox.setVgrow(info, Priority.ALWAYS);
         VBox.setMargin(headline, new Insets(10, 0, 0, 0));
-        VBox.setMargin(userProfileSelectLabel, new Insets(10, 0, -20, 0));
-        VBox.setMargin(userProfileSelection, new Insets(0, 0, -30, 0));
         VBox.setMargin(buttons, new Insets(10, 0, 0, 0));
 
         VBox contentBox = new VBox(20);
-        contentBox.getChildren().addAll(headline, info, userProfileSelectLabel, userProfileSelection, pubKeyHash, buttons);
+        contentBox.getChildren().addAll(headline, buttons);
         contentBox.getStyleClass().addAll("bisq-common-bg", "common-line-spacing");
         root.getChildren().addAll(contentBox);
         root.setPadding(new Insets(20, 0, 0, 0));
@@ -83,9 +67,6 @@ public class TradeLimitsTab3View extends View<VBox, TradeLimitsTab3Model, TradeL
 
     @Override
     protected void onViewAttached() {
-        pubKeyHash.textProperty().bind(model.getPubKeyHash());
-
-        pubKeyHash.getIconButton().setOnAction(e -> controller.onCopyToClipboard(pubKeyHash.getText()));
         closeButton.setOnAction(e -> controller.onClose());
         backButton.setOnAction(e -> controller.onBack());
         learnMore.setOnAction(e -> controller.onLearnMore());
@@ -93,9 +74,6 @@ public class TradeLimitsTab3View extends View<VBox, TradeLimitsTab3Model, TradeL
 
     @Override
     protected void onViewDetached() {
-        pubKeyHash.textProperty().unbind();
-
-        pubKeyHash.getIconButton().setOnAction(null);
         closeButton.setOnAction(null);
         backButton.setOnAction(null);
         learnMore.setOnAction(null);

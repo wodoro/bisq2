@@ -15,7 +15,7 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.mu_sig.trade.trade_limits.tab2;
+package bisq.desktop.main.content.mu_sig.trade.trade_limits.simulation;
 
 import bisq.desktop.components.controls.MaterialTextField;
 import bisq.i18n.Res;
