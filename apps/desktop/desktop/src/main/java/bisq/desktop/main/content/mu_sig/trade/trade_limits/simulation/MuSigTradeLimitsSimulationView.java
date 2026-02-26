@@ -47,7 +47,7 @@ public class MuSigTradeLimitsSimulationView extends View<VBox, MuSigTradeLimitsS
     private final Button backButton, closeButton;
     private final Hyperlink learnMore;
     private final MaterialTextField tradeLimit, rateLimit;
-    private final SliderWithValue accountAge, reputationScore;
+    private final SliderWithValue accountAge;
     private final AutoCompleteComboBox<FiatPaymentRail> paymentRailSelection;
     private final Label paymentRailMaxLimit;
     private final Switch hasBisq1AccountAgeWitness;
@@ -87,12 +87,6 @@ public class MuSigTradeLimitsSimulationView extends View<VBox, MuSigTradeLimitsS
         GridPane.setHgrow(paymentRailSelectionBox, Priority.ALWAYS);
         gridPane.add(paymentRailSelectionBox, 0, rowIndex);
 
-        hasBisq1AccountAgeWitness = new Switch(Res.get("muSig.trade.limits.simulation.hasBisq1AccountAgeWitness"));
-
-        GridPane.setHgrow(hasBisq1AccountAgeWitness, Priority.ALWAYS);
-        GridPane.setMargin(hasBisq1AccountAgeWitness, new Insets(0, 0, 37.5, 0));
-        gridPane.add(hasBisq1AccountAgeWitness, 1, rowIndex);
-
         // Row 2
         rowIndex++;
         accountAge = new SliderWithValue(0, model.getMinAccountAge(), model.getMaxAccountAge(),
@@ -103,14 +97,11 @@ public class MuSigTradeLimitsSimulationView extends View<VBox, MuSigTradeLimitsS
         GridPane.setHgrow(accountAge.getViewRoot(), Priority.ALWAYS);
         gridPane.add(accountAge.getViewRoot(), 0, rowIndex);
 
-        reputationScore = new SliderWithValue(0, 0, model.getMaxReputationScore(),
-                "muSig.trade.limits.simulation.reputationScore",
-                value -> String.valueOf(MathUtils.roundDouble(value, 0)),
-                new LongStringConverter(0),
-                1);
-        GridPane.setHgrow(reputationScore.getViewRoot(), Priority.ALWAYS);
-        gridPane.add(reputationScore.getViewRoot(), 1, rowIndex);
+        hasBisq1AccountAgeWitness = new Switch(Res.get("muSig.trade.limits.simulation.hasBisq1AccountAgeWitness"));
 
+        GridPane.setHgrow(hasBisq1AccountAgeWitness, Priority.ALWAYS);
+        GridPane.setMargin(hasBisq1AccountAgeWitness, new Insets(0, 0, 37.5, 0));
+        gridPane.add(hasBisq1AccountAgeWitness, 1, rowIndex);
 
         tradeLimit = new MaterialTextField(Res.get("muSig.trade.limits.simulation.tradeLimit"));
         tradeLimit.setEditable(false);
@@ -147,7 +138,6 @@ public class MuSigTradeLimitsSimulationView extends View<VBox, MuSigTradeLimitsS
     @Override
     protected void onViewAttached() {
         model.getAccountAge().bind(accountAge.valueProperty());
-        model.getReputationScore().bind(reputationScore.valueProperty());
 
         paymentRailMaxLimit.textProperty().bind(model.getFiatPaymentRailMaxLimit());
         tradeLimit.textProperty().bind(model.getTradeLimit());
@@ -174,8 +164,6 @@ public class MuSigTradeLimitsSimulationView extends View<VBox, MuSigTradeLimitsS
     @Override
     protected void onViewDetached() {
         model.getAccountAge().unbind();
-        model.getReputationScore().unbind();
-
         paymentRailMaxLimit.textProperty().unbind();
         tradeLimit.textProperty().unbind();
         rateLimit.textProperty().unbind();

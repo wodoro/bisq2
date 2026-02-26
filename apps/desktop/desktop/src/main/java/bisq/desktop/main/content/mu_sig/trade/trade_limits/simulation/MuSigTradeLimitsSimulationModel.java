@@ -39,11 +39,9 @@ import java.util.List;
 public class MuSigTradeLimitsSimulationModel implements Model {
     private final double minAccountAge;
     private final double maxAccountAge;
-    private final double maxReputationScore;
     private final ObservableList<FiatPaymentRail> fiatPaymentRails = FXCollections.observableArrayList();
     private final ObjectProperty<FiatPaymentRail> selectedFiatPaymentRail = new SimpleObjectProperty<>();
     private final StringProperty fiatPaymentRailMaxLimit = new SimpleStringProperty();
-    private final DoubleProperty reputationScore = new SimpleDoubleProperty();
     private final BooleanProperty hasBisq1AccountAgeWitness = new SimpleBooleanProperty();
     private final DoubleProperty accountAge = new SimpleDoubleProperty();
     private final StringProperty tradeLimit = new SimpleStringProperty();
@@ -52,11 +50,9 @@ public class MuSigTradeLimitsSimulationModel implements Model {
 
     public MuSigTradeLimitsSimulationModel(double minAccountAge,
                                            double maxAccountAge,
-                                           double maxReputationScore,
                                            List<FiatPaymentRail> fiatPaymentRails) {
         this.minAccountAge = minAccountAge;
         this.maxAccountAge = maxAccountAge;
-        this.maxReputationScore = maxReputationScore;
         this.fiatPaymentRails.addAll(fiatPaymentRails);
     }
 }

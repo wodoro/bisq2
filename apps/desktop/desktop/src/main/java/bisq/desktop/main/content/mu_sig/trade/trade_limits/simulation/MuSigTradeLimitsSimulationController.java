@@ -55,7 +55,6 @@ public class MuSigTradeLimitsSimulationController implements Controller {
         model = new MuSigTradeLimitsSimulationModel(
                 15,
                 90,
-                200000,
                 fiatPaymentRails);
         view = new MuSigTradeLimitsSimulationView(model, this);
 
@@ -65,7 +64,6 @@ public class MuSigTradeLimitsSimulationController implements Controller {
     @Override
     public void onActivate() {
         pins.add(EasyBind.subscribe(model.getAccountAge(), value -> updateLimits()));
-        pins.add(EasyBind.subscribe(model.getReputationScore(), value -> updateLimits()));
     }
 
     @Override
@@ -127,22 +125,9 @@ public class MuSigTradeLimitsSimulationController implements Controller {
         double accountAgeMultiplier = accountAge >= minAccountAge ? 0.25 + accountAgeWeight * 0.75 : 0;
         double tradeLimitBoostFromAccountAge = defaultTradeLimit * accountAgeWeight * 9;
 
-        // ReputationScore
-        double minReputationScore = 0;
-        double maxReputationScore = model.getMaxReputationScore(); // 2000 BSQ -> 4000 USD
-        double reputationScore = model.getReputationScore().get();
-        double reputationScoreWeight = normalize(reputationScore, minReputationScore, maxReputationScore);
-        double tradeLimitBoostFromReputation = defaultTradeLimit * reputationScoreWeight * 6;
-
-        // AccountAge combined with ReputationScore
-        double accountAgeBasedReputationScoreMultiplier = accountAgeMultiplier * reputationScoreWeight;
-        double accountAgeBasedReputationScoreTradeLimitBoost = defaultTradeLimit * accountAgeBasedReputationScoreMultiplier * 4;
-
         double tradeLimit = defaultTradeLimit +
                 tradeLimitBoostFromAccountAge +
-                tradeLimitBoostFromReputation +
-                accountAgeWitnessScoreTradeLimitBoost +
-                accountAgeBasedReputationScoreTradeLimitBoost;
+                accountAgeWitnessScoreTradeLimitBoost;
         tradeLimit = Math.min(maxTradeLimit, tradeLimit);
 
         // Rate is trade limit / 1000
