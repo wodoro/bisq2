@@ -18,7 +18,6 @@
 package bisq.desktop.main.content.mu_sig.trade.trade_limits.simulation;
 
 import bisq.account.payment_method.PaymentRail;
-import bisq.account.payment_method.fiat.FiatPaymentMethodChargebackRisk;
 import bisq.account.payment_method.fiat.FiatPaymentRail;
 import bisq.common.util.MathUtils;
 import bisq.desktop.common.converters.LongStringConverter;
@@ -192,7 +191,6 @@ public class MuSigTradeLimitsSimulation {
         private final ObservableList<FiatPaymentRail> fiatPaymentRails = FXCollections.observableArrayList();
         private final ObjectProperty<FiatPaymentRail> selectedFiatPaymentRail = new SimpleObjectProperty<>();
         private final StringProperty fiatPaymentRailMaxLimit = new SimpleStringProperty();
-        private final ObjectProperty<FiatPaymentMethodChargebackRisk> chargebackRisk = new SimpleObjectProperty<>(FiatPaymentMethodChargebackRisk.MODERATE);
         private final DoubleProperty reputationScore = new SimpleDoubleProperty();
         private final BooleanProperty hasBisq1AccountAgeWitness = new SimpleBooleanProperty();
         private final DoubleProperty accountAge = new SimpleDoubleProperty();

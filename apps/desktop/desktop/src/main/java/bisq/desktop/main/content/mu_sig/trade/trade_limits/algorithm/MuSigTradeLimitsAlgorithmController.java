@@ -19,7 +19,6 @@ package bisq.desktop.main.content.mu_sig.trade.trade_limits.algorithm;
 
 import bisq.desktop.ServiceProvider;
 import bisq.desktop.common.Browser;
-import bisq.desktop.common.utils.ClipboardUtil;
 import bisq.desktop.common.view.Controller;
 import bisq.desktop.common.view.Navigation;
 import bisq.desktop.navigation.NavigationTarget;
@@ -54,10 +53,6 @@ public class MuSigTradeLimitsAlgorithmController implements Controller {
 
     void onLearnMore() {
         Browser.open("https://bisq.wiki/Reputation");
-    }
-
-    void onCopyToClipboard(String pubKeyHash) {
-        ClipboardUtil.copyToClipboard(pubKeyHash);
     }
 
     void onClose() {
