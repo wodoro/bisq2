@@ -17,12 +17,14 @@
 
 package bisq.mu_sig;
 
+import bisq.account.payment_method.PaymentRail;
+import bisq.account.payment_method.fiat.FiatPaymentRail;
 import bisq.bonded_roles.market_price.MarketPriceService;
 import bisq.chat.bisq_easy.offerbook.BisqEasyOfferbookChannel;
 import bisq.chat.bisq_easy.offerbook.BisqEasyOfferbookChannelService;
+import bisq.common.data.Pair;
 import bisq.common.market.Market;
 import bisq.common.market.MarketRepository;
-import bisq.common.data.Pair;
 import bisq.common.monetary.Coin;
 import bisq.common.monetary.Fiat;
 import bisq.common.monetary.Monetary;
@@ -31,6 +33,7 @@ import bisq.offer.Direction;
 import bisq.offer.amount.OfferAmountUtil;
 import bisq.offer.amount.spec.FixedAmountSpec;
 import bisq.offer.bisq_easy.BisqEasyOffer;
+import bisq.presentation.formatters.AmountFormatter;
 import bisq.user.identity.UserIdentityService;
 import bisq.user.profile.UserProfile;
 import bisq.user.profile.UserProfileService;
@@ -46,15 +49,61 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class MuSigTradeAmountLimits {
+    public static final Fiat DEFAULT_MIN_USD_TRADE_AMOUNT = Fiat.fromFaceValue(10, "USD");
+
     public static final Coin DEFAULT_MIN_BTC_TRADE_AMOUNT = Coin.asBtcFromValue(10000); // 0.0001 BTC
     public static final Coin DEFAULT_MAX_BTC_TRADE_AMOUNT = Coin.asBtcFromValue(250000); // 0.0025 BTC // 150 USD @ 60k price
-    public static final Fiat DEFAULT_MIN_USD_TRADE_AMOUNT = Fiat.fromFaceValue(10, "USD");
-    public static final Fiat MAX_USD_TRADE_AMOUNT = Fiat.fromFaceValue(10000, "USD");
     public static final Fiat MAX_USD_TRADE_AMOUNT_WITHOUT_REPUTATION = Fiat.fromFaceValue(0, "USD");
     private static final double REQUIRED_REPUTATION_SCORE_PER_USD = 200d;
     public static final double TOLERANCE = 0.05;
     private static final long MIN_REPUTATION_SCORE_TO_CREATE_SELL_OFFER = 1200;
     private static final Set<String> SELL_OFFERS_WITH_INSUFFICIENT_REPUTATION = new HashSet<>();
+
+
+    /* --------------------------------------------------------------------- */
+    // MaxTradeLimit
+    /* --------------------------------------------------------------------- */
+
+    public static final Fiat MAX_USD_TRADE_AMOUNT = Fiat.fromFaceValue(10000, "USD");
+
+    public static Fiat getMaxTradeLimit(PaymentRail paymentRail) {
+        return getMaxTradeLimit(paymentRail, MAX_USD_TRADE_AMOUNT);
+    }
+
+    public static String getFormattedMaxTradeLimit(PaymentRail paymentRail) {
+        Fiat maxTradeLimit = getMaxTradeLimit(paymentRail);
+        return AmountFormatter.formatQuoteAmount(maxTradeLimit);
+    }
+
+    public static Fiat getMaxTradeLimit(PaymentRail paymentRail, Fiat maxTradeLimitByProtocol) {
+        if (paymentRail instanceof FiatPaymentRail fiatPaymentRail) {
+            switch (fiatPaymentRail.getChargebackRisk()) {
+                case VERY_LOW -> {
+                    return maxTradeLimitByProtocol;
+                }
+                case LOW -> {
+                    return maxTradeLimitByProtocol.multiply(0.8);
+                }
+                case MEDIUM -> {
+                    return maxTradeLimitByProtocol.multiply(0.65);
+                }
+                case MODERATE -> {
+                    return maxTradeLimitByProtocol.multiply(0.5);
+                }
+                default -> {
+                    return maxTradeLimitByProtocol.multiply(0d);
+                }
+            }
+        } else {
+            return maxTradeLimitByProtocol;
+        }
+    }
+
+
+    /* --------------------------------------------------------------------- */
+    //
+    /* --------------------------------------------------------------------- */
+
 
     public static Optional<Monetary> getMinQuoteSideTradeAmount(MarketPriceService marketPriceService, Market market) {
         return marketPriceService.findMarketPriceQuote(MarketRepository.getUSDBitcoinMarket())
