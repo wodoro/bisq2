@@ -22,7 +22,6 @@ import bisq.desktop.common.Browser;
 import bisq.desktop.common.view.Controller;
 import bisq.desktop.common.view.Navigation;
 import bisq.desktop.navigation.NavigationTarget;
-import bisq.desktop.overlay.OverlayController;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,14 +47,14 @@ public class MuSigTradeLimitsAlgorithmController implements Controller {
     }
 
     void onBack() {
+        Navigation.navigateTo(NavigationTarget.MU_SIG_TRADE_LIMITS_OVERVIEW);
+    }
+
+    void onNext() {
         Navigation.navigateTo(NavigationTarget.MU_SIG_TRADE_LIMITS_SIMULATION);
     }
 
     void onLearnMore() {
         Browser.open("https://bisq.wiki/Reputation");
-    }
-
-    void onClose() {
-        OverlayController.hide();
     }
 }

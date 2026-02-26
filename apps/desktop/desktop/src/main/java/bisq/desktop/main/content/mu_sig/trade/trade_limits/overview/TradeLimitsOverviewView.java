@@ -21,6 +21,7 @@ import bisq.desktop.common.view.View;
 import bisq.desktop.components.containers.Spacer;
 import bisq.desktop.components.controls.BisqHyperlink;
 import bisq.desktop.components.controls.UnorderedList;
+import bisq.desktop.main.content.mu_sig.trade.trade_limits.OverlayUtils;
 import bisq.i18n.Res;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -40,19 +41,17 @@ public class TradeLimitsOverviewView extends View<VBox, TradeLimitsOverviewModel
                                    TradeLimitsOverviewController controller) {
         super(new VBox(), model, controller);
 
-        Label headline = getHeadline(Res.get("muSig.trade.limits.overview.headline"));
+        Label headline = OverlayUtils.getHeadline(Res.get("muSig.trade.limits.overview.headline"));
+        Label info = OverlayUtils.getInfo(Res.get("muSig.trade.limits.overview.info"));
 
-        Label info = getInfo(Res.get("muSig.trade.limits.overview.info"));
+        Label fiatBuyerSubHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.fiat.buyer"));
+        UnorderedList fiatBuyerInfo = OverlayUtils.getUnorderedList(Res.get("muSig.trade.limits.overview.info.fiat.buyer"));
 
-        Label fiatBuyerSubHeadline = getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.fiat.buyer"));
-        UnorderedList fiatBuyerInfo = getUnorderedList(Res.get("muSig.trade.limits.overview.info.fiat.buyer"));
+        Label fiatSellerSubHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.fiat.seller"));
+        UnorderedList fiatSellerInfo = OverlayUtils.getUnorderedList(Res.get("muSig.trade.limits.overview.info.fiat.seller"));
 
-        Label fiatSellerSubHeadline = getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.fiat.seller"));
-        UnorderedList fiatSellerInfo = getUnorderedList(Res.get("muSig.trade.limits.overview.info.fiat.seller"));
-
-        Label cryptoSellerSubHeadline = getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.crypto"));
-        UnorderedList cryptoInfo = getUnorderedList(Res.get("muSig.trade.limits.overview.info.crypto"));
-
+        Label cryptoSellerSubHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.crypto"));
+        UnorderedList cryptoInfo = OverlayUtils.getUnorderedList(Res.get("muSig.trade.limits.overview.info.crypto"));
 
         nextButton = new Button(Res.get("action.next"));
         nextButton.setDefaultButton(true);
@@ -64,12 +63,11 @@ public class TradeLimitsOverviewView extends View<VBox, TradeLimitsOverviewModel
 
         VBox.setMargin(headline, new Insets(10, 0, 10, 0));
         VBox.setMargin(buttons, new Insets(25, 0, 0, 0));
-
         VBox contentBox = new VBox(5,
                 headline,
                 info,
                 fiatBuyerSubHeadline, fiatBuyerInfo,
-                fiatSellerSubHeadline,  fiatSellerInfo,
+                fiatSellerSubHeadline, fiatSellerInfo,
                 cryptoSellerSubHeadline, cryptoInfo,
                 buttons);
         contentBox.getStyleClass().addAll("bisq-common-bg", "common-line-spacing");
@@ -78,25 +76,6 @@ public class TradeLimitsOverviewView extends View<VBox, TradeLimitsOverviewModel
         root.setPadding(new Insets(20, 0, 0, 0));
     }
 
-    private static Label getHeadline(String text) {
-        Label label = new Label(text);
-        label.getStyleClass().add("bisq-text-headline-2");
-        return label;
-    }
-    private static Label getSubHeadline(String text) {
-        Label label = new Label(text);
-        label.getStyleClass().add("bisq-sub-title-label");
-        VBox.setMargin(label, new Insets(10, 0, 0, 0));
-        return label;
-    }
-    private static Label getInfo(String text) {
-        Label label = new Label(text);
-        label.getStyleClass().add("bisq-text-13");
-        return label;
-    }
-    private static UnorderedList getUnorderedList(String text) {
-        return new UnorderedList(text, "bisq-text-13");
-    }
 
     @Override
     protected void onViewAttached() {

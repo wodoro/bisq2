@@ -17,11 +17,46 @@
 
 package bisq.desktop.main.content.mu_sig.trade.trade_limits.simulation;
 
+import bisq.account.payment_method.fiat.FiatPaymentRail;
 import bisq.desktop.common.view.Model;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @Slf4j
 @Getter
 public class MuSigTradeLimitsSimulationModel implements Model {
+    private final double minAccountAge;
+    private final double maxAccountAge;
+    private final double maxReputationScore;
+    private final ObservableList<FiatPaymentRail> fiatPaymentRails = FXCollections.observableArrayList();
+    private final ObjectProperty<FiatPaymentRail> selectedFiatPaymentRail = new SimpleObjectProperty<>();
+    private final StringProperty fiatPaymentRailMaxLimit = new SimpleStringProperty();
+    private final DoubleProperty reputationScore = new SimpleDoubleProperty();
+    private final BooleanProperty hasBisq1AccountAgeWitness = new SimpleBooleanProperty();
+    private final DoubleProperty accountAge = new SimpleDoubleProperty();
+    private final StringProperty tradeLimit = new SimpleStringProperty();
+    private final StringProperty rateLimit = new SimpleStringProperty();
+
+
+    public MuSigTradeLimitsSimulationModel(double minAccountAge,
+                                           double maxAccountAge,
+                                           double maxReputationScore,
+                                           List<FiatPaymentRail> fiatPaymentRails) {
+        this.minAccountAge = minAccountAge;
+        this.maxAccountAge = maxAccountAge;
+        this.maxReputationScore = maxReputationScore;
+        this.fiatPaymentRails.addAll(fiatPaymentRails);
+    }
 }

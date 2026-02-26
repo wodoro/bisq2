@@ -20,6 +20,8 @@ package bisq.desktop.main.content.mu_sig.trade.trade_limits.algorithm;
 import bisq.desktop.common.view.View;
 import bisq.desktop.components.containers.Spacer;
 import bisq.desktop.components.controls.BisqHyperlink;
+import bisq.desktop.components.controls.UnorderedList;
+import bisq.desktop.main.content.mu_sig.trade.trade_limits.OverlayUtils;
 import bisq.i18n.Res;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -32,34 +34,48 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MuSigTradeLimitsAlgorithmView extends View<VBox, MuSigTradeLimitsAlgorithmModel, MuSigTradeLimitsAlgorithmController> {
-    private final Button closeButton, backButton;
+    private final Button  nextButton, backButton;
     private final Hyperlink learnMore;
 
     public MuSigTradeLimitsAlgorithmView(MuSigTradeLimitsAlgorithmModel model,
                                          MuSigTradeLimitsAlgorithmController controller) {
         super(new VBox(), model, controller);
 
-        Label headline = new Label(Res.get("muSig.trade.limits.algorithm.headline"));
-        headline.getStyleClass().add("bisq-text-headline-2");
+        
+        Label headline = OverlayUtils.getHeadline(Res.get("muSig.trade.limits.algorithm.headline"));
+        UnorderedList info = OverlayUtils.getUnorderedList(Res.get("muSig.trade.limits.algorithm.info"));
 
+        Label paymentMethodHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.algorithm.paymentMethod.headline"));
+        Label paymentMethodInfo = OverlayUtils.getInfo(Res.get("muSig.trade.limits.algorithm.paymentMethod.info"));
 
+        Label signedWitnessHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.algorithm.signedWitness.headline"));
+        Label signedWitnessInfo = OverlayUtils.getInfo(Res.get("muSig.trade.limits.algorithm.signedWitness.info"));
 
+        Label accountAgeHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.algorithm.accountAge.headline"));
+        Label accountAgeInfo = OverlayUtils.getInfo(Res.get("muSig.trade.limits.algorithm.accountAge.info"));
+
+        Label rateLimitHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.algorithm.rateLimit.headline"));
+        Label rateLimitInfo = OverlayUtils.getInfo(Res.get("muSig.trade.limits.algorithm.rateLimit.info"));
 
         backButton = new Button(Res.get("action.back"));
-
-        closeButton = new Button(Res.get("action.close"));
-        closeButton.setDefaultButton(true);
+        nextButton = new Button(Res.get("action.next"));
+        nextButton.setDefaultButton(true);
 
         learnMore = new BisqHyperlink(Res.get("action.learnMore"), "https://bisq.wiki/Reputation");
 
-        HBox buttons = new HBox(20, backButton, closeButton, Spacer.fillHBox(), learnMore);
+        HBox buttons = new HBox(20, backButton, nextButton, Spacer.fillHBox(), learnMore);
         buttons.setAlignment(Pos.BOTTOM_RIGHT);
 
-        VBox.setMargin(headline, new Insets(10, 0, 0, 0));
-        VBox.setMargin(buttons, new Insets(10, 0, 0, 0));
-
-        VBox contentBox = new VBox(20);
-        contentBox.getChildren().addAll(headline, buttons);
+        VBox contentBox = new VBox(5);
+        VBox.setMargin(headline, new Insets(10, 0, 10, 0));
+        VBox.setMargin(buttons, new Insets(25, 0, 0, 0));
+        contentBox.getChildren().addAll(
+                headline, info,
+               /* paymentMethodHeadline, paymentMethodInfo,
+                signedWitnessHeadline, signedWitnessInfo,
+                accountAgeHeadline, accountAgeInfo,*/
+                rateLimitHeadline, rateLimitInfo,
+                buttons);
         contentBox.getStyleClass().addAll("bisq-common-bg", "common-line-spacing");
         root.getChildren().addAll(contentBox);
         root.setPadding(new Insets(20, 0, 0, 0));
@@ -67,14 +83,14 @@ public class MuSigTradeLimitsAlgorithmView extends View<VBox, MuSigTradeLimitsAl
 
     @Override
     protected void onViewAttached() {
-        closeButton.setOnAction(e -> controller.onClose());
+        nextButton.setOnAction(e -> controller.onNext());
         backButton.setOnAction(e -> controller.onBack());
         learnMore.setOnAction(e -> controller.onLearnMore());
     }
 
     @Override
     protected void onViewDetached() {
-        closeButton.setOnAction(null);
+        nextButton.setOnAction(null);
         backButton.setOnAction(null);
         learnMore.setOnAction(null);
     }
