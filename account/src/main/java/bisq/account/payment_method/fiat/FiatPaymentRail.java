@@ -24,7 +24,6 @@ import bisq.common.asset.FiatCurrency;
 import bisq.common.asset.FiatCurrencyRepository;
 import bisq.common.locale.Country;
 import bisq.common.locale.CountryRepository;
-import bisq.i18n.Res;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -313,22 +312,6 @@ public enum FiatPaymentRail implements PaymentRail {
         return CountryRepository.getAllCountries();
     }
 
-    //todo use long instead of String
-    @Override
-    public String getTradeLimit() {
-        //todo
-        switch (getChargebackRisk()) {
-            case LOW -> {
-                return "10000 USD";
-            }
-            case MEDIUM -> {
-                return "5000 USD";
-            }
-            default -> {
-                return "2500 USD";
-            }
-        }
-    }
 
     //todo add duration as enum field, use Duration not string (add method to get display string)
 
