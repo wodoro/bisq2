@@ -21,7 +21,7 @@ import bisq.desktop.common.view.View;
 import bisq.desktop.components.containers.Spacer;
 import bisq.desktop.components.controls.BisqHyperlink;
 import bisq.desktop.components.controls.UnorderedList;
-import bisq.desktop.main.content.mu_sig.trade.trade_limits.OverlayUtils;
+import bisq.desktop.main.content.mu_sig.trade.trade_limits.TradeLimitsViewUtils;
 import bisq.i18n.Res;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -41,21 +41,11 @@ public class MuSigTradeLimitsAlgorithmView extends View<VBox, MuSigTradeLimitsAl
                                          MuSigTradeLimitsAlgorithmController controller) {
         super(new VBox(), model, controller);
 
-        
-        Label headline = OverlayUtils.getHeadline(Res.get("muSig.trade.limits.algorithm.headline"));
-        UnorderedList info = OverlayUtils.getUnorderedList(Res.get("muSig.trade.limits.algorithm.info"));
+        Label headline = TradeLimitsViewUtils.getHeadline(Res.get("muSig.trade.limits.algorithm.headline"));
+        UnorderedList info = TradeLimitsViewUtils.getUnorderedList(Res.get("muSig.trade.limits.algorithm.info"));
 
-        Label paymentMethodHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.algorithm.paymentMethod.headline"));
-        Label paymentMethodInfo = OverlayUtils.getInfo(Res.get("muSig.trade.limits.algorithm.paymentMethod.info"));
-
-        Label signedWitnessHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.algorithm.signedWitness.headline"));
-        Label signedWitnessInfo = OverlayUtils.getInfo(Res.get("muSig.trade.limits.algorithm.signedWitness.info"));
-
-        Label accountAgeHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.algorithm.accountAge.headline"));
-        Label accountAgeInfo = OverlayUtils.getInfo(Res.get("muSig.trade.limits.algorithm.accountAge.info"));
-
-        Label rateLimitHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.algorithm.rateLimit.headline"));
-        Label rateLimitInfo = OverlayUtils.getInfo(Res.get("muSig.trade.limits.algorithm.rateLimit.info"));
+        Label rateLimitHeadline = TradeLimitsViewUtils.getSubHeadline(Res.get("muSig.trade.limits.algorithm.rateLimit.headline"));
+        Label rateLimitInfo = TradeLimitsViewUtils.getInfo(Res.get("muSig.trade.limits.algorithm.rateLimit.info"));
 
         backButton = new Button(Res.get("action.back"));
         nextButton = new Button(Res.get("action.next"));
@@ -71,9 +61,6 @@ public class MuSigTradeLimitsAlgorithmView extends View<VBox, MuSigTradeLimitsAl
         VBox.setMargin(buttons, new Insets(25, 0, 0, 0));
         contentBox.getChildren().addAll(
                 headline, info,
-               /* paymentMethodHeadline, paymentMethodInfo,
-                signedWitnessHeadline, signedWitnessInfo,
-                accountAgeHeadline, accountAgeInfo,*/
                 rateLimitHeadline, rateLimitInfo,
                 buttons);
         contentBox.getStyleClass().addAll("bisq-common-bg", "common-line-spacing");

@@ -122,7 +122,6 @@ public class MuSigTradeLimitsSimulationController implements Controller {
         double maxAccountAge = model.getMaxAccountAge();
         double accountAge = MathUtils.roundDouble(model.getAccountAge().get(), 9);
         double accountAgeWeight = normalize(accountAge, minAccountAge, maxAccountAge);
-        double accountAgeMultiplier = accountAge >= minAccountAge ? 0.25 + accountAgeWeight * 0.75 : 0;
         double tradeLimitBoostFromAccountAge = defaultTradeLimit * accountAgeWeight * 9;
 
         double tradeLimit = defaultTradeLimit +
@@ -151,11 +150,11 @@ public class MuSigTradeLimitsSimulationController implements Controller {
     private static String formatRateLimit(Double rateLimit) {
         int rateLimitRounded = MathUtils.roundDoubleToInt(rateLimit);
         if (rateLimitRounded >= 5) {
-            return "No rate limit";
+            return Res.get("muSig.trade.limits.simulation.rateLimit.noLimit");
         } else if (rateLimitRounded == 1) {
-            return rateLimitRounded + " trade per day";
+            return Res.get("muSig.trade.limits.simulation.rateLimit.singular", rateLimitRounded);
         } else {
-            return rateLimitRounded + " trades per day";
+            return Res.get("muSig.trade.limits.simulation.rateLimit.plural", rateLimitRounded);
         }
     }
 }

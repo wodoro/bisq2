@@ -29,7 +29,12 @@ import java.util.List;
 
 @Slf4j
 public abstract class TextList extends VBox {
-    public TextList(String text, @Nullable String style, double gap, double vSpacing, String regex, @Nullable String mark) {
+    public TextList(String text,
+                    @Nullable String style,
+                    double gap,
+                    double vSpacing,
+                    String regex,
+                    @Nullable String mark) {
         setFillWidth(true);
         setSpacing(vSpacing);
         List<String> list = List.of(text.split(regex));
@@ -66,9 +71,9 @@ public abstract class TextList extends VBox {
                 String[] itemAndTail = item.split("\\R\\R+", 2);
                 if (addListItem(itemAndTail[0], style, gap, mark, listIndex + 1)) {
                     listIndex++;
-                    if (itemAndTail.length > 1 && !itemAndTail[1].isBlank()) {
-                        addParagraph(itemAndTail[1], style, true);
-                    }
+                }
+                if (itemAndTail.length > 1 && !itemAndTail[1].isBlank()) {
+                    addParagraph(itemAndTail[1], style, true);
                 }
             } else {
                 if (addListItem(item, style, gap, mark, listIndex + 1)) {
@@ -94,9 +99,8 @@ public abstract class TextList extends VBox {
             markText.getStyleClass().add(style);
             contentText.getStyleClass().add(style);
         }
-        HBox.setHgrow(markText, Priority.ALWAYS);
-        HBox.setHgrow(contentText, Priority.ALWAYS);
         TextFlow content = new TextFlow(contentText);
+        HBox.setHgrow(content, Priority.ALWAYS);
         getChildren().add(new HBox(gap, markText, content));
         return true;
     }

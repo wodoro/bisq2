@@ -21,7 +21,7 @@ import bisq.desktop.common.view.View;
 import bisq.desktop.components.containers.Spacer;
 import bisq.desktop.components.controls.BisqHyperlink;
 import bisq.desktop.components.controls.UnorderedList;
-import bisq.desktop.main.content.mu_sig.trade.trade_limits.OverlayUtils;
+import bisq.desktop.main.content.mu_sig.trade.trade_limits.TradeLimitsViewUtils;
 import bisq.i18n.Res;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -41,17 +41,17 @@ public class TradeLimitsOverviewView extends View<VBox, TradeLimitsOverviewModel
                                    TradeLimitsOverviewController controller) {
         super(new VBox(), model, controller);
 
-        Label headline = OverlayUtils.getHeadline(Res.get("muSig.trade.limits.overview.headline"));
-        Label info = OverlayUtils.getInfo(Res.get("muSig.trade.limits.overview.info"));
+        Label headline = TradeLimitsViewUtils.getHeadline(Res.get("muSig.trade.limits.overview.headline"));
+        Label info = TradeLimitsViewUtils.getInfo(Res.get("muSig.trade.limits.overview.info"));
 
-        Label fiatBuyerSubHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.fiat.buyer"));
-        UnorderedList fiatBuyerInfo = OverlayUtils.getUnorderedList(Res.get("muSig.trade.limits.overview.info.fiat.buyer"));
+        Label fiatBuyerSubHeadline = TradeLimitsViewUtils.getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.fiat.buyer"));
+        UnorderedList fiatBuyerInfo = TradeLimitsViewUtils.getUnorderedList(Res.get("muSig.trade.limits.overview.info.fiat.buyer"));
 
-        Label fiatSellerSubHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.fiat.seller"));
-        UnorderedList fiatSellerInfo = OverlayUtils.getUnorderedList(Res.get("muSig.trade.limits.overview.info.fiat.seller"));
+        Label fiatSellerSubHeadline = TradeLimitsViewUtils.getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.fiat.seller"));
+        UnorderedList fiatSellerInfo = TradeLimitsViewUtils.getUnorderedList(Res.get("muSig.trade.limits.overview.info.fiat.seller"));
 
-        Label cryptoSellerSubHeadline = OverlayUtils.getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.crypto"));
-        UnorderedList cryptoInfo = OverlayUtils.getUnorderedList(Res.get("muSig.trade.limits.overview.info.crypto"));
+        Label cryptoSellerSubHeadline = TradeLimitsViewUtils.getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.crypto"));
+        UnorderedList cryptoInfo = TradeLimitsViewUtils.getUnorderedList(Res.get("muSig.trade.limits.overview.info.crypto"));
 
         nextButton = new Button(Res.get("action.next"));
         nextButton.setDefaultButton(true);

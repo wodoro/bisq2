@@ -22,7 +22,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-public class OverlayUtils {
+public class TradeLimitsViewUtils {
     public static Label getHeadline(String text) {
         Label label = new Label(text);
         label.getStyleClass().add("bisq-text-headline-2");

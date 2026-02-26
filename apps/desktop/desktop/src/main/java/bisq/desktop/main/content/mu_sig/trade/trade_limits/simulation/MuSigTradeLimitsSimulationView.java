@@ -28,7 +28,7 @@ import bisq.desktop.components.controls.AutoCompleteComboBox;
 import bisq.desktop.components.controls.BisqHyperlink;
 import bisq.desktop.components.controls.MaterialTextField;
 import bisq.desktop.components.controls.Switch;
-import bisq.desktop.main.content.mu_sig.trade.trade_limits.OverlayUtils;
+import bisq.desktop.main.content.mu_sig.trade.trade_limits.TradeLimitsViewUtils;
 import bisq.i18n.Res;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -58,8 +58,8 @@ public class MuSigTradeLimitsSimulationView extends View<VBox, MuSigTradeLimitsS
 
         root.setPadding(new Insets(20, 0, 0, 0));
 
-        Label headline = OverlayUtils.getHeadline(Res.get("muSig.trade.limits.simulation.headline"));
-        Label info = OverlayUtils.getInfo(Res.get("muSig.trade.limits.simulation.info"));
+        Label headline = TradeLimitsViewUtils.getHeadline(Res.get("muSig.trade.limits.simulation.headline"));
+        Label info = TradeLimitsViewUtils.getInfo(Res.get("muSig.trade.limits.simulation.info"));
 
         GridPane gridPane = new GridPane(15, 15);
         GridPaneUtil.setGridPaneTwoColumnsConstraints(gridPane);
@@ -124,9 +124,10 @@ public class MuSigTradeLimitsSimulationView extends View<VBox, MuSigTradeLimitsS
         HBox buttons = new HBox(20, backButton, closeButton, Spacer.fillHBox(), learnMore);
         buttons.setAlignment(Pos.BOTTOM_RIGHT);
 
-        VBox contentBox = new VBox(15);
-        VBox.setMargin(gridPane, new Insets(10, 0, 10, 0));
-        contentBox.getChildren().addAll(headline,
+        VBox.setMargin(headline, new Insets(10, 0, 10, 0));
+        VBox.setMargin(info, new Insets(0, 0, 10, 0));
+        VBox.setMargin(buttons, new Insets(25, 0, 0, 0));
+        VBox contentBox = new VBox(5,headline,
                 info,
                 gridPane,
                 buttons);
