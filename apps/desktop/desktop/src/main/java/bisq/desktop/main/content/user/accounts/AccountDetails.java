@@ -34,6 +34,7 @@ import bisq.desktop.common.utils.ClipboardUtil;
 import bisq.desktop.common.utils.GridPaneUtil;
 import bisq.desktop.components.controls.BisqMenuItem;
 import bisq.i18n.Res;
+import bisq.mu_sig.MuSigTradeAmountLimits;
 import bisq.presentation.formatters.DateFormatter;
 import bisq.presentation.formatters.TimeFormatter;
 import javafx.geometry.HPos;
@@ -159,8 +160,8 @@ public abstract class AccountDetails<A extends Account<?, ?>, R extends PaymentR
     }
 
     protected Label addTradeLimitInfo() {
-        return addDescriptionAndValue(Res.get("paymentAccounts.tradeLimit"),
-                account.getPaymentMethod().getPaymentRail().getTradeLimit());
+        String maxTradeLimit = MuSigTradeAmountLimits.getFormattedMaxTradeLimit(account.getPaymentMethod().getPaymentRail());
+        return addDescriptionAndValue(Res.get("paymentAccounts.tradeLimit"), maxTradeLimit);
     }
 
     protected Label addTradeDuration() {
