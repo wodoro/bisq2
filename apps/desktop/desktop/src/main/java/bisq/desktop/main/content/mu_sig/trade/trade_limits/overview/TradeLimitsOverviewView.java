@@ -20,6 +20,7 @@ package bisq.desktop.main.content.mu_sig.trade.trade_limits.overview;
 import bisq.desktop.common.view.View;
 import bisq.desktop.components.containers.Spacer;
 import bisq.desktop.components.controls.BisqHyperlink;
+import bisq.desktop.components.controls.UnorderedList;
 import bisq.i18n.Res;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -42,16 +43,7 @@ public class TradeLimitsOverviewView extends View<VBox, TradeLimitsOverviewModel
         Label headline = new Label(Res.get("muSig.trade.limits.overview.headline"));
         headline.getStyleClass().add("bisq-text-headline-2");
 
-        Label info = new Label(Res.get("muSig.trade.limits.overview.info"));
-        info.setWrapText(true);
-        info.getStyleClass().addAll("bisq-text-13");
-
-        Label headline2 = new Label(Res.get("muSig.trade.limits.overview.headline2"));
-        headline2.getStyleClass().add("bisq-text-headline-2");
-
-        Label info2 = new Label(Res.get("muSig.trade.limits.overview.info2"));
-        info2.setWrapText(true);
-        info2.getStyleClass().addAll("bisq-text-13");
+        UnorderedList info = new UnorderedList(Res.get("muSig.trade.limits.overview.info"), "bisq-text-13");
 
         nextButton = new Button(Res.get("action.next"));
         nextButton.setDefaultButton(true);
@@ -63,12 +55,11 @@ public class TradeLimitsOverviewView extends View<VBox, TradeLimitsOverviewModel
 
         VBox.setMargin(headline, new Insets(10, 0, 0, 0));
         VBox.setMargin(buttons, new Insets(10, 0, 0, 0));
-        VBox.setMargin(headline2, new Insets(20, 0, 0, 0));
 
-        VBox contentBox = new VBox(20);
-        contentBox.getChildren().addAll(headline, info, headline2, info2, buttons);
+        VBox contentBox = new VBox(20, headline, info, buttons);
         contentBox.getStyleClass().addAll("bisq-common-bg", "common-line-spacing");
         root.getChildren().addAll(contentBox);
+
         root.setPadding(new Insets(20, 0, 0, 0));
     }
 
