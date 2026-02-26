@@ -17,15 +17,17 @@
 
 package bisq.desktop.main.content.mu_sig.trade.trade_limits.tab2;
 
+import bisq.account.payment_method.PaymentRail;
 import bisq.account.payment_method.fiat.FiatPaymentMethodChargebackRisk;
 import bisq.account.payment_method.fiat.FiatPaymentRail;
 import bisq.common.util.MathUtils;
 import bisq.desktop.common.converters.LongStringConverter;
-import bisq.desktop.common.converters.PercentageStringConverter;
 import bisq.desktop.common.utils.GridPaneUtil;
+import bisq.desktop.components.controls.AutoCompleteComboBox;
 import bisq.desktop.components.controls.MaterialTextField;
+import bisq.desktop.components.controls.Switch;
 import bisq.i18n.Res;
-import bisq.presentation.formatters.PercentageFormatter;
+import bisq.mu_sig.MuSigTradeAmountLimits;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -34,14 +36,24 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.fxmisc.easybind.EasyBind;
 import org.fxmisc.easybind.Subscription;
 
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class TradeLimitsPreview {
@@ -64,24 +76,21 @@ public class TradeLimitsPreview {
         private final Set<Subscription> pins = new HashSet<>();
 
         private Controller() {
-            model = new Model();
+            List<FiatPaymentRail> fiatPaymentRails = Arrays.stream(FiatPaymentRail.values())
+                    .filter(e -> e != FiatPaymentRail.CUSTOM)
+                    .sorted(Comparator.comparing(PaymentRail::getShortDisplayString))
+                    .toList();
+            model = new Model(fiatPaymentRails);
             view = new View(model, this);
         }
 
         @Override
         public void onActivate() {
-            pins.add(EasyBind.subscribe(model.getDeposit(), value -> handleChange()));
-            pins.add(EasyBind.subscribe(model.getAccountAge(), value -> handleChange()));
-            pins.add(EasyBind.subscribe(model.getReputationScore(), value -> handleChange()));
-            pins.add(EasyBind.subscribe(model.getAccountAgeWitnessScore(), value -> handleChange()));
-            pins.add(EasyBind.subscribe(model.getDualAccountVerificationAge(), value -> handleChange()));
-            pins.add(EasyBind.subscribe(model.getSignedFiatReceiptAge(), value -> handleChange()));
-        }
+            pins.add(EasyBind.subscribe(model.getAccountAge(), value -> updateLimits()));
+            pins.add(EasyBind.subscribe(model.getReputationScore(), value -> updateLimits()));
 
-        private final DoubleProperty reputation = new SimpleDoubleProperty();
-        private final DoubleProperty accountAge = new SimpleDoubleProperty();
-        private final BooleanProperty hadDualBankVerification = new SimpleBooleanProperty();
-        private final StringProperty tradeLimit = new SimpleStringProperty();
+            applySelectFiatPaymentRail(FiatPaymentRail.SEPA);
+        }
 
         @Override
         public void onDeactivate() {
@@ -89,119 +98,78 @@ public class TradeLimitsPreview {
             pins.clear();
         }
 
-        private void handleChange() {
-            FiatPaymentRail fiatPaymentRail = model.getFiatPaymentRail().get();
-            FiatPaymentMethodChargebackRisk chargebackRisk = fiatPaymentRail.getChargebackRisk();
+        void onHasBisq1AccountAgeWitnessChanged(boolean selected) {
+            model.hasBisq1AccountAgeWitness.set(selected);
+            updateLimits();
+        }
 
-            double maxTradeLimit = 10000; // USD
-            double maxTradeLimitByChargebackRisk = getMaxTradeLimitByChargebackRisk(chargebackRisk, maxTradeLimit); // 2500-10000
-            double defaultTradeLimit = maxTradeLimitByChargebackRisk * 0.1;    // 250-1000
-            double tradeLimit;
+        void onSelectFiatPaymentRail(FiatPaymentRail selectedItem) {
+            if (selectedItem != null) {
+                applySelectFiatPaymentRail(selectedItem);
+            }
+        }
 
-            double defaultRateLimit = getMaxRateLimitByChargebackRisk(chargebackRisk);  // 1 - unlimited
-            double rateLimit;
+        private void applySelectFiatPaymentRail(FiatPaymentRail fiatPaymentRail) {
+            model.getSelectedFiatPaymentRail().set(fiatPaymentRail);
+            String maxTradeLimit = MuSigTradeAmountLimits.getFormattedMaxTradeLimit(fiatPaymentRail);
+            model.getFiatPaymentRailMaxLimit().set(Res.get("muSig.trade.limits.tab2.preview.fiatRail.maxLimit", maxTradeLimit));
+            updateLimits();
+        }
 
-            // Deposit
-            double minDeposit = 0.25;
-            double maxDeposit = 1;
-            double deposit = model.getDeposit().get();
-            double depositFactor = normalize(deposit, minDeposit, maxDeposit); // 0-1
-            double depositTradeLimitBoost = defaultTradeLimit * depositFactor; // 0-500
-            double depositRateLimitBoost = defaultRateLimit * depositFactor; // 0-1
+        private void updateLimits() {
+            FiatPaymentRail fiatPaymentRail = model.getSelectedFiatPaymentRail().get();
+            if (fiatPaymentRail == null) {
+                return;
+            }
+
+            double maxTradeLimit = MuSigTradeAmountLimits.getMaxTradeLimit(fiatPaymentRail).getValue() / 10000d;
+            // We use 10% of max limit as default limit
+            double defaultTradeLimit = maxTradeLimit * 0.1;    // 250-1000
+
+            // AccountAgeWitnessScore
+            double accountAgeWitnessScoreTradeLimitBoost = model.getHasBisq1AccountAgeWitness().get()
+                    ? defaultTradeLimit * 9
+                    : 0;
 
             // AccountAge
             double minAccountAge = 15;
             double maxAccountAge = 60;
             double accountAge = MathUtils.roundDouble(model.getAccountAge().get(), 9);
-            double normalizedAccountAge = normalize(accountAge, minAccountAge, maxAccountAge);
-            double accountAgeFactor = accountAge >= minAccountAge ? 0.25 + normalizedAccountAge * 0.75 : 0;
-            double accountAgeTradeLimitBoost = defaultTradeLimit * accountAgeFactor * 2; // 250-1000
-            double accountAgeRateLimitBoost = defaultRateLimit * accountAgeFactor * 3; // 0-3
+            double accountAgeWeight = normalize(accountAge, minAccountAge, maxAccountAge);
+            double accountAgeMultiplier = accountAge >= minAccountAge ? 0.25 + accountAgeWeight * 0.75 : 0;
+            double tradeLimitBoostFromAccountAge = defaultTradeLimit * accountAgeMultiplier * 4; // 250-1000
 
             // ReputationScore
             double minReputationScore = 0;
-            double maxReputationScore = 100000; // 1000 BSQ -> 2000 USD
+            double maxReputationScore = 200000; // 2000 BSQ -> 4000 USD
             double reputationScore = model.getReputationScore().get();
-            double reputationScoreFactor = normalize(reputationScore, minReputationScore, maxReputationScore); // 0-1
-            double reputationScoreTradeLimitBoost = defaultTradeLimit * reputationScoreFactor * 3; // 0-1500
-            double reputationScoreRateLimitBoost = defaultRateLimit * reputationScoreFactor * 3; // 0-2
+            double reputationScoreWeight = normalize(reputationScore, minReputationScore, maxReputationScore);
+            double tradeLimitBoostFromReputation = defaultTradeLimit * reputationScoreWeight * 6;
 
-            // AccountAgeWitnessScore
-            double minAccountAgeWitnessScore = 61; // 61 days
-            double maxAccountAgeWitnessScore = 180; // 180 days
-            double accountAgeWitnessScore = model.getAccountAgeWitnessScore().get();
-            double normalizedAccountAgeWitnessScore = normalize(accountAgeWitnessScore, minAccountAgeWitnessScore, maxAccountAgeWitnessScore);
-            double accountAgeWitnessScoreFactor = accountAgeWitnessScore >= minAccountAgeWitnessScore ? 0.5 + normalizedAccountAgeWitnessScore * 0.5 : 0;
-            double accountAgeWitnessScoreTradeLimitBoost = defaultTradeLimit * accountAgeWitnessScoreFactor * 2; // 500-1000
-            double accountAgeWitnessScoreRateLimitBoost = defaultRateLimit * accountAgeWitnessScoreFactor * 3; // 0-3
+            // AccountAge combined with ReputationScore
+            double accountAgeBasedReputationScoreMultiplier = accountAgeMultiplier * reputationScoreWeight;
+            double accountAgeBasedReputationScoreTradeLimitBoost = defaultTradeLimit * accountAgeBasedReputationScoreMultiplier * 4;
 
-            // dualAccountVerificationAge
-            double minDualAccountVerificationAge = 0;
-            double maxDualAccountVerificationAge = 30;
-            double dualAccountVerificationAge = MathUtils.roundDouble(model.getDualAccountVerificationAge().get(), 0);
-            double normalizedDualAccountVerificationAge = normalize(dualAccountVerificationAge, minDualAccountVerificationAge, maxDualAccountVerificationAge);
-            double dualAccountVerificationAgeFactor = dualAccountVerificationAge >= 1 ? 0.5 + normalizedDualAccountVerificationAge * 0.5 : 0; // 0 | 0.5 - 1
-            double dualAccountVerificationAgeTradeLimitBoost = defaultTradeLimit * dualAccountVerificationAgeFactor * 18; // 0 | 5500
-            double dualAccountVerificationAgeRateLimitBoost = defaultRateLimit * dualAccountVerificationAgeFactor * 9; // 0 | 5 - 10
+            double tradeLimit = defaultTradeLimit +
+                    tradeLimitBoostFromAccountAge +
+                    tradeLimitBoostFromReputation +
+                    accountAgeWitnessScoreTradeLimitBoost +
+                    accountAgeBasedReputationScoreTradeLimitBoost;
+            tradeLimit = Math.min(maxTradeLimit, tradeLimit);
 
-            // signedFiatReceiptAge
-            double minSignedFiatReceiptAge = 15;
-            double maxSignedFiatReceiptAge = 60;
-            double signedFiatReceiptAge = MathUtils.roundDouble(model.getSignedFiatReceiptAge().get(), 0);
-            double normalizedSignedFiatReceiptAge = normalize(signedFiatReceiptAge, minSignedFiatReceiptAge, maxSignedFiatReceiptAge);
-            double signedFiatReceiptAgeFactor = signedFiatReceiptAge >= 15 ? 0.25 + normalizedSignedFiatReceiptAge * 0.75 : 0; // 0 | 0.25 - 1
-            double signedFiatReceiptAgeTradeLimitBoost = defaultTradeLimit * signedFiatReceiptAgeFactor * 9; // 0 | 1250 - 5000
-            double signedFiatReceiptAgeRateLimitBoost = defaultRateLimit * signedFiatReceiptAgeFactor * 9; // 0-10
-
-
-            tradeLimit = defaultTradeLimit +   // 500
-                    depositTradeLimitBoost +  // 0 - 500; max accumulated: 1000
-                    accountAgeTradeLimitBoost + // 0 - 1000; max accumulated: 2000
-                    reputationScoreTradeLimitBoost + //0 - 2000; max accumulated: 4000
-                    accountAgeWitnessScoreTradeLimitBoost + //0 - 1000; max accumulated: 5000
-                    dualAccountVerificationAgeTradeLimitBoost + //0 - 5000; max accumulated: 5000 capped
-                    signedFiatReceiptAgeTradeLimitBoost; //0 - 5000; max accumulated: 5000 capped
-            tradeLimit = Math.min(maxTradeLimitByChargebackRisk, tradeLimit);
-          /*  log.error("");
-            log.error("########################");
-            log.error("defaultTradeLimit={}", defaultTradeLimit);
-            log.error("depositTradeLimitBoost={}", depositTradeLimitBoost);
-            log.error("accountAgeTradeLimitBoost={}", accountAgeTradeLimitBoost);
-            log.error("reputationScoreTradeLimitBoost={}", reputationScoreTradeLimitBoost);
-            log.error("accountAgeWitnessScoreTradeLimitBoost={}", accountAgeWitnessScoreTradeLimitBoost);
-            log.error("dualAccountVerificationAgeTradeLimitBoost={}", dualAccountVerificationAgeTradeLimitBoost);
-            log.error("signedFiatReceiptAgeTradeLimitBoost={}", signedFiatReceiptAgeTradeLimitBoost);
-            log.error("tradeLimit={}", tradeLimit);*/
-
-
-            rateLimit = defaultRateLimit + // 1
-                    depositRateLimitBoost + // 0 - 1; max accumulated: 2
-                    accountAgeRateLimitBoost + // 0 - 1; max accumulated: 3
-                    reputationScoreRateLimitBoost + // 0 - 1; max accumulated: 4
-                    accountAgeWitnessScoreRateLimitBoost + // 0 - 1; max accumulated: 5
-                    dualAccountVerificationAgeRateLimitBoost + // 0 - 10; max accumulated: 20
-                    signedFiatReceiptAgeRateLimitBoost; // 0 - 10; max accumulated: 30
-           /* log.error("########################");
-            log.error("defaultRateLimit={}", defaultRateLimit);
-            log.error("depositRateLimitBoost={}", depositRateLimitBoost);
-            log.error("accountAgeRateLimitBoost={}", accountAgeRateLimitBoost);
-            log.error("reputationScoreRateLimitBoost={}", reputationScoreRateLimitBoost);
-            log.error("accountAgeWitnessScoreRateLimitBoost={}", accountAgeWitnessScoreRateLimitBoost);
-            log.error("dualAccountVerificationAgeRateLimitBoost={}", dualAccountVerificationAgeRateLimitBoost);
-            log.error("signedFiatReceiptAgeRateLimitBoost={}", signedFiatReceiptAgeRateLimitBoost);
-            log.error("rateLimit={}", rateLimit);
-            log.error("");*/
+            // Rate is trade limit / 1000
+            double derivedFromTradeLimit = MathUtils.roundDouble(tradeLimit / 1000, 0, RoundingMode.FLOOR);
+            double rateLimit = Math.max(1, derivedFromTradeLimit);
 
             model.getTradeLimit().set(formatTradeLimit(tradeLimit));
             model.getRateLimit().set(formatRateLimit(rateLimit));
         }
 
-        private double normalize(double value, double minValue, double maxValue) {
+        private static double normalize(double value, double minValue, double maxValue) {
             double range = maxValue - minValue;
             double offset = value - minValue;
             return range > 0 ? MathUtils.bounded(0, 1, offset / range) : 0;
         }
-
 
         private static String formatTradeLimit(double tradeLimit) {
             return MathUtils.roundDoubleToInt(tradeLimit) + " USD";
@@ -209,7 +177,7 @@ public class TradeLimitsPreview {
 
         private static String formatRateLimit(Double rateLimit) {
             int rateLimitRounded = MathUtils.roundDoubleToInt(rateLimit);
-            if (rateLimitRounded >= 10) {
+            if (rateLimitRounded >= 5) {
                 return "No rate limit";
             } else if (rateLimitRounded == 1) {
                 return rateLimitRounded + " trade per day";
@@ -217,71 +185,31 @@ public class TradeLimitsPreview {
                 return rateLimitRounded + " trades per day";
             }
         }
-
-
-        private double getMaxTradeLimitByChargebackRisk(FiatPaymentMethodChargebackRisk chargebackRisk,
-                                                        double maxTradeLimit) {
-            switch (chargebackRisk) {
-                case VERY_LOW -> {
-                    return maxTradeLimit;
-                }
-                case LOW -> {
-                    return maxTradeLimit * 0.8;
-                }
-                case MEDIUM -> {
-                    return maxTradeLimit * 0.65;
-                }
-                case MODERATE -> {
-                    return maxTradeLimit * 0.5;
-                }
-                default -> {
-                    return 0;
-                }
-            }
-        }
-
-        private double getMaxRateLimitByChargebackRisk(FiatPaymentMethodChargebackRisk chargebackRisk) {
-            switch (chargebackRisk) {
-                case VERY_LOW -> {
-                    // We multiply and accumulate later, thus we reduce the max value to avoid overflow
-                    return Double.MAX_VALUE / 100;
-                }
-                case LOW -> {
-                    return 4;
-                }
-                case MEDIUM -> {
-                    return 2;
-                }
-                case MODERATE -> {
-                    return 1;
-                }
-                default -> {
-                    return 0;
-                }
-            }
-        }
     }
 
     @Getter
     private static class Model implements bisq.desktop.common.view.Model {
-        private final ObjectProperty<FiatPaymentRail> fiatPaymentRail = new SimpleObjectProperty<>(FiatPaymentRail.ZELLE);
+        private final ObservableList<FiatPaymentRail> fiatPaymentRails = FXCollections.observableArrayList();
+        private final ObjectProperty<FiatPaymentRail> selectedFiatPaymentRail = new SimpleObjectProperty<>();
+        private final StringProperty fiatPaymentRailMaxLimit = new SimpleStringProperty();
         private final ObjectProperty<FiatPaymentMethodChargebackRisk> chargebackRisk = new SimpleObjectProperty<>(FiatPaymentMethodChargebackRisk.MODERATE);
-        private final DoubleProperty deposit = new SimpleDoubleProperty();
         private final DoubleProperty reputationScore = new SimpleDoubleProperty();
-        private final DoubleProperty accountAgeWitnessScore = new SimpleDoubleProperty();
+        private final BooleanProperty hasBisq1AccountAgeWitness = new SimpleBooleanProperty();
         private final DoubleProperty accountAge = new SimpleDoubleProperty();
-        private final DoubleProperty signedFiatReceiptAge = new SimpleDoubleProperty();
-        private final DoubleProperty dualAccountVerificationAge = new SimpleDoubleProperty();
         private final StringProperty tradeLimit = new SimpleStringProperty();
         private final StringProperty rateLimit = new SimpleStringProperty();
+
+        public Model(List<FiatPaymentRail> fiatPaymentRails) {
+            this.fiatPaymentRails.addAll(fiatPaymentRails);
+        }
     }
 
     private static class View extends bisq.desktop.common.view.View<GridPane, Model, Controller> {
-
         private final MaterialTextField tradeLimit, rateLimit;
-        private final SliderWithValue deposit, accountAge,
-                reputationScore, accountAgeWitnessScore,
-                signedFiatReceiptAge, dualAccountVerificationAge;
+        private final SliderWithValue accountAge, reputationScore;
+        private final AutoCompleteComboBox<FiatPaymentRail> paymentRailSelection;
+        private final Label paymentRailMaxLimit;
+        private final Switch hasBisq1AccountAgeWitness;
 
         private View(Model model, Controller controller) {
             super(new GridPane(15, 15), model, controller);
@@ -290,51 +218,50 @@ public class TradeLimitsPreview {
 
             int rowIndex = 0;
 
-            deposit = new SliderWithValue(0.25, 0.25, 1,
-                    "muSig.trade.limits.tab2.preview.deposit",
-                    e -> PercentageFormatter.formatToPercentWithSymbol(e, 0),
-                    new PercentageStringConverter(0.3, 2),
-                    0.01);
+            paymentRailSelection = new AutoCompleteComboBox<>(model.getFiatPaymentRails(), Res.get("muSig.trade.limits.tab2.preview.fiatRail"));
+            paymentRailSelection.setMaxWidth(Double.MAX_VALUE);
+            paymentRailSelection.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(FiatPaymentRail fiatPaymentRail) {
+                    return fiatPaymentRail != null ? fiatPaymentRail.getShortDisplayString() : "";
+                }
+
+                @Override
+                public FiatPaymentRail fromString(String string) {
+                    return null;
+                }
+            });
+
+            paymentRailMaxLimit = new Label();
+
+            VBox paymentRailSelectionBox = new VBox(10, paymentRailSelection, paymentRailMaxLimit);
+
+            GridPane.setHgrow(paymentRailSelectionBox, Priority.ALWAYS);
+            root.add(paymentRailSelectionBox, 0, rowIndex);
+
+            hasBisq1AccountAgeWitness = new Switch(Res.get("muSig.trade.limits.tab2.preview.hasBisq1AccountAgeWitness"));
+
+            GridPane.setHgrow(hasBisq1AccountAgeWitness, Priority.ALWAYS);
+            GridPane.setMargin(hasBisq1AccountAgeWitness, new Insets(0, 0, 37.5, 0));
+            root.add(hasBisq1AccountAgeWitness, 1, rowIndex);
+
+            // Row 2
+            rowIndex++;
             accountAge = new SliderWithValue(0, 0, 60,
                     "muSig.trade.limits.tab2.preview.accountAge",
                     value -> String.valueOf(MathUtils.roundDouble(value, 0)),
                     new LongStringConverter(0),
                     1);
-            GridPane.setHgrow(deposit.getViewRoot(), Priority.ALWAYS);
             GridPane.setHgrow(accountAge.getViewRoot(), Priority.ALWAYS);
-            root.add(deposit.getViewRoot(), 0, rowIndex, 1, 1);
-            root.add(accountAge.getViewRoot(), 1, rowIndex, 1, 1);
+            root.add(accountAge.getViewRoot(), 0, rowIndex);
 
-            accountAgeWitnessScore = new SliderWithValue(0, 0, 180,
-                    "muSig.trade.limits.tab2.preview.accountAgeWitnessScore",
-                    value -> String.valueOf(MathUtils.roundDouble(value, 0)),
-                    new LongStringConverter(0),
-                    1);
-            reputationScore = new SliderWithValue(0, 0, 100000,
+            reputationScore = new SliderWithValue(0, 0, 200000,
                     "muSig.trade.limits.tab2.preview.reputationScore",
                     value -> String.valueOf(MathUtils.roundDouble(value, 0)),
                     new LongStringConverter(0),
                     1);
-            GridPane.setHgrow(accountAgeWitnessScore.getViewRoot(), Priority.ALWAYS);
             GridPane.setHgrow(reputationScore.getViewRoot(), Priority.ALWAYS);
-            root.add(accountAgeWitnessScore.getViewRoot(), 0, ++rowIndex, 1, 1);
-            root.add(reputationScore.getViewRoot(), 1, rowIndex, 1, 1);
-
-            signedFiatReceiptAge = new SliderWithValue(0, 0, 60,
-                    "muSig.trade.limits.tab2.preview.signedFiatReceiptAge",
-                    value -> String.valueOf(MathUtils.roundDouble(value, 0)),
-                    new LongStringConverter(0),
-                    1);
-
-            dualAccountVerificationAge = new SliderWithValue(0, 0, 30,
-                    "muSig.trade.limits.tab2.preview.dualAccountVerificationAge",
-                    value -> String.valueOf(MathUtils.roundDouble(value, 0)),
-                    new LongStringConverter(0),
-                    1);
-            GridPane.setHgrow(signedFiatReceiptAge.getViewRoot(), Priority.ALWAYS);
-            GridPane.setHgrow(dualAccountVerificationAge.getViewRoot(), Priority.ALWAYS);
-            root.add(signedFiatReceiptAge.getViewRoot(), 0, ++rowIndex, 1, 1);
-            root.add(dualAccountVerificationAge.getViewRoot(), 1, rowIndex, 1, 1);
+            root.add(reputationScore.getViewRoot(), 1, rowIndex);
 
 
             tradeLimit = new MaterialTextField(Res.get("muSig.trade.limits.tab2.preview.tradeLimit"));
@@ -342,35 +269,44 @@ public class TradeLimitsPreview {
             rateLimit = new MaterialTextField(Res.get("muSig.trade.limits.tab2.preview.rateLimit"));
             rateLimit.setEditable(false);
 
-            root.add(tradeLimit, 0, ++rowIndex, 1, 1);
+            // Row 3
+            rowIndex++;
+            root.add(tradeLimit, 0, rowIndex, 1, 1);
             root.add(rateLimit, 1, rowIndex, 1, 1);
         }
 
         @Override
         protected void onViewAttached() {
-            model.getDeposit().bind(deposit.valueProperty());
             model.getAccountAge().bind(accountAge.valueProperty());
             model.getReputationScore().bind(reputationScore.valueProperty());
-            model.getAccountAgeWitnessScore().bind(accountAgeWitnessScore.valueProperty());
-            model.getSignedFiatReceiptAge().bind(signedFiatReceiptAge.valueProperty());
-            model.getDualAccountVerificationAge().bind(dualAccountVerificationAge.valueProperty());
 
-
+            paymentRailMaxLimit.textProperty().bind(model.getFiatPaymentRailMaxLimit());
             tradeLimit.textProperty().bind(model.getTradeLimit());
             rateLimit.textProperty().bind(model.getRateLimit());
+
+            paymentRailSelection.getSelectionModel().select(model.getSelectedFiatPaymentRail().get());
+            paymentRailSelection.setOnChangeConfirmed(e -> {
+                if (paymentRailSelection.getSelectionModel().getSelectedItem() == null) {
+                    paymentRailSelection.getSelectionModel().select(model.getSelectedFiatPaymentRail().get());
+                    return;
+                }
+                controller.onSelectFiatPaymentRail(paymentRailSelection.getSelectionModel().getSelectedItem());
+            });
+
+            hasBisq1AccountAgeWitness.setOnAction(e -> controller.onHasBisq1AccountAgeWitnessChanged(hasBisq1AccountAgeWitness.isSelected()));
         }
 
         @Override
         protected void onViewDetached() {
-            model.getDeposit().unbind();
             model.getAccountAge().unbind();
             model.getReputationScore().unbind();
-            model.getAccountAgeWitnessScore().unbind();
-            model.getSignedFiatReceiptAge().unbind();
-            model.getDualAccountVerificationAge().unbind();
 
+            paymentRailMaxLimit.textProperty().unbind();
             tradeLimit.textProperty().unbind();
             rateLimit.textProperty().unbind();
+
+            paymentRailSelection.setOnChangeConfirmed(null);
+            hasBisq1AccountAgeWitness.setOnAction(null);
         }
     }
 }
