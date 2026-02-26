@@ -149,7 +149,7 @@ public class MuSigCreateOfferPriceView extends View<VBox, MuSigCreateOfferPriceM
         closeOverlayButton = new Button(Res.get("muSig.offer.create.price.feedback.learnWhySection.closeButton"));
         overlay = new WizardOverlay(root)
                 .info()
-                .headline("muSig.offer.create.price.feedback.learnWhySection.title")
+                .headlineFromI18nKey("muSig.offer.create.price.feedback.learnWhySection.title")
                 .description(new VBox(40, learnWhyIntroLabel, learnWhyExpositionList))
                 .buttons(closeOverlayButton)
                 .build();

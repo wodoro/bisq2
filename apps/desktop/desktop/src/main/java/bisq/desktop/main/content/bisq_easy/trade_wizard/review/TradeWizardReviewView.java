@@ -171,7 +171,7 @@ class TradeWizardReviewView extends View<StackPane, TradeWizardReviewModel, Trad
         createOfferSuccessButton.setDefaultButton(true);
         createOfferSuccessOverlay = new WizardOverlay(root)
                 .info()
-                .headline("bisqEasy.tradeWizard.review.createOfferSuccess.headline")
+                .headlineFromI18nKey("bisqEasy.tradeWizard.review.createOfferSuccess.headline")
                 .descriptionFromI18nKey("bisqEasy.tradeWizard.review.createOfferSuccess.subTitle")
                 .buttons(createOfferSuccessButton)
                 .build();
@@ -179,7 +179,7 @@ class TradeWizardReviewView extends View<StackPane, TradeWizardReviewModel, Trad
         takeOfferSendMessageWaitingAnimation = new WaitingAnimation(WaitingState.TAKE_BISQ_EASY_OFFER);
         sendTakeOfferMessageOverlay = new WizardOverlay(root)
                 .headlineIcon(takeOfferSendMessageWaitingAnimation)
-                .headline("bisqEasy.takeOffer.review.sendTakeOfferMessageFeedback.headline")
+                .headlineFromI18nKey("bisqEasy.takeOffer.review.sendTakeOfferMessageFeedback.headline")
                 .descriptionFromI18nKeys("bisqEasy.takeOffer.review.sendTakeOfferMessageFeedback.subTitle",
                         "bisqEasy.takeOffer.review.sendTakeOfferMessageFeedback.info")
                 .build();
@@ -188,7 +188,7 @@ class TradeWizardReviewView extends View<StackPane, TradeWizardReviewModel, Trad
         takeOfferSuccessButton.setDefaultButton(true);
         takeOfferSuccessOverlay = new WizardOverlay(root)
                 .info()
-                .headline("bisqEasy.tradeWizard.review.takeOfferSuccess.headline")
+                .headlineFromI18nKey("bisqEasy.tradeWizard.review.takeOfferSuccess.headline")
                 .descriptionFromI18nKey("bisqEasy.tradeWizard.review.takeOfferSuccess.subTitle")
                 .buttons(takeOfferSuccessButton)
                 .build();

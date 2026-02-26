@@ -92,7 +92,7 @@ public class WizardOverlay extends VBox {
         return this;
     }
 
-    public WizardOverlay headline(String i18nKey) {
+    public WizardOverlay headlineFromI18nKey(String i18nKey) {
         headlineLabel.setText(Res.get(i18nKey));
         return this;
     }

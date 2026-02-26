@@ -164,7 +164,7 @@ public class TradeWizardPriceView extends View<VBox, TradeWizardPriceModel, Trad
         closeOverlayButton = new Button(Res.get("bisqEasy.price.feedback.learnWhySection.closeButton"));
         overlay = new WizardOverlay(root)
                 .info()
-                .headline("bisqEasy.price.feedback.learnWhySection.title")
+                .headlineFromI18nKey("bisqEasy.price.feedback.learnWhySection.title")
                 .description(new VBox(40, learnWhyIntroLabel, learnWhyExpositionList))
                 .buttons(closeOverlayButton)
                 .build();

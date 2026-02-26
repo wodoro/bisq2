@@ -100,7 +100,7 @@ public class MuSigCreateOfferAmountView extends View<VBox, MuSigCreateOfferAmoun
         linkToWiki = new Hyperlink("https://bisq.wiki/Reputation");
         overlay = new WizardOverlay(root)
                 .warning()
-                .headline("muSig.offer.wizard.amount.limitInfo.overlay.headline")
+                .headlineFromI18nKey("muSig.offer.wizard.amount.limitInfo.overlay.headline")
                 .description(createAndGetOverlayContent(amountLimitInfoOverlayInfo, linkToWikiText, linkToWiki, learnHowToBuildReputationBox))
                 .buttons(closeOverlayButton)
                 .build();
