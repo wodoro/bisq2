@@ -40,10 +40,19 @@ public class TradeLimitsOverviewView extends View<VBox, TradeLimitsOverviewModel
                                    TradeLimitsOverviewController controller) {
         super(new VBox(), model, controller);
 
-        Label headline = new Label(Res.get("muSig.trade.limits.overview.headline"));
-        headline.getStyleClass().add("bisq-text-headline-2");
+        Label headline = getHeadline(Res.get("muSig.trade.limits.overview.headline"));
 
-        UnorderedList info = new UnorderedList(Res.get("muSig.trade.limits.overview.info"), "bisq-text-13");
+        Label info = getInfo(Res.get("muSig.trade.limits.overview.info"));
+
+        Label fiatBuyerSubHeadline = getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.fiat.buyer"));
+        UnorderedList fiatBuyerInfo = getUnorderedList(Res.get("muSig.trade.limits.overview.info.fiat.buyer"));
+
+        Label fiatSellerSubHeadline = getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.fiat.seller"));
+        UnorderedList fiatSellerInfo = getUnorderedList(Res.get("muSig.trade.limits.overview.info.fiat.seller"));
+
+        Label cryptoSellerSubHeadline = getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.crypto"));
+        UnorderedList cryptoInfo = getUnorderedList(Res.get("muSig.trade.limits.overview.info.crypto"));
+
 
         nextButton = new Button(Res.get("action.next"));
         nextButton.setDefaultButton(true);
@@ -53,14 +62,40 @@ public class TradeLimitsOverviewView extends View<VBox, TradeLimitsOverviewModel
         HBox buttons = new HBox(20, nextButton, Spacer.fillHBox(), learnMore);
         buttons.setAlignment(Pos.BOTTOM_RIGHT);
 
-        VBox.setMargin(headline, new Insets(10, 0, 0, 0));
-        VBox.setMargin(buttons, new Insets(10, 0, 0, 0));
+        VBox.setMargin(headline, new Insets(10, 0, 10, 0));
+        VBox.setMargin(buttons, new Insets(25, 0, 0, 0));
 
-        VBox contentBox = new VBox(20, headline, info, buttons);
+        VBox contentBox = new VBox(5,
+                headline,
+                info,
+                fiatBuyerSubHeadline, fiatBuyerInfo,
+                fiatSellerSubHeadline,  fiatSellerInfo,
+                cryptoSellerSubHeadline, cryptoInfo,
+                buttons);
         contentBox.getStyleClass().addAll("bisq-common-bg", "common-line-spacing");
         root.getChildren().addAll(contentBox);
 
         root.setPadding(new Insets(20, 0, 0, 0));
+    }
+
+    private static Label getHeadline(String text) {
+        Label label = new Label(text);
+        label.getStyleClass().add("bisq-text-headline-2");
+        return label;
+    }
+    private static Label getSubHeadline(String text) {
+        Label label = new Label(text);
+        label.getStyleClass().add("bisq-sub-title-label");
+        VBox.setMargin(label, new Insets(10, 0, 0, 0));
+        return label;
+    }
+    private static Label getInfo(String text) {
+        Label label = new Label(text);
+        label.getStyleClass().add("bisq-text-13");
+        return label;
+    }
+    private static UnorderedList getUnorderedList(String text) {
+        return new UnorderedList(text, "bisq-text-13");
     }
 
     @Override
