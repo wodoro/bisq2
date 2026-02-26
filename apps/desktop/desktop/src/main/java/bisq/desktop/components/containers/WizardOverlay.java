@@ -92,13 +92,17 @@ public class WizardOverlay extends VBox {
         return this;
     }
 
-    public WizardOverlay headline(String headline) {
-        headlineLabel.setText(Res.get(headline));
+    public WizardOverlay headline(String i18nKey) {
+        headlineLabel.setText(Res.get(i18nKey));
         return this;
     }
 
     public WizardOverlay descriptionFromI18nKey(String i18nKey) {
-        textContentBox = createAndGetTextBoxFromI18nKeys(i18nKey);
+        return description(Res.get(i18nKey));
+    }
+
+    public WizardOverlay description(String text) {
+        textContentBox = createAndGetTextBox(text);
         return this;
     }
 
@@ -107,13 +111,8 @@ public class WizardOverlay extends VBox {
         return this;
     }
 
-    public WizardOverlay description(String text) {
-        textContentBox = createAndGetTextBox(text);
-        return this;
-    }
-
-    public WizardOverlay description(String... text) {
-        textContentBox = createAndGetTextBox(text);
+    public WizardOverlay description(String... textValues) {
+        textContentBox = createAndGetTextBox(textValues);
         return this;
     }
 
@@ -184,6 +183,13 @@ public class WizardOverlay extends VBox {
         return content;
     }
 
+    private VBox createAndGetTextBoxFromI18nKeys(String... i18nKeys) {
+        String[] textValues = Arrays.stream(i18nKeys)
+                .map(Res::get)
+                .toArray(String[]::new);
+        return createAndGetTextBox(textValues);
+    }
+
     private VBox createAndGetTextBox(String... textValues) {
         VBox textBox = new VBox(15);
         Arrays.stream(textValues)
@@ -199,11 +205,6 @@ public class WizardOverlay extends VBox {
         return textBox;
     }
 
-    private VBox createAndGetTextBoxFromI18nKeys(String... i18nKeys) {
-        return createAndGetTextBox(Arrays.stream(i18nKeys)
-                .map(Res::get)
-                .toArray(String[]::new));
-    }
 
     private HBox createAndGetButtonsBox(Button... buttons) {
         HBox buttonsBox = new HBox(10, buttons);
