@@ -21,6 +21,7 @@ import bisq.desktop.common.view.View;
 import bisq.desktop.components.containers.Spacer;
 import bisq.desktop.components.controls.BisqHyperlink;
 import bisq.desktop.components.controls.UnorderedList;
+import bisq.desktop.main.content.mu_sig.trade.trade_limits.TradeLimitsViewUtils;
 import bisq.i18n.Res;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -40,10 +41,17 @@ public class TradeLimitsOverviewView extends View<VBox, TradeLimitsOverviewModel
                                    TradeLimitsOverviewController controller) {
         super(new VBox(), model, controller);
 
-        Label headline = new Label(Res.get("muSig.trade.limits.overview.headline"));
-        headline.getStyleClass().add("bisq-text-headline-2");
+        Label headline = TradeLimitsViewUtils.getHeadline(Res.get("muSig.trade.limits.overview.headline"));
+        Label info = TradeLimitsViewUtils.getInfo(Res.get("muSig.trade.limits.overview.info"));
 
-        UnorderedList info = new UnorderedList(Res.get("muSig.trade.limits.overview.info"), "bisq-text-13");
+        Label fiatBuyerSubHeadline = TradeLimitsViewUtils.getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.fiat.buyer"));
+        UnorderedList fiatBuyerInfo = TradeLimitsViewUtils.getUnorderedList(Res.get("muSig.trade.limits.overview.info.fiat.buyer"));
+
+        Label fiatSellerSubHeadline = TradeLimitsViewUtils.getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.fiat.seller"));
+        UnorderedList fiatSellerInfo = TradeLimitsViewUtils.getUnorderedList(Res.get("muSig.trade.limits.overview.info.fiat.seller"));
+
+        Label cryptoSellerSubHeadline = TradeLimitsViewUtils.getSubHeadline(Res.get("muSig.trade.limits.overview.subHeadline.crypto"));
+        UnorderedList cryptoInfo = TradeLimitsViewUtils.getUnorderedList(Res.get("muSig.trade.limits.overview.info.crypto"));
 
         nextButton = new Button(Res.get("action.next"));
         nextButton.setDefaultButton(true);
@@ -53,15 +61,21 @@ public class TradeLimitsOverviewView extends View<VBox, TradeLimitsOverviewModel
         HBox buttons = new HBox(20, nextButton, Spacer.fillHBox(), learnMore);
         buttons.setAlignment(Pos.BOTTOM_RIGHT);
 
-        VBox.setMargin(headline, new Insets(10, 0, 0, 0));
-        VBox.setMargin(buttons, new Insets(10, 0, 0, 0));
-
-        VBox contentBox = new VBox(20, headline, info, buttons);
+        VBox.setMargin(headline, new Insets(10, 0, 10, 0));
+        VBox.setMargin(buttons, new Insets(25, 0, 0, 0));
+        VBox contentBox = new VBox(5,
+                headline,
+                info,
+                fiatBuyerSubHeadline, fiatBuyerInfo,
+                fiatSellerSubHeadline, fiatSellerInfo,
+                cryptoSellerSubHeadline, cryptoInfo,
+                buttons);
         contentBox.getStyleClass().addAll("bisq-common-bg", "common-line-spacing");
         root.getChildren().addAll(contentBox);
 
         root.setPadding(new Insets(20, 0, 0, 0));
     }
+
 
     @Override
     protected void onViewAttached() {
