@@ -235,11 +235,12 @@ class MuSigMediatorServiceTest {
         AccountPayload<?> takerPayload = createNationalBankPayload("taker-account-5", "DE123");
         AccountPayload<?> makerPayloadOption1 = createNationalBankPayload("maker-account-4a", "DE124");
         AccountPayload<?> makerPayloadOption2 = createNationalBankPayload("maker-account-4b", "DE125");
-        MuSigContract contract = createContract(
+        MuSigContract contract = createContractWithExplicitMakerHash(
                 maker,
                 taker,
                 "offer-5",
                 takerPayload,
+                makerPayloadOption1,
                 List.of(makerPayloadOption1, makerPayloadOption2)
         );
         String tradeId = "trade-5";
@@ -406,9 +407,25 @@ class MuSigMediatorServiceTest {
                                          String offerId,
                                          AccountPayload<?> takerPayloadForHash,
                                          List<AccountPayload<?>> makerPayloadsForHash) {
+        return createContractWithExplicitMakerHash(
+                maker,
+                taker,
+                offerId,
+                takerPayloadForHash,
+                makerPayloadsForHash.getFirst(),
+                makerPayloadsForHash
+        );
+    }
+
+    private MuSigContract createContractWithExplicitMakerHash(UserProfile maker,
+                                                              UserProfile taker,
+                                                              String offerId,
+                                                              AccountPayload<?> takerPayloadForHash,
+                                                              AccountPayload<?> makerPayloadForHash,
+                                                              List<AccountPayload<?>> makerPayloadsForOfferOptions) {
         Market market = new Market("BTC", "EUR", "Bitcoin", "Euro");
         PaymentMethod<?> paymentMethod = FiatPaymentMethod.fromPaymentRail(FiatPaymentRail.NATIONAL_BANK);
-        List<AccountOption> accountOptions = makerPayloadsForHash.stream()
+        List<AccountOption> accountOptions = makerPayloadsForOfferOptions.stream()
                 .map(payload -> new AccountOption(
                         paymentMethod,
                         "0123456789abcdef0123456789abcdef01234567",
@@ -432,14 +449,17 @@ class MuSigMediatorServiceTest {
         );
         PaymentMethodSpec<?> quoteSidePaymentMethodSpec = PaymentMethodSpecUtil.createPaymentMethodSpec(paymentMethod, "EUR");
         byte[] takerSaltedAccountPayloadHash = OfferOptionUtil.createSaltedAccountPayloadHash(takerPayloadForHash, offerId);
+        byte[] makerSaltedAccountPayloadHash = OfferOptionUtil.createSaltedAccountPayloadHash(makerPayloadForHash, offerId);
         return new MuSigContract(
                 System.currentTimeMillis(),
                 offer,
-                taker.getNetworkId(),
+                TradeProtocolType.MU_SIG,
+                new Party(Role.MAKER, maker.getNetworkId(), Optional.of(makerSaltedAccountPayloadHash)),
+                new Party(Role.TAKER, taker.getNetworkId(), Optional.of(takerSaltedAccountPayloadHash)),
                 100_000L,
                 3_500_000L,
+                PaymentMethodSpecUtil.createBitcoinMainChainPaymentMethodSpec().get(0),
                 quoteSidePaymentMethodSpec,
-                takerSaltedAccountPayloadHash,
                 Optional.empty(),
                 createPriceSpec(),
                 0
