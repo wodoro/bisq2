@@ -78,6 +78,17 @@ public class OfferOptionUtil {
                 .findAny();
     }
 
+    // DEFAULT_BUYER_SECURITY_DEPOSIT and DEFAULT_SELLER_SECURITY_DEPOSIT are the same
+    public static Optional<Double> findSymmetricSecurityDepositPercent(Collection<OfferOption> offerOptions) {
+        return findCollateralOption(offerOptions)
+                .map(collateralOption -> {
+                    checkArgument(Double.compare(collateralOption.getSellerSecurityDeposit(),
+                                    collateralOption.getBuyerSecurityDeposit()) == 0,
+                            "SellerSecurityDeposit and BuyerSecurityDeposit are expected to be equal");
+                    return collateralOption.getBuyerSecurityDeposit();
+                });
+    }
+
     public static Optional<FiatPaymentOption> findFiatPaymentOption(Collection<OfferOption> offerOptions) {
         return offerOptions.stream()
                 .filter(FiatPaymentOption.class::isInstance)

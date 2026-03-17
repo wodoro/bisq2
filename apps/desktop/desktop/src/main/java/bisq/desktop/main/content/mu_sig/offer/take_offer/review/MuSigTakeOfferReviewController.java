@@ -42,7 +42,6 @@ import bisq.offer.amount.OfferAmountFormatter;
 import bisq.offer.amount.OfferAmountUtil;
 import bisq.offer.amount.spec.FixedAmountSpec;
 import bisq.offer.mu_sig.MuSigOffer;
-import bisq.offer.options.CollateralOption;
 import bisq.offer.options.OfferOptionUtil;
 import bisq.offer.price.PriceUtil;
 import bisq.offer.price.spec.FloatPriceSpec;
@@ -122,14 +121,9 @@ public class MuSigTakeOfferReviewController implements Controller {
         applyPriceQuote(priceQuote);
         applyPriceDetails(muSigOffer.getPriceSpec(), market);
 
-        // DEFAULT_BUYER_SECURITY_DEPOSIT and DEFAULT_SELLER_SECURITY_DEPOSIT are the same
-        //double securityDeposit = MuSigOffer.DEFAULT_BUYER_SECURITY_DEPOSIT;
-        Optional<CollateralOption> optionalCollateralOption = OfferOptionUtil.findCollateralOption(muSigOffer.getOfferOptions());
-        checkArgument(optionalCollateralOption.isPresent(), "CollateralOption must be present");
-        CollateralOption collateralOption = optionalCollateralOption.get();
-        checkArgument(Double.compare(collateralOption.getSellerSecurityDeposit(), collateralOption.getBuyerSecurityDeposit()) == 0,
-                "SellerSecurityDeposit and BuyerSecurityDeposit are expected to be equal");
-        double securityDeposit = collateralOption.getBuyerSecurityDeposit();
+
+        double securityDeposit = OfferOptionUtil.findSymmetricSecurityDepositPercent(muSigOffer.getOfferOptions())
+                .orElseThrow(() -> new IllegalArgumentException("CollateralOption must be present"));
         model.setSecurityDepositAsPercent(securityDeposit);
         model.setFormattedSecurityDepositAsPercent(PercentageFormatter.formatToPercentWithSymbol(securityDeposit, 0));
 

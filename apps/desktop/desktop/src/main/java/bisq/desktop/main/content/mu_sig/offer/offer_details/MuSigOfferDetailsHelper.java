@@ -44,7 +44,6 @@ import bisq.offer.amount.spec.AmountSpec;
 import bisq.offer.amount.spec.FixedAmountSpec;
 import bisq.offer.amount.spec.RangeAmountSpec;
 import bisq.offer.mu_sig.MuSigOffer;
-import bisq.offer.options.CollateralOption;
 import bisq.offer.options.OfferOptionUtil;
 import bisq.offer.price.PriceUtil;
 import bisq.offer.price.spec.FixPriceSpec;
@@ -71,7 +70,8 @@ class MuSigOfferDetailsHelper {
     //
 
     static Optional<SecurityDepositInfo> createSecurityDepositInfo(MuSigOffer offer, Optional<OfferAmounts> offerAmounts) {
-        double securityDepositAsPercent = getSecurityDepositPercent(offer);
+        double securityDepositAsPercent = OfferOptionUtil.findSymmetricSecurityDepositPercent(offer.getOfferOptions())
+                .orElseThrow(() -> new IllegalArgumentException("CollateralOption must be present"));
         String formattedPercent = PercentageFormatter.formatToPercentWithSymbol(securityDepositAsPercent, 0);
         Optional<Amount> securityDepositAsBTC = offerAmounts.map(amounts ->
                 calculateSecurityDepositAsBTC(offer.getMarket(), amounts, securityDepositAsPercent));
@@ -103,16 +103,6 @@ class MuSigOfferDetailsHelper {
                     }
                     default -> throw new IllegalStateException("Unexpected amounts type: " + offerAmounts);
                 };
-    }
-
-    // From bisq.desktop.main.content.mu_sig.offer.take_offer.review.MuSigTakeOfferReviewController.init
-    static double getSecurityDepositPercent(MuSigOffer muSigOffer) {
-        Optional<CollateralOption> optionalCollateralOption = OfferOptionUtil.findCollateralOption(muSigOffer.getOfferOptions());
-        checkArgument(optionalCollateralOption.isPresent(), "CollateralOption must be present");
-        CollateralOption collateralOption = optionalCollateralOption.get();
-        checkArgument(Math.abs(collateralOption.getSellerSecurityDeposit() - collateralOption.getBuyerSecurityDeposit()) < 1e-9,
-                "SellerSecurityDeposit and BuyerSecurityDeposit are expected to be equal");
-        return collateralOption.getBuyerSecurityDeposit();
     }
 
     // From bisq.offer.amount.OfferAmountFormatter#formatDepositAmountAsBTC(Monetary)

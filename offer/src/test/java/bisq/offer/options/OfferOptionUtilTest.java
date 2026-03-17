@@ -26,11 +26,34 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OfferOptionUtilTest {
+
+    @Test
+    void findSymmetricSecurityDepositPercentReturnsEmptyWhenCollateralOptionIsMissing() {
+        assertTrue(OfferOptionUtil.findSymmetricSecurityDepositPercent(List.of()).isEmpty());
+    }
+
+    @Test
+    void findSymmetricSecurityDepositPercentReturnsBuyerDepositWhenBuyerAndSellerMatch() {
+        double result = OfferOptionUtil.findSymmetricSecurityDepositPercent(List.of(new CollateralOption(0.15, 0.15)))
+                .orElseThrow();
+
+        assertEquals(0.15, result);
+    }
+
+    @Test
+    void findSymmetricSecurityDepositPercentThrowsWhenBuyerAndSellerDoNotMatch() {
+        assertThrows(IllegalArgumentException.class,
+                () -> OfferOptionUtil.findSymmetricSecurityDepositPercent(List.of(new CollateralOption(0.10, 0.15))));
+    }
 
     @Test
     void createSaltedAccountPayloadHashUsesSerializedPayloadForHashAndOfferId() {
