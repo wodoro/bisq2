@@ -22,6 +22,7 @@ import bisq.desktop.common.view.NavigationView;
 import bisq.desktop.components.containers.Spacer;
 import bisq.desktop.components.controls.BisqIconButton;
 import bisq.desktop.components.controls.BisqMenuItem;
+import bisq.desktop.main.content.mu_sig.trade.components.MuSigAmountAndPriceDisplay;
 import bisq.desktop.overlay.OverlayModel;
 import bisq.i18n.Res;
 import javafx.geometry.Insets;
@@ -44,14 +45,14 @@ import static bisq.desktop.components.helpers.LabeledValueRowFactory.getValueLab
 @Slf4j
 public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetailsModel, MuSigTradeDetailsController> {
     private final Button closeButton;
-    private final Label tradeDateLabel, tradeDurationLabel, meLabel, peerLabel, offerTypeLabel, marketLabel, nonBtcAmountLabel,
-            nonBtcCurrencyLabel, btcAmountLabel, priceLabel, priceCodesLabel, priceSpecLabel, paymentMethodValue,
+    private final Label tradeDateLabel, tradeDurationLabel, meLabel, peerLabel, offerTypeLabel, marketLabel, paymentMethodValue,
             tradeIdLabel, peerNetworkAddressLabel,
             peersPaymentAccountData, depositTxDetailsLabel, peersAccountPayloadDescription,
             assignedMediatorLabel;
     private final BisqMenuItem tradersAndRoleCopyButton, tradeIdCopyButton, peerNetworkAddressCopyButton,
             depositTxCopyButton, peersAccountDataCopyButton;
     private final HBox assignedMediatorBox, depositTxBox, tradeDurationBox, paymentMethodsBox;
+    private final MuSigAmountAndPriceDisplay amountAndPriceDisplay;
 
     public MuSigTradeDetailsView(MuSigTradeDetailsModel model, MuSigTradeDetailsController controller) {
         super(new VBox(10), model, controller);
@@ -113,32 +114,8 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
                 offerTypeAndMarketDetailsHBox);
 
         // Amount and price
-        nonBtcAmountLabel = getValueLabel();
-        nonBtcCurrencyLabel = new Label();
-        nonBtcCurrencyLabel.getStyleClass().addAll("text-fill-white", "small-text");
-
-        Label openParenthesisLabel = new Label("(");
-        openParenthesisLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-        btcAmountLabel = getValueLabel();
-        btcAmountLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-        btcAmountLabel.setPadding(new Insets(0, 5, 0, 0));
-        Label btcLabel = new Label("BTC");
-        btcLabel.getStyleClass().addAll("text-fill-grey-dimmed", "small-text");
-        Label closingParenthesisLabel = new Label(")");
-        closingParenthesisLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-        HBox btcAmountHBox = new HBox(openParenthesisLabel, btcAmountLabel, btcLabel, closingParenthesisLabel);
-        btcAmountHBox.setAlignment(Pos.BASELINE_LEFT);
-        Label atLabel = new Label("@");
-        atLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-        priceLabel = getValueLabel();
-        priceCodesLabel = new Label();
-        priceCodesLabel.getStyleClass().addAll("text-fill-white", "small-text");
-        priceSpecLabel = new Label();
-        priceSpecLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-        HBox amountAndPriceDetailsHBox = new HBox(5, nonBtcAmountLabel, nonBtcCurrencyLabel, btcAmountHBox,
-                atLabel, priceLabel, priceCodesLabel, priceSpecLabel);
-        amountAndPriceDetailsHBox.setAlignment(Pos.BASELINE_LEFT);
-        HBox amountAndPriceBox = createAndGetDescriptionAndValueBox("muSig.trade.details.amountAndPrice", amountAndPriceDetailsHBox);
+        amountAndPriceDisplay = new MuSigAmountAndPriceDisplay();
+        HBox amountAndPriceBox = createAndGetDescriptionAndValueBox("muSig.trade.details.amountAndPrice", amountAndPriceDisplay);
 
         // Payment method
         paymentMethodValue = getValueLabel();
@@ -218,12 +195,7 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
         peerLabel.setText(model.getPeer());
         offerTypeLabel.setText(model.getOfferType());
         marketLabel.setText(model.getMarket());
-        nonBtcAmountLabel.setText(model.getNonBtcAmount());
-        nonBtcCurrencyLabel.setText(model.getNonBtcCurrency());
-        btcAmountLabel.setText(model.getBtcAmount());
-        priceLabel.setText(model.getPrice());
-        priceCodesLabel.setText(model.getPriceCodes());
-        priceSpecLabel.setText(model.getPriceSpec());
+        amountAndPriceDisplay.setContract(model.getContract());
         paymentMethodValue.setText(model.getPaymentMethod());
         paymentMethodsBox.setVisible(model.isPaymentMethodsBoxVisible());
         paymentMethodsBox.setManaged(model.isPaymentMethodsBoxVisible());

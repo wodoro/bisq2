@@ -26,12 +26,10 @@ import bisq.desktop.common.threading.UIThread;
 import bisq.desktop.common.utils.ClipboardUtil;
 import bisq.desktop.components.controls.BisqMenuItem;
 import bisq.desktop.main.content.authorized_role.mediator.mu_sig.MuSigMediationCaseListItem;
+import bisq.desktop.main.content.mu_sig.trade.components.MuSigAmountAndPriceDisplay;
 import bisq.i18n.Res;
 import bisq.offer.Direction;
 import bisq.offer.mu_sig.MuSigOffer;
-import bisq.offer.price.spec.FixPriceSpec;
-import bisq.offer.price.spec.PriceSpecFormatter;
-import bisq.presentation.formatters.PriceFormatter;
 import bisq.support.mediation.MediationCaseState;
 import bisq.support.mediation.mu_sig.MuSigMediationCase;
 import bisq.support.mediation.mu_sig.MuSigMediationIssue;
@@ -39,13 +37,11 @@ import bisq.support.mediation.mu_sig.MuSigMediationIssueType;
 import bisq.support.mediation.mu_sig.MuSigMediationRequest;
 import bisq.support.mediation.mu_sig.MuSigMediatorService;
 import bisq.trade.mu_sig.MuSigTradeFormatter;
-import bisq.trade.mu_sig.MuSigTradeUtils;
 import bisq.user.profile.UserProfile;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -111,6 +107,7 @@ public class MuSigMediationCaseOverviewSection {
             MuSigMediationCase muSigMediationCase = muSigMediationCaseListItem.getMuSigMediationCase();
             MuSigMediationRequest muSigMediationRequest = muSigMediationCase.getMuSigMediationRequest();
             MuSigContract contract = muSigMediationRequest.getContract();
+            model.setContract(contract);
             MuSigOffer offer = contract.getOffer();
 
             MuSigMediationCaseListItem.Trader maker = muSigMediationCaseListItem.getMaker();
@@ -136,14 +133,6 @@ public class MuSigMediationCaseOverviewSection {
             model.setSellerCaseCountOpen(sellerCaseCounts.open());
             model.setSellerCaseCountClosed(sellerCaseCounts.closed());
 
-            model.setNonBtcAmount(MuSigTradeFormatter.formatNonBtcSideAmount(contract));
-            model.setNonBtcCurrency(offer.getMarket().getNonBtcCurrencyCode());
-            model.setBtcAmount(MuSigTradeFormatter.formatBtcSideAmount(contract));
-            model.setPrice(PriceFormatter.format(MuSigTradeUtils.getPriceQuote(contract)));
-            model.setPriceCodes(offer.getMarket().getMarketCodes());
-            model.setPriceSpec(offer.getPriceSpec() instanceof FixPriceSpec
-                    ? ""
-                    : String.format("(%s)", PriceSpecFormatter.getFormattedPriceSpec(offer.getPriceSpec(), true)));
             model.setPaymentMethod(contract.getNonBtcSidePaymentMethodSpec().getShortDisplayString());
             model.setPaymentMethodsBoxVisible(offer.getMarket().isBaseCurrencyBitcoin());
             model.getHasPaymentAccountData().set(false);
@@ -156,7 +145,7 @@ public class MuSigMediationCaseOverviewSection {
             model.getMakerPaymentAccountIssueTooltip().set("");
             maybeAddPaymentAccountDataObservers();
 
-            model.setDepositTxId(Res.get("bisqEasy.openTrades.tradeDetails.dataNotYetProvided"));
+            model.setDepositTxId(Res.get("muSig.trade.details.dataNotYetProvided"));
             model.setDepositTxIdEmpty(true);
         }
 
@@ -302,13 +291,7 @@ public class MuSigMediationCaseOverviewSection {
         private int sellerCaseCountTotal;
         private int sellerCaseCountOpen;
         private int sellerCaseCountClosed;
-
-        private String nonBtcAmount;
-        private String nonBtcCurrency;
-        private String btcAmount;
-        private String price;
-        private String priceCodes;
-        private String priceSpec;
+        private MuSigContract contract;
 
         private String paymentMethod;
         private boolean isPaymentMethodsBoxVisible;
@@ -328,8 +311,7 @@ public class MuSigMediationCaseOverviewSection {
     @Slf4j
     private static class View extends bisq.desktop.common.view.View<VBox, Model, Controller> {
 
-        private final Label nonBtcAmountLabel, nonBtcCurrencyLabel, btcAmountLabel, priceLabel,
-                priceCodesLabel, priceSpecLabel;
+        private final MuSigAmountAndPriceDisplay amountAndPriceDisplay;
         private Label buyerUserNameLabel, sellerUserNameLabel, paymentMethodLabel, depositTxTitleLabel, depositTxDetailsLabel;
         private Label paymentAccountDataWaitingLabel, takerPaymentAccountDataLabel, makerPaymentAccountDataLabel;
         private Button takerPaymentAccountIssueButton, makerPaymentAccountIssueButton;
@@ -342,32 +324,8 @@ public class MuSigMediationCaseOverviewSection {
             super(root, model, controller);
 
             // Amount and price
-            nonBtcAmountLabel = getValueLabel();
-            nonBtcCurrencyLabel = new Label();
-            nonBtcCurrencyLabel.getStyleClass().addAll("text-fill-white", "small-text");
-
-            Label openParenthesisLabel = new Label("(");
-            openParenthesisLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-            btcAmountLabel = getValueLabel();
-            btcAmountLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-            btcAmountLabel.setPadding(new Insets(0, 5, 0, 0));
-            Label btcLabel = new Label("BTC");
-            btcLabel.getStyleClass().addAll("text-fill-grey-dimmed", "small-text");
-            Label closingParenthesisLabel = new Label(")");
-            closingParenthesisLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-            HBox btcAmountHBox = new HBox(openParenthesisLabel, btcAmountLabel, btcLabel, closingParenthesisLabel);
-            btcAmountHBox.setAlignment(Pos.BASELINE_LEFT);
-            Label atLabel = new Label("@");
-            atLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-            priceLabel = getValueLabel();
-            priceCodesLabel = new Label();
-            priceCodesLabel.getStyleClass().addAll("text-fill-white", "small-text");
-            priceSpecLabel = new Label();
-            priceSpecLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-            HBox amountAndPriceDetailsHBox = new HBox(5, nonBtcAmountLabel, nonBtcCurrencyLabel, btcAmountHBox,
-                    atLabel, priceLabel, priceCodesLabel, priceSpecLabel);
-            amountAndPriceDetailsHBox.setAlignment(Pos.BASELINE_LEFT);
-            HBox amountAndPriceBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.amountAndPrice", amountAndPriceDetailsHBox);
+            amountAndPriceDisplay = new MuSigAmountAndPriceDisplay();
+            HBox amountAndPriceBox = createAndGetDescriptionAndValueBox("muSig.trade.details.amountAndPrice", amountAndPriceDisplay);
 
             VBox content;
 
@@ -387,7 +345,7 @@ public class MuSigMediationCaseOverviewSection {
                 paymentMethodLabel = getValueLabel();
                 HBox paymentMethodsDetailsHBox = new HBox(5, paymentMethodLabel);
                 paymentMethodsDetailsHBox.setAlignment(Pos.BASELINE_LEFT);
-                paymentMethodsBox = createAndGetDescriptionAndValueBox("bisqEasy.openTrades.tradeDetails.paymentAndSettlementMethods",
+                paymentMethodsBox = createAndGetDescriptionAndValueBox("muSig.trade.details.paymentAndSettlementMethod",
                         paymentMethodsDetailsHBox);
 
                 // Deposit transaction ID
@@ -471,8 +429,8 @@ public class MuSigMediationCaseOverviewSection {
                 paymentMethodsBox.setManaged(model.isPaymentMethodsBoxVisible());
 
                 depositTxDetailsLabel.setText(model.getDepositTxId());
-                depositTxTitleLabel.setText(Res.get("bisqEasy.openTrades.tradeDetails.txId"));
-                depositTxCopyButton.setTooltip(Res.get("bisqEasy.openTrades.tradeDetails.txId.copy"));
+                depositTxTitleLabel.setText(Res.get("muSig.trade.details.depositTxId"));
+                depositTxCopyButton.setTooltip(Res.get("muSig.trade.details.depositTxId.copy"));
                 depositTxCopyButton.setVisible(!model.isDepositTxIdEmpty());
                 depositTxCopyButton.setManaged(!model.isDepositTxIdEmpty());
                 depositTxDetailsLabel.getStyleClass().clear();
@@ -530,12 +488,7 @@ public class MuSigMediationCaseOverviewSection {
                 paymentAccountDataRefreshButton.setOnAction(e -> controller.requestPaymentAccountData());
             }
 
-            nonBtcAmountLabel.setText(model.getNonBtcAmount());
-            nonBtcCurrencyLabel.setText(model.getNonBtcCurrency());
-            btcAmountLabel.setText(model.getBtcAmount());
-            priceLabel.setText(model.getPrice());
-            priceCodesLabel.setText(model.getPriceCodes());
-            priceSpecLabel.setText(model.getPriceSpec());
+            amountAndPriceDisplay.setContract(model.getContract());
         }
 
         @Override
