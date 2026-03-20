@@ -75,17 +75,19 @@ public class MuSigState3aSellerConfirmPaymentReceipt extends MuSigBaseState {
 
             AccountPayload<?> peersAccountPayload = trade.getPeer().getAccountPayload().orElseThrow();
             if (peersAccountPayload instanceof CryptoAssetAccountPayload cryptoAssetAccountPayload) {
-                model.setInfo(Res.get("muSig.trade.state.phase3a.verifyReceipt.account.crypto",
+                model.setVerifyReceiptInfo(Res.get("muSig.trade.state.phase3a.verifyReceipt.account.crypto",
                         model.getNonBtcCurrencyCode(), cryptoAssetAccountPayload.getAddress()));
                 model.setPeersAccountDataDescription("");
                 model.setBuyersAccountData("");
+                model.setFiatAccount(false);
             } else {
                 String accountName = account
                         .map(Account::getAccountName)
                         .orElse(Res.get("data.na"));
-                model.setInfo(Res.get("muSig.trade.state.phase3a.verifyReceipt.account.fiat", accountName));
+                model.setVerifyReceiptInfo(Res.get("muSig.trade.state.phase3a.verifyReceipt.account.fiat", accountName));
                 model.setPeersAccountDataDescription(Res.get("muSig.trade.state.phase3a.buyersAccount.fiat"));
                 model.setBuyersAccountData(peersAccountPayload.getAccountDataDisplayString());
+                model.setFiatAccount(true);
             }
         }
 
@@ -104,11 +106,13 @@ public class MuSigState3aSellerConfirmPaymentReceipt extends MuSigBaseState {
     @Getter
     private static class Model extends MuSigBaseState.Model {
         @Setter
-        private String info;
+        private String verifyReceiptInfo;
         @Setter
         private String buyersAccountData;
         @Setter
         private String peersAccountDataDescription;
+        @Setter
+        private boolean isFiatAccount;
 
         protected Model(MuSigTrade trade, MuSigOpenTradeChannel channel) {
             super(trade, channel);
@@ -118,30 +122,38 @@ public class MuSigState3aSellerConfirmPaymentReceipt extends MuSigBaseState {
     public static class View extends MuSigBaseState.View<Model, Controller> {
         private final WrappingText headline;
         private final Button confirmPaymentReceiptButton;
-        private final WrappingText info;
+        private final WrappingText verifyBuyersAccountInfo, verifyReceiptInfo;
         private final MaterialTextArea buyersAccountData;
 
         private View(Model model, Controller controller) {
             super(model, controller);
 
             headline = MuSigFormUtils.getHeadline();
-            info = MuSigFormUtils.getInfo();
+            verifyBuyersAccountInfo = MuSigFormUtils.getInfo(Res.get("muSig.trade.state.phase3a.verifyBuyersAccount.fiat"));
+            verifyReceiptInfo = MuSigFormUtils.getInfo();
             buyersAccountData = MuSigFormUtils.addTextArea("", "", false);
+
             confirmPaymentReceiptButton = new Button();
             confirmPaymentReceiptButton.setDefaultButton(true);
+
+            VBox.setMargin(verifyBuyersAccountInfo, new Insets(10, 0, 0, 0));
+            VBox.setMargin(verifyReceiptInfo, new Insets(10, 0, 0, 0));
             VBox.setMargin(confirmPaymentReceiptButton, new Insets(5, 0, 10, 0));
-            root.getChildren().addAll(headline, buyersAccountData, info, confirmPaymentReceiptButton);
+            root.getChildren().addAll(headline, verifyBuyersAccountInfo, buyersAccountData, verifyReceiptInfo, confirmPaymentReceiptButton);
         }
 
         @Override
         protected void onViewAttached() {
             super.onViewAttached();
 
-            buyersAccountData.visibleProperty().bind(buyersAccountData.textProperty().isNotEmpty());
-            buyersAccountData.managedProperty().bind(buyersAccountData.visibleProperty());
+            boolean fiatAccount = model.isFiatAccount();
+            verifyBuyersAccountInfo.setVisible(fiatAccount);
+            verifyBuyersAccountInfo.setManaged(fiatAccount);
+            buyersAccountData.setVisible(fiatAccount);
+            buyersAccountData.setManaged(fiatAccount);
 
             headline.setText(Res.get("muSig.trade.state.phase3a.headline", model.getFormattedNonBtcAmount()));
-            info.setText(model.getInfo());
+            verifyReceiptInfo.setText(model.getVerifyReceiptInfo());
             buyersAccountData.setText(model.getBuyersAccountData());
             buyersAccountData.setDescription(model.getPeersAccountDataDescription());
             confirmPaymentReceiptButton.setText(Res.get("muSig.trade.state.phase3a.fiatReceivedButton"));
@@ -151,9 +163,6 @@ public class MuSigState3aSellerConfirmPaymentReceipt extends MuSigBaseState {
         @Override
         protected void onViewDetached() {
             super.onViewDetached();
-
-            buyersAccountData.visibleProperty().unbind();
-            buyersAccountData.managedProperty().unbind();
 
             confirmPaymentReceiptButton.setOnAction(null);
         }
