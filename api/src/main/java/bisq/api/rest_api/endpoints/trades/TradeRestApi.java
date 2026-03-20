@@ -284,11 +284,10 @@ public class TradeRestApi extends RestApiBase {
         String encoded = Res.encode("bisqEasy.openTrades.tradeLogMessage.rejected", userName);
         bisqEasyOpenTradeChannelService.sendTradeLogMessage(encoded, channel).get();
         bisqEasyTradeService.cancelTrade(trade);
-        leavePrivateChatManager.leaveChannel(channel);
     }
 
     private void handleCloseTrade(BisqEasyOpenTradeChannel channel, BisqEasyTrade trade) throws Exception {
-        bisqEasyTradeService.removeTrade(trade, channel.getMyUserIdentity().getUserProfile(), channel.getPeer());
+        bisqEasyTradeService.closeTrade(trade, channel.getMyUserIdentity().getUserProfile(), channel.getPeer());
         leavePrivateChatManager.leaveChannel(channel);
     }
 

@@ -15,21 +15,22 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.account.timestamp;
+package bisq.support.mediation.mu_sig;
 
 import bisq.common.proto.ProtoEnum;
 import bisq.common.proto.ProtobufUtils;
 
-public enum TimestampType implements ProtoEnum {
-    BISQ1_IMPORTED,
-    BISQ2_NEW;
+public enum MuSigMediationIssueType implements ProtoEnum {
+    UNSPECIFIED,
+    MAKER_ACCOUNT_PAYLOAD_HASH_MISMATCH,
+    TAKER_ACCOUNT_PAYLOAD_HASH_MISMATCH;
 
     @Override
-    public bisq.account.protobuf.TimestampType toProtoEnum() {
-        return bisq.account.protobuf.TimestampType.valueOf(getProtobufEnumPrefix() + name());
+    public bisq.support.protobuf.MuSigMediationIssueType toProtoEnum() {
+        return bisq.support.protobuf.MuSigMediationIssueType.valueOf(getProtobufEnumPrefix() + name());
     }
 
-    public static TimestampType fromProto(bisq.account.protobuf.TimestampType proto) {
-        return ProtobufUtils.enumFromProto(TimestampType.class, proto.name(), BISQ2_NEW);
+    public static MuSigMediationIssueType fromProto(bisq.support.protobuf.MuSigMediationIssueType proto) {
+        return ProtobufUtils.enumFromProto(MuSigMediationIssueType.class, proto.name(), UNSPECIFIED);
     }
 }

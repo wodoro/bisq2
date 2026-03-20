@@ -21,7 +21,7 @@ import bisq.account.accounts.Account;
 import bisq.account.accounts.AccountOrigin;
 import bisq.account.accounts.fiat.UserDefinedFiatAccount;
 import bisq.account.accounts.fiat.UserDefinedFiatAccountPayload;
-import bisq.account.timestamp.KeyAlgorithm;
+import bisq.account.timestamp.KeyType;
 import bisq.account.payment_method.BitcoinPaymentMethod;
 import bisq.account.payment_method.PaymentMethod;
 import bisq.account.payment_method.fiat.FiatPaymentRail;
@@ -1152,6 +1152,9 @@ public class DtoMappings {
      * Supports all FiatPaymentRail types through the FiatAccountDto interface.
      */
     public static class FiatAccountMapping {
+        public static final int MIN_ACCOUNT_NAME_LENGTH = 2;
+        public static final int MAX_ACCOUNT_NAME_LENGTH = 20;
+
         /**
          * Convert a FiatAccountDto to a Bisq2 Account model.
          * Currently only supports CUSTOM (UserDefinedFiatAccount).
@@ -1160,6 +1163,17 @@ public class DtoMappings {
         public static Account<? extends PaymentMethod<?>, ?> toBisq2Model(FiatAccountDto dto) {
             if (dto == null) {
                 throw new IllegalArgumentException("FiatAccountDto cannot be null");
+            }
+
+            String accountName = dto.accountName();
+            if (accountName == null || accountName.trim().isEmpty()) {
+                throw new IllegalArgumentException("Account name is required");
+            }
+            String trimmedName = accountName.trim();
+            if (trimmedName.length() < MIN_ACCOUNT_NAME_LENGTH || trimmedName.length() > MAX_ACCOUNT_NAME_LENGTH) {
+                throw new IllegalArgumentException(
+                        "Account name must be between " + MIN_ACCOUNT_NAME_LENGTH +
+                                " and " + MAX_ACCOUNT_NAME_LENGTH + " characters");
             }
 
             return switch (dto.paymentRail()) {
@@ -1171,14 +1185,14 @@ public class DtoMappings {
                                 payloadDto.accountData()
                         );
                         KeyPair keyPair = KeyGeneration.generateDefaultEcKeyPair();
-                        KeyAlgorithm keyAlgorithm = KeyAlgorithm.EC;
+                        KeyType keyType = KeyType.EC;
                         yield new UserDefinedFiatAccount(
                                 bisq.common.util.StringUtils.createUid(),
                                 System.currentTimeMillis(),
                                 userDefinedDto.accountName(),
                                 payload,
                                 keyPair,
-                                keyAlgorithm,
+                                keyType,
                                 AccountOrigin.BISQ2_NEW
                         );
                     }

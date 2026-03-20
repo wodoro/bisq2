@@ -52,6 +52,14 @@ import bisq.persistence.DbSubDirectory;
 import bisq.persistence.Persistence;
 import bisq.persistence.RateLimitedPersistenceClient;
 import bisq.settings.SettingsService;
+import bisq.support.mediation.MediationCaseState;
+import bisq.support.mediation.mu_sig.MuSigMediationResult;
+import bisq.support.mediation.mu_sig.MuSigMediationResultAcceptanceMessage;
+import bisq.support.mediation.mu_sig.MuSigMediationStateChangeMessage;
+import bisq.support.mediation.mu_sig.MuSigMediatorsResponse;
+import bisq.support.mediation.mu_sig.MuSigPaymentDetailsRequest;
+import bisq.support.mediation.mu_sig.MuSigPaymentDetailsResponse;
+import bisq.trade.MuSigDisputeState;
 import bisq.trade.ServiceProvider;
 import bisq.trade.mu_sig.events.MuSigTradeEvent;
 import bisq.trade.mu_sig.events.blockchain.DepositTxConfirmedEvent;
@@ -89,6 +97,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import static bisq.offer.options.OfferOptionUtil.createSaltedAccountPayloadHash;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Slf4j
@@ -283,6 +292,22 @@ public final class MuSigTradeService extends RateLimitedPersistenceClient<MuSigT
             } else {
                 handleMuSigTradeMessage(muSigTradeMessage);
             }
+        } else if (envelopePayloadMessage instanceof MuSigMediatorsResponse muSigMediatorsResponse) {
+            maybeApplyDisputeStateFromMediationOpenSignal(muSigMediatorsResponse.getTradeId());
+        } else if (envelopePayloadMessage instanceof MuSigMediationStateChangeMessage message) {
+            maybeApplyDisputeStateFromMediationStateChangeMessage(message);
+        } else if (envelopePayloadMessage instanceof MuSigMediationResultAcceptanceMessage message) {
+            if (bannedUserService.isUserProfileBanned(message.getSenderUserProfileId())) {
+                log.warn("Ignoring MuSigMediationResultAcceptanceMessage as sender is banned");
+                return;
+            }
+            maybeApplyMediationResultAcceptanceMessage(message);
+        } else if (envelopePayloadMessage instanceof MuSigPaymentDetailsRequest message) {
+            if (bannedUserService.isUserProfileBanned(message.getSenderUserProfileId())) {
+                log.warn("Ignoring MuSigPaymentDetailsRequest as sender is banned");
+                return;
+            }
+            maybeReplyWithPaymentDetails(message);
         }
     }
 
@@ -355,6 +380,39 @@ public final class MuSigTradeService extends RateLimitedPersistenceClient<MuSigT
         removeTrade(trade);
     }
 
+    public boolean acceptMediationResult(MuSigTrade trade, boolean mediationResultAccepted) {
+        if (trade.getMuSigMediationResult().isEmpty()) {
+            log.warn("Cannot set MuSig mediation result acceptance for trade {} because MuSigMediationResult is missing.",
+                    trade.getId());
+            return false;
+        }
+        if (!trade.getMyself().setMediationResultAccepted(mediationResultAccepted)) {
+            return false;
+        }
+
+        networkService.confidentialSend(new MuSigMediationResultAcceptanceMessage(trade.getId(),
+                        mediationResultAccepted,
+                        trade.getMyIdentity().getId()),
+                trade.getPeer().getNetworkId(),
+                trade.getMyIdentity().getNetworkIdWithKeyPair());
+        persist();
+        return true;
+    }
+
+    public void maybeApplyDisputeStateFromMediationRequest(String tradeId) {
+        findTrade(tradeId).ifPresent(trade -> {
+            MuSigDisputeState current = trade.getDisputeState();
+            if (current == MuSigDisputeState.ARBITRATION_OPEN || current == MuSigDisputeState.ARBITRATION_CLOSED) {
+                return;
+            }
+
+            if (current == MuSigDisputeState.NO_DISPUTE) {
+                trade.setDisputeState(MuSigDisputeState.MEDIATION_REQUESTED);
+                persist();
+            }
+        });
+    }
+
     public void removeTrade(MuSigTrade trade) {
         persistableStore.removeTrade(trade.getId());
         tradeProtocolById.remove(trade.getId());
@@ -401,6 +459,7 @@ public final class MuSigTradeService extends RateLimitedPersistenceClient<MuSigT
                 baseSideAmount.getValue(),
                 quoteSideAmount.getValue(),
                 paymentMethodSpec,
+                createSaltedAccountPayloadHash(takersAccountPayload, muSigOffer.getId()),
                 mediator,
                 priceSpec,
                 marketPrice);
@@ -639,5 +698,117 @@ public final class MuSigTradeService extends RateLimitedPersistenceClient<MuSigT
                 contactListService.addContactListEntry(peersProfile.get(), myProfile.get(), ContactReason.MUSIG_TRADE);
             }
         }
+    }
+
+    private void maybeApplyDisputeStateFromMediationOpenSignal(String tradeId) {
+        findTrade(tradeId).ifPresent(trade -> {
+            MuSigDisputeState current = trade.getDisputeState();
+            if (current == MuSigDisputeState.ARBITRATION_OPEN || current == MuSigDisputeState.ARBITRATION_CLOSED) {
+                return;
+            }
+
+            MuSigDisputeState next = current;
+            if (current == MuSigDisputeState.NO_DISPUTE || current == MuSigDisputeState.MEDIATION_REQUESTED) {
+                next = MuSigDisputeState.MEDIATION_OPEN;
+            } else if (current == MuSigDisputeState.MEDIATION_CLOSED) {
+                next = MuSigDisputeState.MEDIATION_RE_OPENED;
+            }
+
+            if (next != current) {
+                trade.setDisputeState(next);
+                persist();
+            }
+        });
+    }
+
+    private void maybeApplyDisputeStateFromMediationStateChangeMessage(MuSigMediationStateChangeMessage message) {
+        findTrade(message.getTradeId()).ifPresent(trade -> {
+            MuSigDisputeState current = trade.getDisputeState();
+            if (current == MuSigDisputeState.ARBITRATION_OPEN || current == MuSigDisputeState.ARBITRATION_CLOSED) {
+                return;
+            }
+
+            MediationCaseState mediationCaseState = message.getMediationCaseState();
+            boolean resultChanged = false;
+            MuSigDisputeState next = current;
+
+            if (mediationCaseState == MediationCaseState.RE_OPENED) {
+                next = MuSigDisputeState.MEDIATION_RE_OPENED;
+            } else if (mediationCaseState == MediationCaseState.CLOSED) {
+                next = MuSigDisputeState.MEDIATION_CLOSED;
+                Optional<MuSigMediationResult> incomingResult = message.getMuSigMediationResult();
+                if (incomingResult.isEmpty()) {
+                    log.warn("Ignoring CLOSED MuSigMediationStateChangeMessage without MuSigMediationResult for trade {}.",
+                            message.getTradeId());
+                    return;
+                }
+
+                Optional<MuSigMediationResult> currentResult = trade.getMuSigMediationResult();
+                if (currentResult.isEmpty()) {
+                    resultChanged = trade.setMuSigMediationResult(incomingResult.orElseThrow());
+                } else if (!currentResult.orElseThrow().equals(incomingResult.orElseThrow())) {
+                    log.warn("Ignoring changed MuSigMediationResult for trade {} because result cannot be changed once set.",
+                            message.getTradeId());
+                }
+            }
+
+            if (next != current || resultChanged) {
+                trade.setDisputeState(next);
+                persist();
+            }
+        });
+    }
+
+    private void maybeApplyMediationResultAcceptanceMessage(MuSigMediationResultAcceptanceMessage message) {
+        findTrade(message.getTradeId()).ifPresent(trade -> {
+            if (trade.getMuSigMediationResult().isEmpty()) {
+                log.warn("Ignoring MuSigMediationResultAcceptanceMessage for trade {} because MuSigMediationResult is missing.",
+                        message.getTradeId());
+                return;
+            }
+            if (!trade.getPeer().getNetworkId().getId().equals(message.getSenderUserProfileId())) {
+                log.warn("Ignoring MuSigMediationResultAcceptanceMessage with unexpected senderUserProfileId {} for trade {}.",
+                        message.getSenderUserProfileId(), message.getTradeId());
+                return;
+            }
+
+            if (trade.getPeer().setMediationResultAccepted(message.isMediationResultAccepted())) {
+                persist();
+            }
+        });
+    }
+
+    private void maybeReplyWithPaymentDetails(MuSigPaymentDetailsRequest message) {
+        findTrade(message.getTradeId()).ifPresentOrElse(trade -> {
+            Optional<UserProfile> mediator = trade.getContract().getMediator();
+            if (mediator.isEmpty()) {
+                log.warn("Ignoring MuSigPaymentDetailsRequest for trade {} because mediator is missing in contract.",
+                        message.getTradeId());
+                return;
+            }
+            UserProfile mediatorUserProfile = mediator.orElseThrow();
+            if (!mediatorUserProfile.getId().equals(message.getSenderUserProfileId())) {
+                log.warn("Ignoring MuSigPaymentDetailsRequest for trade {} with unexpected senderUserProfileId {}.",
+                        message.getTradeId(), message.getSenderUserProfileId());
+                return;
+            }
+
+            if (trade.getMyself().getAccountPayload().isEmpty() || trade.getPeer().getAccountPayload().isEmpty()) {
+                log.warn("Ignoring MuSigPaymentDetailsRequest for trade {} because account payloads are incomplete.",
+                        message.getTradeId());
+                return;
+            }
+
+            Identity myIdentity = identityService.findAnyIdentityByNetworkId(trade.getMyself().getNetworkId()).orElseThrow();
+            MuSigPaymentDetailsResponse paymentDetailsResponse = new MuSigPaymentDetailsResponse(
+                    message.getTradeId(),
+                    trade.getTaker().getAccountPayload().orElseThrow(),
+                    trade.getMaker().getAccountPayload().orElseThrow(),
+                    myIdentity.getId()
+            );
+            networkService.confidentialSend(paymentDetailsResponse,
+                    mediatorUserProfile.getNetworkId(),
+                    myIdentity.getNetworkIdWithKeyPair());
+        }, () -> log.warn("Ignoring MuSigPaymentDetailsRequest for unknown trade {}.", message.getTradeId()));
     }
 }

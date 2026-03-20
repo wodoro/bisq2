@@ -19,7 +19,6 @@ package bisq.desktop.main.content.mu_sig.trade.pending.trade_details;
 
 import bisq.account.accounts.AccountPayload;
 import bisq.chat.mu_sig.open_trades.MuSigOpenTradeChannel;
-import bisq.common.market.Market;
 import bisq.contract.mu_sig.MuSigContract;
 import bisq.desktop.ServiceProvider;
 import bisq.desktop.common.view.Controller;
@@ -28,14 +27,10 @@ import bisq.desktop.common.view.NavigationController;
 import bisq.desktop.navigation.NavigationTarget;
 import bisq.desktop.overlay.OverlayController;
 import bisq.i18n.Res;
-import bisq.offer.price.spec.FixPriceSpec;
-import bisq.offer.price.spec.PriceSpecFormatter;
 import bisq.presentation.formatters.DateFormatter;
-import bisq.presentation.formatters.PriceFormatter;
 import bisq.presentation.formatters.TimeFormatter;
 import bisq.trade.mu_sig.MuSigTrade;
 import bisq.trade.mu_sig.MuSigTradeFormatter;
-import bisq.trade.mu_sig.MuSigTradeUtils;
 import bisq.user.profile.UserProfile;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -83,8 +78,8 @@ public class MuSigTradeDetailsController extends NavigationController implements
         MuSigTrade trade = model.getTrade();
         MuSigOpenTradeChannel channel = model.getChannel();
         MuSigContract contract = trade.getContract();
-        Market market = trade.getMarket();
-        boolean isBaseCurrencyBitcoin = market.isBaseCurrencyBitcoin();
+        model.setContract(contract);
+        boolean isBaseCurrencyBitcoin = trade.getMarket().isBaseCurrencyBitcoin();
 
         model.setTradeDate(DateFormatter.formatDateTime(contract.getTakeOfferDate()));
 
@@ -101,16 +96,6 @@ public class MuSigTradeDetailsController extends NavigationController implements
         model.setMarket(Res.get("muSig.trade.details.offerTypeAndMarket.nonBtcMarket",
                 trade.getOffer().getMarket().getNonBtcCurrencyCode()));
 
-        model.setNonBtcAmount(MuSigTradeFormatter.formatNonBtcSideAmount(trade));
-        model.setNonBtcCurrency(trade.getOffer().getMarket().getNonBtcCurrencyCode());
-        model.setBtcAmount(MuSigTradeFormatter.formatBtcSideAmount(trade));
-
-        model.setPrice(PriceFormatter.format(MuSigTradeUtils.getPriceQuote(contract), isBaseCurrencyBitcoin));
-        model.setPriceCodes(trade.getOffer().getMarket().getMarketCodes());
-        model.setPriceSpec(trade.getOffer().getPriceSpec() instanceof FixPriceSpec
-                ? ""
-                : String.format("(%s)", PriceSpecFormatter.getFormattedPriceSpec(trade.getOffer().getPriceSpec(), true)));
-
         model.setPaymentMethod(contract.getNonBtcSidePaymentMethodSpec().getShortDisplayString());
         model.setPaymentMethodsBoxVisible(isBaseCurrencyBitcoin);
 
@@ -122,7 +107,7 @@ public class MuSigTradeDetailsController extends NavigationController implements
 
         model.setPeersPaymentAccountDataDescription(isBaseCurrencyBitcoin
                 ? Res.get("muSig.trade.details.paymentAccountData.fiat")
-                : Res.get("muSig.trade.details.paymentAccountData.crypto", market.getNonBtcCurrencyCode())
+                : Res.get("muSig.trade.details.paymentAccountData.crypto", trade.getMarket().getNonBtcCurrencyCode())
         );
         model.setPeersPaymentAccountData(peersAccountPayload.isEmpty()
                 ? Res.get("muSig.trade.details.dataNotYetProvided")

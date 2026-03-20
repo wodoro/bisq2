@@ -48,6 +48,6 @@ public class TradeLimitsOverviewController implements Controller {
     }
 
     void onNext() {
-        Navigation.navigateTo(NavigationTarget.MU_SIG_TRADE_LIMITS_SIMULATION);
+        Navigation.navigateTo(NavigationTarget.MU_SIG_TRADE_LIMITS_ALGORITHM);
     }
 }

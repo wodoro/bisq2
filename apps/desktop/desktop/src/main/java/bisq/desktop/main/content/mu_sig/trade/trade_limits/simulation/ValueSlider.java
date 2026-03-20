@@ -86,10 +86,8 @@ public class ValueSlider {
             this.formatter = formatter;
             this.majorTickUnit = majorTickUnit;
             this.value.set(value);
-
         }
     }
-
 
     @Slf4j
     public static class View extends bisq.desktop.common.view.View<VBox, Model, Controller> {

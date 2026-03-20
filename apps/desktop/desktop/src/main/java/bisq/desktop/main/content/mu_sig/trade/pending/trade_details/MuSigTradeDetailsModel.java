@@ -18,6 +18,7 @@
 package bisq.desktop.main.content.mu_sig.trade.pending.trade_details;
 
 import bisq.chat.mu_sig.open_trades.MuSigOpenTradeChannel;
+import bisq.contract.mu_sig.MuSigContract;
 import bisq.desktop.common.view.NavigationModel;
 import bisq.desktop.navigation.NavigationTarget;
 import bisq.trade.mu_sig.MuSigTrade;
@@ -33,6 +34,7 @@ import java.util.Optional;
 public class MuSigTradeDetailsModel extends NavigationModel {
     private MuSigTrade trade;
     private MuSigOpenTradeChannel channel;
+    private MuSigContract contract;
 
     private String tradeDate;
     private Optional<String> tradeDuration = Optional.empty();
@@ -40,12 +42,6 @@ public class MuSigTradeDetailsModel extends NavigationModel {
     private String peer;
     private String offerType;
     private String market;
-    private String nonBtcAmount;
-    private String nonBtcCurrency;
-    private String btcAmount;
-    private String price;
-    private String priceCodes;
-    private String priceSpec;
     private String paymentMethod;
     private boolean isPaymentMethodsBoxVisible;
     private String tradeId;

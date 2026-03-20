@@ -5,7 +5,7 @@
 # Convention: mark all versions using 'strictly'. This ensures only one version is allowed in the dependency tree, even
 # when multiple versions are attempted to be brought in as transitive dependencies of other requirements.
 [versions]
-bisq = '2.1.9'
+bisq = '2.1.10'
 annotations-lib = { strictly = '23.0.0' }
 
 apache-commons-lang-lib = { strictly = '3.14.0' }
@@ -14,7 +14,7 @@ apache-httpcomponents-httpclient-lib = { strictly = '5.4.1' }
 apache-tomcat-annotations-api = { strictly = '6.0.53' }
 
 assertj-core-lib = { strictly = '3.22.0' }
-bouncycastle-lib = { strictly = '1.78.1' }
+bouncycastle-lib = { strictly = '1.79' }
 
 commons-codec = { strictly = '1.17.1' }
 

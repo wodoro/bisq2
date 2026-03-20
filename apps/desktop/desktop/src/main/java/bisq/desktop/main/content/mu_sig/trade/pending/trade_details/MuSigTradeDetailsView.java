@@ -22,11 +22,11 @@ import bisq.desktop.common.view.NavigationView;
 import bisq.desktop.components.containers.Spacer;
 import bisq.desktop.components.controls.BisqIconButton;
 import bisq.desktop.components.controls.BisqMenuItem;
+import bisq.desktop.main.content.mu_sig.trade.components.MuSigAmountAndPriceDisplay;
 import bisq.desktop.overlay.OverlayModel;
 import bisq.i18n.Res;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -36,19 +36,23 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Optional;
+import static bisq.desktop.components.helpers.LabeledValueRowFactory.createAndGetDescriptionAndValueBox;
+import static bisq.desktop.components.helpers.LabeledValueRowFactory.createSeparatorLine;
+import static bisq.desktop.components.helpers.LabeledValueRowFactory.getCopyButton;
+import static bisq.desktop.components.helpers.LabeledValueRowFactory.getDescriptionLabel;
+import static bisq.desktop.components.helpers.LabeledValueRowFactory.getValueLabel;
 
 @Slf4j
 public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetailsModel, MuSigTradeDetailsController> {
     private final Button closeButton;
-    private final Label tradeDateLabel, tradeDurationLabel, meLabel, peerLabel, offerTypeLabel, marketLabel, nonBtcAmountLabel,
-            nonBtcCurrencyLabel, btcAmountLabel, priceLabel, priceCodesLabel, priceSpecLabel, paymentMethodValue,
+    private final Label tradeDateLabel, tradeDurationLabel, meLabel, peerLabel, offerTypeLabel, marketLabel, paymentMethodValue,
             tradeIdLabel, peerNetworkAddressLabel,
             peersPaymentAccountData, depositTxDetailsLabel, peersAccountPayloadDescription,
             assignedMediatorLabel;
     private final BisqMenuItem tradersAndRoleCopyButton, tradeIdCopyButton, peerNetworkAddressCopyButton,
             depositTxCopyButton, peersAccountDataCopyButton;
     private final HBox assignedMediatorBox, depositTxBox, tradeDurationBox, paymentMethodsBox;
+    private final MuSigAmountAndPriceDisplay amountAndPriceDisplay;
 
     public MuSigTradeDetailsView(MuSigTradeDetailsModel model, MuSigTradeDetailsController controller) {
         super(new VBox(10), model, controller);
@@ -95,7 +99,7 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
         peerLabel = getValueLabel();
         HBox tradersAndRoleDetailsHBox = new HBox(5, mePrefixLabel, meLabel, offerTypeAndRoleSlashLabel, peerPrefixLabel, peerLabel);
         tradersAndRoleDetailsHBox.setAlignment(Pos.BASELINE_LEFT);
-        tradersAndRoleCopyButton = getTradeIdCopyButton(Res.get("muSig.trade.details.tradersAndRole.copy"));
+        tradersAndRoleCopyButton = getCopyButton(Res.get("muSig.trade.details.tradersAndRole.copy"));
         HBox tradersAndRoleBox = createAndGetDescriptionAndValueBox("muSig.trade.details.tradersAndRole",
                 tradersAndRoleDetailsHBox, tradersAndRoleCopyButton);
 
@@ -110,32 +114,8 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
                 offerTypeAndMarketDetailsHBox);
 
         // Amount and price
-        nonBtcAmountLabel = getValueLabel();
-        nonBtcCurrencyLabel = new Label();
-        nonBtcCurrencyLabel.getStyleClass().addAll("text-fill-white", "small-text");
-
-        Label openParenthesisLabel = new Label("(");
-        openParenthesisLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-        btcAmountLabel = getValueLabel();
-        btcAmountLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-        btcAmountLabel.setPadding(new Insets(0, 5, 0, 0));
-        Label btcLabel = new Label("BTC");
-        btcLabel.getStyleClass().addAll("text-fill-grey-dimmed", "small-text");
-        Label closingParenthesisLabel = new Label(")");
-        closingParenthesisLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-        HBox btcAmountHBox = new HBox(openParenthesisLabel, btcAmountLabel, btcLabel, closingParenthesisLabel);
-        btcAmountHBox.setAlignment(Pos.BASELINE_LEFT);
-        Label atLabel = new Label("@");
-        atLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-        priceLabel = getValueLabel();
-        priceCodesLabel = new Label();
-        priceCodesLabel.getStyleClass().addAll("text-fill-white", "small-text");
-        priceSpecLabel = new Label();
-        priceSpecLabel.getStyleClass().addAll("text-fill-grey-dimmed", "normal-text");
-        HBox amountAndPriceDetailsHBox = new HBox(5, nonBtcAmountLabel, nonBtcCurrencyLabel, btcAmountHBox,
-                atLabel, priceLabel, priceCodesLabel, priceSpecLabel);
-        amountAndPriceDetailsHBox.setAlignment(Pos.BASELINE_LEFT);
-        HBox amountAndPriceBox = createAndGetDescriptionAndValueBox("muSig.trade.details.amountAndPrice", amountAndPriceDetailsHBox);
+        amountAndPriceDisplay = new MuSigAmountAndPriceDisplay();
+        HBox amountAndPriceBox = createAndGetDescriptionAndValueBox("muSig.trade.details.amountAndPrice", amountAndPriceDisplay);
 
         // Payment method
         paymentMethodValue = getValueLabel();
@@ -143,27 +123,27 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
 
         // Trade ID
         tradeIdLabel = getValueLabel();
-        tradeIdCopyButton = getTradeIdCopyButton(Res.get("muSig.trade.details.tradeId.copy"));
+        tradeIdCopyButton = getCopyButton(Res.get("muSig.trade.details.tradeId.copy"));
         HBox tradeIdBox = createAndGetDescriptionAndValueBox("muSig.trade.details.tradeId",
                 tradeIdLabel, tradeIdCopyButton);
 
         // Peer network address
         peerNetworkAddressLabel = getValueLabel();
-        peerNetworkAddressCopyButton = getTradeIdCopyButton(Res.get("muSig.trade.details.peerNetworkAddress.copy"));
+        peerNetworkAddressCopyButton = getCopyButton(Res.get("muSig.trade.details.peerNetworkAddress.copy"));
         HBox peerNetworkAddressBox = createAndGetDescriptionAndValueBox("muSig.trade.details.peerNetworkAddress",
                 peerNetworkAddressLabel, peerNetworkAddressCopyButton);
 
         // Payment account data
         peersAccountPayloadDescription = getDescriptionLabel("");
         peersPaymentAccountData = getValueLabel();
-        peersAccountDataCopyButton = getTradeIdCopyButton(Res.get("muSig.trade.details.paymentAccountData.copy"));
+        peersAccountDataCopyButton = getCopyButton(Res.get("muSig.trade.details.paymentAccountData.copy"));
         HBox paymentAccountDataBox = createAndGetDescriptionAndValueBox(peersAccountPayloadDescription,
                 peersPaymentAccountData, peersAccountDataCopyButton);
 
         // DepositTx
         Label depositTxTitleLabel = getDescriptionLabel(Res.get("muSig.trade.details.depositTxId"));
         depositTxDetailsLabel = getValueLabel();
-        depositTxCopyButton = getTradeIdCopyButton(Res.get("muSig.trade.details.depositTxId.copy"));
+        depositTxCopyButton = getCopyButton(Res.get("muSig.trade.details.depositTxId.copy"));
         depositTxBox = createAndGetDescriptionAndValueBox(depositTxTitleLabel,
                 depositTxDetailsLabel, depositTxCopyButton);
 
@@ -171,12 +151,12 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
         assignedMediatorLabel = getValueLabel();
         assignedMediatorBox = createAndGetDescriptionAndValueBox("muSig.trade.details.assignedMediator", assignedMediatorLabel);
 
-        Region overviewLine = getLine();
+        Region overviewLine = createSeparatorLine();
         Label overviewLabel = new Label(Res.get("muSig.trade.details.overview").toUpperCase());
         overviewLabel.getStyleClass().addAll("text-fill-grey-dimmed", "font-light", "medium-text");
         Label detailsLabel = new Label(Res.get("muSig.trade.details.details").toUpperCase());
         detailsLabel.getStyleClass().addAll("text-fill-grey-dimmed", "font-light", "medium-text");
-        Region detailsLine = getLine();
+        Region detailsLine = createSeparatorLine();
 
         VBox.setMargin(headline, new Insets(-5, 0, 5, 0));
         VBox.setMargin(overviewLabel, new Insets(0, 0, -5, 0));
@@ -203,12 +183,6 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
         scrollPane.setContent(content);
     }
 
-    private static BisqMenuItem getTradeIdCopyButton(String tooltip) {
-        BisqMenuItem bisqMenuItem = new BisqMenuItem("copy-grey", "copy-white");
-        bisqMenuItem.setTooltip(tooltip);
-        return bisqMenuItem;
-    }
-
     @Override
     protected void onViewAttached() {
         tradeDateLabel.setText(model.getTradeDate());
@@ -221,12 +195,7 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
         peerLabel.setText(model.getPeer());
         offerTypeLabel.setText(model.getOfferType());
         marketLabel.setText(model.getMarket());
-        nonBtcAmountLabel.setText(model.getNonBtcAmount());
-        nonBtcCurrencyLabel.setText(model.getNonBtcCurrency());
-        btcAmountLabel.setText(model.getBtcAmount());
-        priceLabel.setText(model.getPrice());
-        priceCodesLabel.setText(model.getPriceCodes());
-        priceSpecLabel.setText(model.getPriceSpec());
+        amountAndPriceDisplay.setContract(model.getContract());
         paymentMethodValue.setText(model.getPaymentMethod());
         paymentMethodsBox.setVisible(model.isPaymentMethodsBoxVisible());
         paymentMethodsBox.setManaged(model.isPaymentMethodsBoxVisible());
@@ -278,66 +247,5 @@ public class MuSigTradeDetailsView extends NavigationView<VBox, MuSigTradeDetail
         peerNetworkAddressCopyButton.setOnAction(null);
         peersAccountDataCopyButton.setOnAction(null);
         depositTxCopyButton.setOnAction(null);
-    }
-
-    private HBox createAndGetDescriptionAndValueBox(String descriptionKey, Node valueNode) {
-        return createAndGetDescriptionAndValueBox(descriptionKey, valueNode, Optional.empty());
-    }
-
-    private HBox createAndGetDescriptionAndValueBox(String descriptionKey, Node detailsNode, BisqMenuItem button) {
-        return createAndGetDescriptionAndValueBox(descriptionKey, detailsNode, Optional.of(button));
-    }
-
-    private HBox createAndGetDescriptionAndValueBox(String descriptionKey,
-                                                    Node detailsNode,
-                                                    Optional<BisqMenuItem> button) {
-        return createAndGetDescriptionAndValueBox(getDescriptionLabel(Res.get(descriptionKey)), detailsNode, button);
-    }
-
-    private HBox createAndGetDescriptionAndValueBox(Label descriptionLabel,
-                                                    Node detailsNode,
-                                                    BisqMenuItem button) {
-        return createAndGetDescriptionAndValueBox(descriptionLabel, detailsNode, Optional.of(button));
-    }
-
-    private HBox createAndGetDescriptionAndValueBox(Label descriptionLabel,
-                                                    Node detailsNode,
-                                                    Optional<BisqMenuItem> button) {
-        double width = 180;
-        descriptionLabel.setMaxWidth(width);
-        descriptionLabel.setMinWidth(width);
-        descriptionLabel.setPrefWidth(width);
-
-        HBox hBox = new HBox(descriptionLabel, detailsNode);
-        hBox.setAlignment(Pos.BASELINE_LEFT);
-
-        if (button.isPresent()) {
-            button.get().useIconOnly(17);
-            HBox.setMargin(button.get(), new Insets(0, 0, 0, 40));
-            hBox.getChildren().addAll(Spacer.fillHBox(), button.get());
-        }
-        return hBox;
-    }
-
-    private static Label getDescriptionLabel(String description) {
-        Label label = new Label(description);
-        label.getStyleClass().addAll("text-fill-grey-dimmed", "medium-text", "font-light");
-        return label;
-    }
-
-    private static Label getValueLabel() {
-        Label label = new Label();
-        label.getStyleClass().addAll("text-fill-white", "normal-text", "font-light");
-        return label;
-    }
-
-    private Region getLine() {
-        Region line = new Region();
-        line.setMinHeight(1);
-        line.setMaxHeight(1);
-        line.getStyleClass().add("separator-line");
-
-        line.setPadding(new Insets(9, 0, 8, 0));
-        return line;
     }
 }

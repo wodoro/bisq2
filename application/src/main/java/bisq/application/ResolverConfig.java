@@ -18,7 +18,8 @@
 package bisq.application;
 
 import bisq.account.timestamp.AccountTimestamp;
-import bisq.account.timestamp.AuthorizeAccountTimestampRequest;
+import bisq.account.timestamp.AuthorizeAccountTimestampV1Request;
+import bisq.account.timestamp.AuthorizeAccountTimestampV2Request;
 import bisq.account.timestamp.AuthorizedAccountTimestamp;
 import bisq.bonded_roles.bonded_role.AuthorizedBondedRole;
 import bisq.bonded_roles.market_price.AuthorizedMarketPriceData;
@@ -49,7 +50,11 @@ import bisq.offer.mu_sig.MuSigOfferMessage;
 import bisq.support.mediation.bisq_easy.BisqEasyMediationRequest;
 import bisq.support.mediation.bisq_easy.BisqEasyMediatorsResponse;
 import bisq.support.mediation.mu_sig.MuSigMediationRequest;
+import bisq.support.mediation.mu_sig.MuSigMediationResultAcceptanceMessage;
+import bisq.support.mediation.mu_sig.MuSigMediationStateChangeMessage;
 import bisq.support.mediation.mu_sig.MuSigMediatorsResponse;
+import bisq.support.mediation.mu_sig.MuSigPaymentDetailsRequest;
+import bisq.support.mediation.mu_sig.MuSigPaymentDetailsResponse;
 import bisq.support.moderator.ReportToModeratorMessage;
 import bisq.trade.bisq_easy.protocol.messages.BisqEasyAccountDataMessage;
 import bisq.trade.bisq_easy.protocol.messages.BisqEasyBtcAddressMessage;
@@ -128,8 +133,13 @@ public class ResolverConfig {
         NetworkMessageResolver.addResolver("support.MediatorsResponse", BisqEasyMediatorsResponse.getNetworkMessageResolver());
         NetworkMessageResolver.addResolver("support.MuSigMediationRequest", MuSigMediationRequest.getNetworkMessageResolver());
         NetworkMessageResolver.addResolver("support.MuSigMediatorsResponse", MuSigMediatorsResponse.getNetworkMessageResolver());
+        NetworkMessageResolver.addResolver("support.MuSigMediationStateChangeMessage", MuSigMediationStateChangeMessage.getNetworkMessageResolver());
+        NetworkMessageResolver.addResolver("support.MuSigMediationResultAcceptanceMessage", MuSigMediationResultAcceptanceMessage.getNetworkMessageResolver());
+        NetworkMessageResolver.addResolver("support.MuSigPaymentDetailsRequest", MuSigPaymentDetailsRequest.getNetworkMessageResolver());
+        NetworkMessageResolver.addResolver("support.MuSigPaymentDetailsResponse", MuSigPaymentDetailsResponse.getNetworkMessageResolver());
         NetworkMessageResolver.addResolver("support.ReportToModeratorMessage", ReportToModeratorMessage.getNetworkMessageResolver());
-        NetworkMessageResolver.addResolver("account.AuthorizeAccountTimestampRequest", AuthorizeAccountTimestampRequest.getNetworkMessageResolver());
+        NetworkMessageResolver.addResolver("account.AuthorizeAccountTimestampV1Request", AuthorizeAccountTimestampV1Request.getNetworkMessageResolver());
+        NetworkMessageResolver.addResolver("account.AuthorizeAccountTimestampV2Request", AuthorizeAccountTimestampV2Request.getNetworkMessageResolver());
 
 
         // If the classes added via `addResolver` are not final classes, we need to add manually the subclasses.
