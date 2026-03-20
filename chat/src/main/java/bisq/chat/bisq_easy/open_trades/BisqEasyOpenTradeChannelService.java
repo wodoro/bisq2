@@ -40,7 +40,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nullable;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -98,8 +97,10 @@ public class BisqEasyOpenTradeChannelService extends PrivateGroupChatChannelServ
                                                                UserIdentity myUserIdentity,
                                                                UserProfile peer,
                                                                Optional<UserProfile> mediator) {
-        return findChannelByTradeId(tradeId)
+        BisqEasyOpenTradeChannel channel = findChannelByTradeId(tradeId)
                 .orElseGet(() -> traderCreatesChannel(tradeId, bisqEasyOffer, myUserIdentity, peer, mediator));
+        processPendingMessages(tradeId);
+        return channel;
     }
 
     public BisqEasyOpenTradeChannel traderCreatesChannel(String tradeId,
@@ -118,17 +119,19 @@ public class BisqEasyOpenTradeChannelService extends PrivateGroupChatChannelServ
                                                                  UserIdentity myUserIdentity,
                                                                  UserProfile requestingTrader,
                                                                  UserProfile nonRequestingTrader) {
-        return findChannelByTradeId(tradeId)
+        BisqEasyOpenTradeChannel channel = findChannelByTradeId(tradeId)
                 .orElseGet(() -> {
-                    BisqEasyOpenTradeChannel channel = BisqEasyOpenTradeChannel.createByMediator(tradeId,
+                    BisqEasyOpenTradeChannel newChannel = BisqEasyOpenTradeChannel.createByMediator(tradeId,
                             bisqEasyOffer,
                             myUserIdentity,
                             requestingTrader,
                             nonRequestingTrader);
-                    getChannels().add(channel);
+                    getChannels().add(newChannel);
                     persist();
-                    return channel;
+                    return newChannel;
                 });
+        processPendingMessages(tradeId);
+        return channel;
     }
 
     public CompletableFuture<SendMessageResult> sendTakeOfferMessage(String tradeId,
@@ -360,5 +363,11 @@ public class BisqEasyOpenTradeChannelService extends PrivateGroupChatChannelServ
 
     private boolean allowSendLeaveMessage(BisqEasyOpenTradeChannel channel, UserProfile userProfile) {
         return channel.getUserProfileIdsOfSendingLeaveMessage().contains(userProfile.getId());
+    }
+
+    private void processPendingMessages(String tradeId) {
+        pendingMessages.stream()
+                .filter(message -> message.getTradeId().equals(tradeId))
+                .forEach(this::processMessage);
     }
 }
