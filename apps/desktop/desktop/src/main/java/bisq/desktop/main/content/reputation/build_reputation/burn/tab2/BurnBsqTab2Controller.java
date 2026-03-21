@@ -50,11 +50,11 @@ public class BurnBsqTab2Controller extends Tab2Controller<BurnBsqTab2Model, Burn
 
     @Override
     public void onBack() {
-        Navigation.navigateTo(NavigationTarget.BSQ_BOND_TAB_1);
+        Navigation.navigateTo(NavigationTarget.BURN_BSQ_TAB_1);
     }
 
     @Override
     public void onNext() {
-        Navigation.navigateTo(NavigationTarget.BSQ_BOND_TAB_3);
+        Navigation.navigateTo(NavigationTarget.BURN_BSQ_TAB_3);
     }
 }
