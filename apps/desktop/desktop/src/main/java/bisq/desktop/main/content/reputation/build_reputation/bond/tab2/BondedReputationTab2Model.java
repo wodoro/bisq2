@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 public class BondedReputationTab2Model extends Tab2Model {
-    public BondedReputationTab2Model() {
-        super();
+    public BondedReputationTab2Model(String info, String weight, String formula) {
+        super(info, weight, formula);
     }
 }

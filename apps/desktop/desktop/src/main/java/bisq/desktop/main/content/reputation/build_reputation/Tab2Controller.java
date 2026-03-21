@@ -20,8 +20,6 @@ package bisq.desktop.main.content.reputation.build_reputation;
 import bisq.desktop.ServiceProvider;
 import bisq.desktop.common.Browser;
 import bisq.desktop.common.view.Controller;
-import bisq.desktop.common.view.Navigation;
-import bisq.desktop.navigation.NavigationTarget;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,13 +50,9 @@ public abstract class Tab2Controller<M extends Tab2Model, V extends Tab2View, S 
     public void onDeactivate() {
     }
 
-    void onBack() {
-        Navigation.navigateTo(NavigationTarget.BSQ_BOND_TAB_1);
-    }
+    public abstract void onBack();
 
-    void onNext() {
-        Navigation.navigateTo(NavigationTarget.BSQ_BOND_TAB_3);
-    }
+    public abstract void onNext();
 
     void onLearnMore() {
         Browser.open("https://bisq.wiki/Reputation");

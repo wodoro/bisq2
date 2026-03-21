@@ -24,4 +24,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 public class Tab2Model implements Model {
+    private String info;
+    private String weight;
+    private String formula;
+
+    public Tab2Model(String info, String weight, String formula) {
+        this.info = info;
+        this.weight = weight;
+        this.formula = formula;
+    }
 }

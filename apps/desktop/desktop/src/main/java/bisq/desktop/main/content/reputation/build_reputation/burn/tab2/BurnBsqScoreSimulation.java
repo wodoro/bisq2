@@ -31,8 +31,8 @@ import org.fxmisc.easybind.Subscription;
 
 import java.util.concurrent.TimeUnit;
 
-public class BurnScoreSimulation extends ScoreSimulation {
-    public BurnScoreSimulation() {
+public class BurnBsqScoreSimulation extends ScoreSimulation {
+    public BurnBsqScoreSimulation() {
         super();
     }
 

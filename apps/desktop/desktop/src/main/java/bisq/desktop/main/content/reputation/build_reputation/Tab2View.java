@@ -23,7 +23,6 @@ import bisq.desktop.components.containers.Spacer;
 import bisq.desktop.components.controls.BisqHyperlink;
 import bisq.desktop.components.controls.MaterialTextField;
 import bisq.i18n.Res;
-import bisq.user.reputation.BondedReputationService;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -43,18 +42,18 @@ public class Tab2View<M extends Tab2Model, C extends Tab2Controller<?, ?, ?>> ex
                     VBox simulation) {
         super(new VBox(), model, controller);
 
-        Label headline = new Label(Res.get("reputation.bond.score.headline"));
+        Label headline = new Label(Res.get("reputation.score.headline"));
         headline.getStyleClass().add("bisq-text-headline-2");
 
-        Label info = new Label(Res.get("reputation.bond.score.info"));
+        Label info = new Label(model.getInfo());
         info.setWrapText(true);
         info.getStyleClass().addAll("bisq-text-13");
 
         Label formulaHeadline = new Label(Res.get("reputation.score.formulaHeadline"));
         formulaHeadline.getStyleClass().addAll("bisq-text-1");
         VBox formulaBox = new VBox(10, formulaHeadline,
-                getField("weight", String.valueOf(BondedReputationService.WEIGHT)),
-                getField("totalScore"));
+                getField(Res.get("reputation.weight"), model.getWeight()),
+                getField(Res.get("reputation.totalScore"), model.getFormula()));
 
         HBox hBox = new HBox(20, formulaBox, simulation);
 
@@ -78,12 +77,8 @@ public class Tab2View<M extends Tab2Model, C extends Tab2Controller<?, ?, ?>> ex
         root.setPadding(new Insets(20, 0, 0, 0));
     }
 
-    private MaterialTextField getField(String key) {
-        return getField(key, Res.get("reputation.bond." + key));
-    }
-
-    private MaterialTextField getField(String key, String value) {
-        MaterialTextField field = new MaterialTextField(Res.get("reputation." + key));
+    private MaterialTextField getField(String description, String value) {
+        MaterialTextField field = new MaterialTextField(description);
         field.setEditable(false);
         field.setText(value);
         field.setMinWidth(380);

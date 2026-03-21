@@ -18,7 +18,11 @@
 package bisq.desktop.main.content.reputation.build_reputation.bond.tab2;
 
 import bisq.desktop.ServiceProvider;
+import bisq.desktop.common.view.Navigation;
 import bisq.desktop.main.content.reputation.build_reputation.Tab2Controller;
+import bisq.desktop.navigation.NavigationTarget;
+import bisq.i18n.Res;
+import bisq.user.reputation.BondedReputationService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -29,7 +33,9 @@ public class BondedReputationTab2Controller extends Tab2Controller<BondedReputat
 
     @Override
     protected BondedReputationTab2Model createModel() {
-        return new BondedReputationTab2Model();
+        return new BondedReputationTab2Model(Res.get("reputation.bond.score.info"),
+                String.valueOf(BondedReputationService.WEIGHT),
+                Res.get("reputation.bond.formula"));
     }
 
     @Override
@@ -40,5 +46,15 @@ public class BondedReputationTab2Controller extends Tab2Controller<BondedReputat
     @Override
     protected BondedReputationTab2View createView(BondedReputationTab2Model model, BondScoreSimulation simulation) {
         return new BondedReputationTab2View(model, this, simulation.getViewRoot());
+    }
+
+    @Override
+    public void onBack() {
+        Navigation.navigateTo(NavigationTarget.BSQ_BOND_TAB_1);
+    }
+
+    @Override
+    public void onNext() {
+        Navigation.navigateTo(NavigationTarget.BSQ_BOND_TAB_3);
     }
 }
