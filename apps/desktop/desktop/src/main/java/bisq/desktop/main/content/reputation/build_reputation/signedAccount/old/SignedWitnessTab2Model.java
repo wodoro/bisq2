@@ -15,17 +15,13 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.reputation.build_reputation.signedAccount.tab2;
+package bisq.desktop.main.content.reputation.build_reputation.signedAccount.old;
 
-import bisq.desktop.main.content.reputation.build_reputation.Tab2View;
-import javafx.scene.layout.VBox;
+import bisq.desktop.common.view.Model;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class SignedWitnessTab2View extends Tab2View<SignedWitnessTab2Model, SignedWitnessTab2Controller> {
-    public SignedWitnessTab2View(SignedWitnessTab2Model model,
-                                 SignedWitnessTab2Controller controller,
-                                 VBox simulation) {
-        super(model, controller, simulation);
-    }
+@Getter
+public class SignedWitnessTab2Model implements Model {
 }
