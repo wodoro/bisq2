@@ -18,11 +18,16 @@
 package bisq.desktop.main.content.reputation.build_reputation.burn.tab2;
 
 import bisq.common.util.MathUtils;
+import bisq.desktop.components.controls.MaterialTextField;
 import bisq.desktop.main.content.reputation.build_reputation.ScoreSimulation;
 import bisq.presentation.parser.DoubleParser;
 import bisq.user.reputation.ProofOfBurnService;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.fxmisc.easybind.EasyBind;
+import org.fxmisc.easybind.Subscription;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,24 +37,34 @@ public class BurnScoreSimulation extends ScoreSimulation {
     }
 
     @Override
-    protected ScoreSimulation.Controller createController() {
+    protected ScoreSimulation.Controller<BurnScoreSimulation.Model> createController() {
         return new Controller();
     }
 
     @Slf4j
-    public static class Controller extends ScoreSimulation.Controller {
+    public static class Controller extends ScoreSimulation.Controller<BurnScoreSimulation.Model> {
+        private Subscription amountPin;
+
         protected Controller() {
             super();
+            model.getAmount().set("100");
+        }
+
+        @Override
+        protected Model createModel() {
+            return new BurnScoreSimulation.Model();
         }
 
         @Override
         public void onActivate() {
             super.onActivate();
+            amountPin = EasyBind.subscribe(model.getAmount(), amount -> calculateSimScore());
         }
 
         @Override
         public void onDeactivate() {
             super.onDeactivate();
+            amountPin.unsubscribe();
         }
 
         @Override
@@ -70,12 +85,29 @@ public class BurnScoreSimulation extends ScoreSimulation {
     }
 
     @Getter
-    private static class Model extends ScoreSimulation.Model {
+    protected static class Model extends ScoreSimulation.Model {
+        private final StringProperty amount = new SimpleStringProperty();
     }
 
-    private static class View extends ScoreSimulation.View {
+    private static class View extends ScoreSimulation.View<Model, Controller> {
+        private final MaterialTextField amount;
+
         private View(Model model, Controller controller) {
             super(model, controller);
+
+            amount = getInputField("reputation.sim.burnAmount");
+            root.getChildren().add(1, amount);
+        }
+
+        @Override
+        protected void onViewAttached() { super.onViewAttached();
+            amount.textProperty().bindBidirectional(model.getAmount());
+        }
+
+        @Override
+        protected void onViewDetached() {
+            super.onViewDetached();
+            amount.textProperty().unbindBidirectional(model.getAmount());
         }
     }
 }

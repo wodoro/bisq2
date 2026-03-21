@@ -35,33 +35,34 @@ import org.fxmisc.easybind.Subscription;
 
 public abstract class ScoreSimulation {
 
-    protected final Controller controller;
+    protected final Controller<? extends ScoreSimulation.Model>  controller;
 
     public ScoreSimulation() {
         controller = createController();
     }
 
-    protected abstract Controller createController();
+    protected abstract Controller<? extends ScoreSimulation.Model> createController();
 
     public VBox getViewRoot() {
         return controller.getView().getRoot();
     }
 
     @Slf4j
-    protected static abstract class Controller implements bisq.desktop.common.view.Controller {
+    protected static abstract class Controller<M extends ScoreSimulation.Model> implements bisq.desktop.common.view.Controller {
         @Getter
         protected final View view;
-        protected final Model model;
-        private Subscription agePin, ageAsStringPin, amountPin;
+        protected final M model;
+        private Subscription agePin, ageAsStringPin;
 
         protected Controller() {
-            model = new Model();
+            model = createModel();
             view = new View(model, this);
 
-            model.getAmount().set("100");
             model.getAge().set(0);
             model.getAgeAsString().set("0");
         }
+
+        protected abstract   M createModel();
 
         @Override
         public void onActivate() {
@@ -73,14 +74,12 @@ public abstract class ScoreSimulation {
                 } catch (Exception e) {
                 }
             });
-            amountPin = EasyBind.subscribe(model.getAmount(), amount -> calculateSimScore());
         }
 
         @Override
         public void onDeactivate() {
             agePin.unsubscribe();
             ageAsStringPin.unsubscribe();
-            amountPin.unsubscribe();
         }
 
         protected abstract void calculateSimScore();
@@ -88,32 +87,30 @@ public abstract class ScoreSimulation {
 
     @Getter
     protected static class Model implements bisq.desktop.common.view.Model {
-        private final StringProperty amount = new SimpleStringProperty();
         private final IntegerProperty age = new SimpleIntegerProperty();
         private final StringProperty ageAsString = new SimpleStringProperty();
         private final StringProperty score = new SimpleStringProperty();
     }
 
-    protected static class View extends bisq.desktop.common.view.View<VBox, Model, Controller> {
+    protected static class View<M extends Model, C extends Controller<M>> extends bisq.desktop.common.view.View<VBox, M, C> {
         private static final double MATERIAL_FIELD_WIDTH = 260;
 
-        private final MaterialTextField amount;
+
         private final MaterialTextField score;
         private final AgeSlider simAgeSlider;
         private final MaterialTextField ageField;
 
-        protected View(Model model, Controller controller) {
+        protected View(M model, C controller) {
             super(new VBox(10), model, controller);
 
             Label simHeadline = new Label(Res.get("reputation.sim.headline"));
             simHeadline.getStyleClass().addAll("bisq-text-1");
-            amount = getInputField("reputation.sim.burnAmount");
+
             score = getField(Res.get("reputation.sim.score"));
             ageField = getInputField("reputation.sim.age");
             simAgeSlider = new AgeSlider(0, ProofOfBurnService.MAX_AGE_BOOST_DAYS, 0);
             VBox.setMargin(simAgeSlider.getView().getRoot(), new Insets(15, 0, 0, 0));
             root.getChildren().addAll(simHeadline,
-                    amount,
                     ageField,
                     simAgeSlider.getView().getRoot(),
                     score);
@@ -123,7 +120,6 @@ public abstract class ScoreSimulation {
         protected void onViewAttached() {
             simAgeSlider.valueProperty().bindBidirectional(model.getAge());
             ageField.textProperty().bindBidirectional(model.getAgeAsString());
-            amount.textProperty().bindBidirectional(model.getAmount());
             score.textProperty().bind(model.getScore());
         }
 
@@ -131,11 +127,10 @@ public abstract class ScoreSimulation {
         protected void onViewDetached() {
             simAgeSlider.valueProperty().unbindBidirectional(model.getAge());
             ageField.textProperty().unbindBidirectional(model.getAgeAsString());
-            amount.textProperty().unbindBidirectional(model.getAmount());
             score.textProperty().unbind();
         }
 
-        private MaterialTextField getField(String description) {
+        protected MaterialTextField getField(String description) {
             MaterialTextField field = new MaterialTextField(description);
             field.setEditable(false);
             field.setMinWidth(MATERIAL_FIELD_WIDTH);
@@ -143,7 +138,7 @@ public abstract class ScoreSimulation {
             return field;
         }
 
-        private MaterialTextField getInputField(String key) {
+        protected MaterialTextField getInputField(String key) {
             MaterialTextField field = new MaterialTextField(Res.get(key), Res.get(key + ".prompt"));
             field.setMinWidth(MATERIAL_FIELD_WIDTH);
             field.setMaxWidth(MATERIAL_FIELD_WIDTH);
