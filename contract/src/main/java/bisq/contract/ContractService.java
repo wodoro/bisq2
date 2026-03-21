@@ -52,7 +52,7 @@ public class ContractService implements Service {
         return SignatureUtil.verify(contractHash, signatureData.getSignature(), signatureData.getPublicKey());
     }
 
-    private <T extends Offer<?, ?>> byte[] getContractHash(Contract<T> contract) {
+    public static <T extends Offer<?, ?>> byte[] getContractHash(Contract<T> contract) {
         return DigestUtil.hash(contract.serializeForHash());
     }
 }

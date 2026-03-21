@@ -19,17 +19,20 @@ package bisq.support.mediation.mu_sig;
 
 import bisq.common.proto.ProtoResolver;
 import bisq.common.proto.UnresolvableProtobufMessageException;
+import bisq.common.util.OptionalUtils;
 import bisq.common.validation.NetworkDataValidation;
 import bisq.network.p2p.message.ExternalNetworkMessage;
 import bisq.network.p2p.services.data.storage.MetaData;
 import bisq.network.p2p.services.data.storage.mailbox.MailboxMessage;
 import bisq.support.mediation.MediationCaseState;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 import static bisq.network.p2p.services.data.storage.MetaData.HIGH_PRIORITY;
@@ -38,23 +41,24 @@ import static bisq.network.p2p.services.data.storage.MetaData.TTL_10_DAYS;
 @Slf4j
 @Getter
 @ToString
-@EqualsAndHashCode
 public final class MuSigMediationStateChangeMessage implements MailboxMessage, ExternalNetworkMessage {
     private transient final MetaData metaData = new MetaData(TTL_10_DAYS, HIGH_PRIORITY, getClass().getSimpleName());
     private final String id;
     private final String tradeId;
     private final MediationCaseState mediationCaseState;
     private final Optional<MuSigMediationResult> muSigMediationResult;
+    private final Optional<byte[]> mediationResultSignature;
 
     public MuSigMediationStateChangeMessage(String id,
                                             String tradeId,
                                             MediationCaseState mediationCaseState,
-                                            Optional<MuSigMediationResult> muSigMediationResult) {
+                                            Optional<MuSigMediationResult> muSigMediationResult,
+                                            Optional<byte[]> mediationResultSignature) {
         this.id = id;
         this.tradeId = tradeId;
         this.mediationCaseState = mediationCaseState;
         this.muSigMediationResult = muSigMediationResult;
-
+        this.mediationResultSignature = mediationResultSignature.map(byte[]::clone);
         verify();
     }
 
@@ -65,6 +69,10 @@ public final class MuSigMediationStateChangeMessage implements MailboxMessage, E
         if (mediationCaseState == MediationCaseState.CLOSED && muSigMediationResult.isEmpty()) {
             throw new IllegalArgumentException("Closed mediation case state must contain MuSigMediationResult.");
         }
+        if (muSigMediationResult.isPresent() && mediationResultSignature.isEmpty()) {
+            throw new IllegalArgumentException("MuSig mediation result must contain mediationResultSignature.");
+        }
+        mediationResultSignature.ifPresent(NetworkDataValidation::validateECSignature);
     }
 
     @Override
@@ -74,6 +82,7 @@ public final class MuSigMediationStateChangeMessage implements MailboxMessage, E
                 .setTradeId(tradeId)
                 .setMediationCaseState(mediationCaseState.toProtoEnum());
         muSigMediationResult.ifPresent(result -> builder.setMuSigMediationResult(result.toProto(serializeForHash)));
+        mediationResultSignature.ifPresent(signature -> builder.setMediationResultSignature(ByteString.copyFrom(signature)));
         return builder;
     }
 
@@ -84,6 +93,9 @@ public final class MuSigMediationStateChangeMessage implements MailboxMessage, E
                 MediationCaseState.fromProto(proto.getMediationCaseState()),
                 proto.hasMuSigMediationResult()
                         ? Optional.of(MuSigMediationResult.fromProto(proto.getMuSigMediationResult()))
+                        : Optional.empty(),
+                proto.hasMediationResultSignature()
+                        ? Optional.of(proto.getMediationResultSignature().toByteArray())
                         : Optional.empty()
         );
     }
@@ -102,5 +114,28 @@ public final class MuSigMediationStateChangeMessage implements MailboxMessage, E
     @Override
     public double getCostFactor() {
         return getCostFactor(0.1, 0.2);
+    }
+
+    public Optional<byte[]> getMediationResultSignature() {
+        return mediationResultSignature.map(byte[]::clone);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof MuSigMediationStateChangeMessage that)) {
+            return false;
+        }
+        return Objects.equals(id, that.id) &&
+                Objects.equals(tradeId, that.tradeId) &&
+                mediationCaseState == that.mediationCaseState &&
+                Objects.equals(muSigMediationResult, that.muSigMediationResult) &&
+                OptionalUtils.optionalByteArrayEquals(mediationResultSignature, that.mediationResultSignature);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(id, tradeId, mediationCaseState, muSigMediationResult);
+        result = 31 * result + mediationResultSignature.map(Arrays::hashCode).orElse(0);
+        return result;
     }
 }

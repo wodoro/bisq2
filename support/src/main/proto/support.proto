@@ -81,12 +81,13 @@ message MuSigMediatorsResponse {
 
 message MuSigMediationResult {
   uint64 date = 1;
-  MediationResultReason mediationResultReason = 2;
-  MediationPayoutDistributionType mediationPayoutDistributionType = 3;
-  optional sint64 proposedBuyerPayoutAmount = 4;
-  optional sint64 proposedSellerPayoutAmount = 5;
-  optional double payoutAdjustmentPercentage = 6;
-  optional string summaryNotes = 7;
+  bytes contractHash = 2;
+  MediationResultReason mediationResultReason = 3;
+  MediationPayoutDistributionType mediationPayoutDistributionType = 4;
+  optional sint64 proposedBuyerPayoutAmount = 5;
+  optional sint64 proposedSellerPayoutAmount = 6;
+  optional double payoutAdjustmentPercentage = 7;
+  optional string summaryNotes = 8;
 }
 
 message MuSigMediationStateChangeMessage {
@@ -94,6 +95,7 @@ message MuSigMediationStateChangeMessage {
   string tradeId = 2;
   MediationCaseState mediationCaseState = 3;
   optional MuSigMediationResult muSigMediationResult = 4;
+  optional bytes mediationResultSignature = 5;
 }
 
 message MuSigMediationResultAcceptanceMessage {
@@ -132,9 +134,10 @@ message MuSigMediationCase {
   sint64 requestDate = 2;
   MediationCaseState mediationCaseState = 3;
   optional MuSigMediationResult muSigMediationResult = 4;
-  optional account.AccountPayload takerAccountPayload = 5;
-  optional account.AccountPayload makerAccountPayload = 6;
-  repeated MuSigMediationIssue issues = 7;
+  optional bytes mediationResultSignature = 5;
+  optional account.AccountPayload takerAccountPayload = 6;
+  optional account.AccountPayload makerAccountPayload = 7;
+  repeated MuSigMediationIssue issues = 8;
 }
 
 message MuSigMediatorStore {

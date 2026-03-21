@@ -458,6 +458,7 @@ public class MuSigMediationResultSection {
 
                 String summaryNotes = model.getSummaryNotes().get();
                 MuSigMediationResult muSigMediationResult = muSigMediatorService.createMuSigMediationResult(
+                        muSigMediationCase.getMuSigMediationRequest().getContract(),
                         selectedReason,
                         selectedPayoutDistributionType,
                         optionalBuyerPayoutAmount,
