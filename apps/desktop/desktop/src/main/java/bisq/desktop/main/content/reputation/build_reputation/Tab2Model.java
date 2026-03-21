@@ -15,16 +15,13 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.reputation.build_reputation.bond.tab2;
+package bisq.desktop.main.content.reputation.build_reputation;
 
-import bisq.desktop.main.content.reputation.build_reputation.Tab2Model;
+import bisq.desktop.common.view.Model;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class BondedReputationTab2Model extends Tab2Model {
-    public BondedReputationTab2Model() {
-        super();
-    }
+public class Tab2Model implements Model {
 }
