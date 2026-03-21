@@ -22,8 +22,6 @@ import bisq.user.reputation.SignedWitnessService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.TimeUnit;
-
 public class SignedWitnessScoreSimulation extends ScoreSimulation {
     public SignedWitnessScoreSimulation() {
         super();
@@ -53,15 +51,9 @@ public class SignedWitnessScoreSimulation extends ScoreSimulation {
         }
 
         @Override
-        protected void calculateSimScore() {
-            long ageInDays = Math.max(0, model.getAge().get());
-            long age = TimeUnit.DAYS.toMillis(ageInDays);
-            try {
-                long totalScore = SignedWitnessService.doCalculateScore(ageInDays);
-                String score = String.valueOf(totalScore);
-                model.getScore().set(score);
-            } catch (Exception ignore) {
-            }
+        protected void calculateScore() {
+            long score = SignedWitnessService.doCalculateScore(model.getAge().get());
+            applyScore(score);
         }
     }
 

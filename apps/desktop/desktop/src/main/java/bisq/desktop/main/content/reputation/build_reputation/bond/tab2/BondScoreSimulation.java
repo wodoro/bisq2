@@ -68,7 +68,7 @@ public class BondScoreSimulation extends ScoreSimulation {
         public void onActivate() {
             super.onActivate();
 
-            amountPin = EasyBind.subscribe(model.getAmount(), amount -> calculateSimScore());
+            amountPin = EasyBind.subscribe(model.getAmount(), amount -> calculateScore());
         }
 
         @Override
@@ -79,18 +79,17 @@ public class BondScoreSimulation extends ScoreSimulation {
         }
 
         @Override
-        protected void calculateSimScore() {
+        protected void calculateScore() {
+            long ageInDays = model.getAge().get();
+            long age = TimeUnit.DAYS.toMillis(ageInDays);
+            long blockTime = System.currentTimeMillis() - age;
             try {
-                long ageInDays = Math.max(0, model.getAge().get());
-                long age = TimeUnit.DAYS.toMillis(ageInDays);
                 // amountAsLong is the smallest unit of BSQ (100 = 1 BSQ)
                 long amountAsLong = Math.max(0, MathUtils.roundDoubleToLong(DoubleParser.parse(model.getAmount().get()) * 100));
-                long blockTime = System.currentTimeMillis() - age;
-                long totalScore = BondedReputationService.doCalculateScore(amountAsLong, blockTime);
-                String score = String.valueOf(totalScore);
-                model.getScore().set(score);
+                long score = BondedReputationService.doCalculateScore(amountAsLong, blockTime);
+                applyScore(score);
             } catch (Exception e) {
-                log.error("Failed to calculate simScore", e);
+                log.error("Failed to calculate score", e);
             }
         }
     }
@@ -110,7 +109,7 @@ public class BondScoreSimulation extends ScoreSimulation {
         private View(Model model, Controller controller) {
             super(model, controller);
 
-            amount = getInputField("reputation.sim.burnAmount");
+            amount = getInputField("reputation.sim.bsqAmount");
             root.getChildren().add(1, amount);
         }
 

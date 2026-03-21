@@ -22,8 +22,6 @@ import bisq.user.reputation.AccountAgeService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.TimeUnit;
-
 public class AccountAgeScoreSimulation extends ScoreSimulation {
     public AccountAgeScoreSimulation() {
         super();
@@ -53,15 +51,9 @@ public class AccountAgeScoreSimulation extends ScoreSimulation {
         }
 
         @Override
-        protected void calculateSimScore() {
-            long ageInDays = Math.max(0, model.getAge().get());
-            long age = TimeUnit.DAYS.toMillis(ageInDays);
-            try {
-                long totalScore = AccountAgeService.doCalculateScore(ageInDays);
-                String score = String.valueOf(totalScore);
-                model.getScore().set(score);
-            } catch (Exception ignore) {
-            }
+        protected void calculateScore() {
+            long score = AccountAgeService.doCalculateScore(model.getAge().get());
+            applyScore(score);
         }
     }
 

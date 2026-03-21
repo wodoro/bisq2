@@ -17,11 +17,14 @@
 
 package bisq.desktop.main.content.reputation.build_reputation;
 
+import bisq.common.util.StringUtils;
 import bisq.desktop.ServiceProvider;
 import bisq.desktop.common.Browser;
 import bisq.desktop.common.view.Controller;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.fxmisc.easybind.EasyBind;
+import org.fxmisc.easybind.Subscription;
 
 @Slf4j
 public abstract class Tab2Controller<M extends Tab2Model, V extends Tab2View, S extends ScoreSimulation> implements Controller {
@@ -29,6 +32,7 @@ public abstract class Tab2Controller<M extends Tab2Model, V extends Tab2View, S 
     private final V view;
     private final M model;
     private final S simulation;
+    private Subscription tradeLimitHelpPin;
 
     public Tab2Controller(ServiceProvider serviceProvider) {
         model = createModel();
@@ -44,10 +48,13 @@ public abstract class Tab2Controller<M extends Tab2Model, V extends Tab2View, S 
 
     @Override
     public void onActivate() {
+        tradeLimitHelpPin = EasyBind.subscribe(simulation.getTradeLimitHelp(),
+                tadeLimitHelp -> model.getReducePadding().set(StringUtils.isNotEmpty(tadeLimitHelp)));
     }
 
     @Override
     public void onDeactivate() {
+        tradeLimitHelpPin.unsubscribe();
     }
 
     public abstract void onBack();
