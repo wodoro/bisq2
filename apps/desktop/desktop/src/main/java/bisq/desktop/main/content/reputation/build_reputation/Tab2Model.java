@@ -18,15 +18,18 @@
 package bisq.desktop.main.content.reputation.build_reputation;
 
 import bisq.desktop.common.view.Model;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
 public class Tab2Model implements Model {
-    private String info;
-    private String weight;
-    private String formula;
+    private final String info;
+    private final String weight;
+    private final String formula;
+    private final BooleanProperty reducePadding = new SimpleBooleanProperty();
 
     public Tab2Model(String info, String weight, String formula) {
         this.info = info;

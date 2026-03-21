@@ -35,7 +35,8 @@ public class AgeSlider {
     private final Controller controller;
 
     public AgeSlider(int min, int max, int value) {
-        checkArgument(min <= max, "Min value must not be smaller than max");
+        checkArgument(min <= max, "Min value must not be larger than max");
+        checkArgument(value >= min && value <= max, "Value must not exceed min or max");
         controller = new Controller(min, max, value);
     }
 
