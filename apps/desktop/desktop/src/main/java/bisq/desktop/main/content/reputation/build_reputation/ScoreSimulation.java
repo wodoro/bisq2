@@ -15,14 +15,11 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.reputation.build_reputation.burn.tab2;
+package bisq.desktop.main.content.reputation.build_reputation;
 
-import bisq.common.util.MathUtils;
 import bisq.desktop.components.controls.MaterialTextField;
 import bisq.desktop.main.content.reputation.build_reputation.components.AgeSlider;
 import bisq.i18n.Res;
-import bisq.presentation.parser.DoubleParser;
-import bisq.user.reputation.ProofOfBurnService;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -35,100 +32,97 @@ import lombok.extern.slf4j.Slf4j;
 import org.fxmisc.easybind.EasyBind;
 import org.fxmisc.easybind.Subscription;
 
-import java.util.concurrent.TimeUnit;
+@Slf4j
+public abstract class ScoreSimulation {
 
-public class BurnScoreSimulation {
+    protected final Controller<? extends Model, ? extends View<?, ?>> controller;
 
-    private final Controller controller;
-
-    public BurnScoreSimulation() {
-        controller = new Controller();
+    public ScoreSimulation() {
+        controller = createController();
     }
+
+    protected abstract Controller<? extends Model, ? extends View<?, ?>> createController();
 
     public VBox getViewRoot() {
         return controller.getView().getRoot();
     }
 
     @Slf4j
-    public static class Controller implements bisq.desktop.common.view.Controller {
+    protected static abstract class Controller<M extends Model, V extends View<?, ?>> implements bisq.desktop.common.view.Controller {
         @Getter
-        private final View view;
-        private final Model model;
-        private Subscription agePin, ageAsStringPin, amountPin;
+        protected final V view;
+        protected final M model;
+        private Subscription agePin, ageAsStringPin;
 
-        private Controller() {
-            model = new Model();
-            view = new View(model, this);
-
-            model.getAmount().set("100");
-            model.getAge().set(0);
-            model.getAgeAsString().set("0");
+        protected Controller(int defaultAge, int ageSliderMin, int ageSliderMax) {
+            model = createModel(defaultAge, ageSliderMin, ageSliderMax);
+            view = createView(model);
         }
+
+
+        protected abstract M createModel(int defaultAge, int ageSliderMin, int ageSliderMax);
+
+        protected abstract V createView(M model);
 
         @Override
         public void onActivate() {
-            agePin = EasyBind.subscribe(model.getAge(), age -> model.getAgeAsString().set(String.valueOf(age)));
+            agePin = EasyBind.subscribe(model.getAge(), age -> {
+                model.getAgeAsString().set(String.valueOf(age));
+                calculateSimScore();
+            });
             ageAsStringPin = EasyBind.subscribe(model.getAgeAsString(), ageAsString -> {
                 try {
                     model.getAge().set(Integer.parseInt(ageAsString));
-                    calculateSimScore();
-                } catch (Exception e) {
+                } catch (Exception ignore) {
                 }
             });
-            amountPin = EasyBind.subscribe(model.getAmount(), amount -> calculateSimScore());
         }
 
         @Override
         public void onDeactivate() {
             agePin.unsubscribe();
             ageAsStringPin.unsubscribe();
-            amountPin.unsubscribe();
         }
 
-        private void calculateSimScore() {
-            try {
-                // amountAsLong is the smallest unit of BSQ (100 = 1 BSQ)
-                long amountAsLong = Math.max(0, MathUtils.roundDoubleToLong(DoubleParser.parse(model.getAmount().get()) * 100));
-                long ageInDays = Math.max(0, model.getAge().get());
-                long age = TimeUnit.DAYS.toMillis(ageInDays);
-                long blockTime = System.currentTimeMillis() - age;
-                long totalScore = ProofOfBurnService.doCalculateScore(amountAsLong, blockTime);
-                String score = String.valueOf(totalScore);
-                model.getScore().set(score);
-            } catch (Exception e) {
-                log.error("Failed to calculate simScore", e);
-            }
-        }
+        protected abstract void calculateSimScore();
     }
 
     @Getter
-    private static class Model implements bisq.desktop.common.view.Model {
-        private final StringProperty amount = new SimpleStringProperty();
+    protected static class Model implements bisq.desktop.common.view.Model {
+        private final int ageSliderMin;
+        private final int ageSliderMax;
         private final IntegerProperty age = new SimpleIntegerProperty();
         private final StringProperty ageAsString = new SimpleStringProperty();
         private final StringProperty score = new SimpleStringProperty();
+
+        public Model(int defaultAge, int ageSliderMin, int ageSliderMax) {
+            this.ageSliderMin = ageSliderMin;
+            this.ageSliderMax = ageSliderMax;
+            age.set(defaultAge);
+            ageAsString.set(String.valueOf(defaultAge));
+        }
     }
 
-    private static class View extends bisq.desktop.common.view.View<VBox, Model, Controller> {
+    protected static class View<M extends Model, C extends Controller<?, ?>> extends bisq.desktop.common.view.View<VBox, M, C> {
         private static final double MATERIAL_FIELD_WIDTH = 260;
 
-        private final MaterialTextField amount;
+
         private final MaterialTextField score;
         private final AgeSlider simAgeSlider;
         private final MaterialTextField ageField;
 
-        private View(Model model, Controller controller) {
+        protected View(M model, C controller) {
             super(new VBox(10), model, controller);
 
             Label simHeadline = new Label(Res.get("reputation.sim.headline"));
             simHeadline.getStyleClass().addAll("bisq-text-1");
-            amount = getInputField("reputation.sim.burnAmount");
+
             score = getField(Res.get("reputation.sim.score"));
             ageField = getInputField("reputation.sim.age");
-            simAgeSlider = new AgeSlider(0, ProofOfBurnService.MAX_AGE_BOOST_DAYS, 0);
+            simAgeSlider = new AgeSlider(model.getAgeSliderMin(), model.getAgeSliderMax(), model.getAge().get());
+
             VBox.setMargin(simAgeSlider.getView().getRoot(), new Insets(15, 0, 0, 0));
             root.getChildren().addAll(simHeadline,
-                    amount,
                     ageField,
                     simAgeSlider.getView().getRoot(),
                     score);
@@ -138,7 +132,6 @@ public class BurnScoreSimulation {
         protected void onViewAttached() {
             simAgeSlider.valueProperty().bindBidirectional(model.getAge());
             ageField.textProperty().bindBidirectional(model.getAgeAsString());
-            amount.textProperty().bindBidirectional(model.getAmount());
             score.textProperty().bind(model.getScore());
         }
 
@@ -146,11 +139,10 @@ public class BurnScoreSimulation {
         protected void onViewDetached() {
             simAgeSlider.valueProperty().unbindBidirectional(model.getAge());
             ageField.textProperty().unbindBidirectional(model.getAgeAsString());
-            amount.textProperty().unbindBidirectional(model.getAmount());
             score.textProperty().unbind();
         }
 
-        private MaterialTextField getField(String description) {
+        protected MaterialTextField getField(String description) {
             MaterialTextField field = new MaterialTextField(description);
             field.setEditable(false);
             field.setMinWidth(MATERIAL_FIELD_WIDTH);
@@ -158,7 +150,7 @@ public class BurnScoreSimulation {
             return field;
         }
 
-        private MaterialTextField getInputField(String key) {
+        protected MaterialTextField getInputField(String key) {
             MaterialTextField field = new MaterialTextField(Res.get(key), Res.get(key + ".prompt"));
             field.setMinWidth(MATERIAL_FIELD_WIDTH);
             field.setMaxWidth(MATERIAL_FIELD_WIDTH);

@@ -15,16 +15,22 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.reputation.build_reputation.burn.tab2;
+package bisq.desktop.main.content.reputation.build_reputation;
 
-import bisq.desktop.main.content.reputation.build_reputation.Tab2Model;
+import bisq.desktop.common.view.Model;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class BurnBsqTab2Model extends Tab2Model {
-    public BurnBsqTab2Model(String info, String weight, String formula) {
-        super(info, weight, formula);
+public class Tab2Model implements Model {
+    private String info;
+    private String weight;
+    private String formula;
+
+    public Tab2Model(String info, String weight, String formula) {
+        this.info = info;
+        this.weight = weight;
+        this.formula = formula;
     }
 }

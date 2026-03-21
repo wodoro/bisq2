@@ -15,13 +15,12 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.desktop.main.content.reputation.build_reputation.bond.tab2;
+package bisq.desktop.main.content.reputation.build_reputation.burn.tab2;
 
 import bisq.common.util.MathUtils;
 import bisq.desktop.components.controls.MaterialTextField;
 import bisq.desktop.main.content.reputation.build_reputation.ScoreSimulation;
 import bisq.presentation.parser.DoubleParser;
-import bisq.user.reputation.BondedReputationService;
 import bisq.user.reputation.ProofOfBurnService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -32,8 +31,8 @@ import org.fxmisc.easybind.Subscription;
 
 import java.util.concurrent.TimeUnit;
 
-public class BondScoreSimulation extends ScoreSimulation {
-    public BondScoreSimulation() {
+public class BurnBsqScoreSimulation extends ScoreSimulation {
+    public BurnBsqScoreSimulation() {
         super();
     }
 
@@ -86,7 +85,7 @@ public class BondScoreSimulation extends ScoreSimulation {
                 // amountAsLong is the smallest unit of BSQ (100 = 1 BSQ)
                 long amountAsLong = Math.max(0, MathUtils.roundDoubleToLong(DoubleParser.parse(model.getAmount().get()) * 100));
                 long blockTime = System.currentTimeMillis() - age;
-                long totalScore = BondedReputationService.doCalculateScore(amountAsLong, blockTime);
+                long totalScore = ProofOfBurnService.doCalculateScore(amountAsLong, blockTime);
                 String score = String.valueOf(totalScore);
                 model.getScore().set(score);
             } catch (Exception e) {
