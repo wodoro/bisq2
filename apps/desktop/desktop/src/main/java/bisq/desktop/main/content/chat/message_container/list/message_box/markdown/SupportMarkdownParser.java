@@ -19,7 +19,6 @@ package bisq.desktop.main.content.chat.message_container.list.message_box.markdo
 
 import lombok.Getter;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -257,7 +256,7 @@ public final class SupportMarkdownParser {
 
         String label = line.substring(startIndex + 1, textEnd).trim();
         String url = line.substring(textEnd + 2, urlEnd).trim();
-        if (label.isEmpty() || !isSafeHttpUrl(url)) {
+        if (label.isEmpty() || !MarkdownSecurityUtils.isSafeHttpUrl(url)) {
             return null;
         }
 
@@ -300,7 +299,7 @@ public final class SupportMarkdownParser {
 
         String rawUrl = line.substring(startIndex, end);
         String normalized = trimTrailingUrlPunctuation(rawUrl);
-        if (normalized.isEmpty() || !isSafeHttpUrl(normalized)) {
+        if (normalized.isEmpty() || !MarkdownSecurityUtils.isSafeHttpUrl(normalized)) {
             return null;
         }
 
@@ -318,26 +317,6 @@ public final class SupportMarkdownParser {
             break;
         }
         return value;
-    }
-
-    private static boolean isSafeHttpUrl(String url) {
-        if (containsDangerousCharacters(url)) {
-            return false;
-        }
-        try {
-            URI uri = URI.create(url);
-            String scheme = uri.getScheme();
-            if (scheme == null) {
-                return false;
-            }
-            String normalizedScheme = scheme.toLowerCase(Locale.ROOT);
-            if (!normalizedScheme.equals("http") && !normalizedScheme.equals("https")) {
-                return false;
-            }
-            return uri.getHost() != null;
-        } catch (Exception ignored) {
-            return false;
-        }
     }
 
     private static boolean isSupportedImageUrl(String url) {
@@ -372,31 +351,6 @@ public final class SupportMarkdownParser {
         char next = line.charAt(index + 1);
         return next == '\\' || next == '*' || next == '_' || next == '~' || next == '`'
                 || next == '[' || next == ']' || next == '(' || next == ')' || next == '!';
-    }
-
-    private static boolean containsDangerousCharacters(String value) {
-        for (int i = 0; i < value.length(); i++) {
-            char c = value.charAt(i);
-            if (Character.isISOControl(c)) {
-                return true;
-            }
-            if (isBidiControl(c)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean isBidiControl(char c) {
-        return c == '\u202A'
-                || c == '\u202B'
-                || c == '\u202C'
-                || c == '\u202D'
-                || c == '\u202E'
-                || c == '\u2066'
-                || c == '\u2067'
-                || c == '\u2068'
-                || c == '\u2069';
     }
 
     private static void flushTextSegment(List<SupportMarkdownDocument.Segment> segments, StringBuilder plainText) {

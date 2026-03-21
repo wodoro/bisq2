@@ -29,7 +29,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
-import java.net.URI;
 import java.util.Locale;
 
 public final class SupportMarkdownRenderer {
@@ -93,7 +92,7 @@ public final class SupportMarkdownRenderer {
                 hyperlink.getStyleClass().add("chat-markdown-heading-3");
             }
             hyperlink.setOnAction(e -> {
-                if (isSafeOpenUrl(segment.url())) {
+                if (MarkdownSecurityUtils.isSafeOpenUrl(segment.url())) {
                     Browser.open(segment.url());
                 }
             });
@@ -148,53 +147,5 @@ public final class SupportMarkdownRenderer {
             case "bisq-icon://wiki" -> "nav-learn";
             default -> null;
         };
-    }
-
-    private static boolean isSafeOpenUrl(String rawUrl) {
-        if (rawUrl == null || rawUrl.isBlank()) {
-            return false;
-        }
-        if (containsDangerousCharacters(rawUrl)) {
-            return false;
-        }
-        try {
-            URI uri = URI.create(rawUrl);
-            String scheme = uri.getScheme();
-            if (scheme == null) {
-                return false;
-            }
-            String normalizedScheme = scheme.toLowerCase(Locale.ROOT);
-            if (!normalizedScheme.equals("http") && !normalizedScheme.equals("https")) {
-                return false;
-            }
-            return uri.getHost() != null;
-        } catch (Exception ignored) {
-            return false;
-        }
-    }
-
-    private static boolean containsDangerousCharacters(String value) {
-        for (int i = 0; i < value.length(); i++) {
-            char c = value.charAt(i);
-            if (Character.isISOControl(c)) {
-                return true;
-            }
-            if (isBidiControl(c)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean isBidiControl(char c) {
-        return c == '\u202A'
-                || c == '\u202B'
-                || c == '\u202C'
-                || c == '\u202D'
-                || c == '\u202E'
-                || c == '\u2066'
-                || c == '\u2067'
-                || c == '\u2068'
-                || c == '\u2069';
     }
 }
