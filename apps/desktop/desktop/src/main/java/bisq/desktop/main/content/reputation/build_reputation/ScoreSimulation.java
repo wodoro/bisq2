@@ -20,7 +20,6 @@ package bisq.desktop.main.content.reputation.build_reputation;
 import bisq.desktop.components.controls.MaterialTextField;
 import bisq.desktop.main.content.reputation.build_reputation.components.AgeSlider;
 import bisq.i18n.Res;
-import bisq.user.reputation.ProofOfBurnService;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,45 +32,48 @@ import lombok.extern.slf4j.Slf4j;
 import org.fxmisc.easybind.EasyBind;
 import org.fxmisc.easybind.Subscription;
 
+@Slf4j
 public abstract class ScoreSimulation {
 
-    protected final Controller<? extends ScoreSimulation.Model>  controller;
+    protected final Controller<? extends Model, ? extends View<?, ?>> controller;
 
     public ScoreSimulation() {
         controller = createController();
     }
 
-    protected abstract Controller<? extends ScoreSimulation.Model> createController();
+    protected abstract Controller<? extends Model, ? extends View<?, ?>> createController();
 
     public VBox getViewRoot() {
         return controller.getView().getRoot();
     }
 
     @Slf4j
-    protected static abstract class Controller<M extends ScoreSimulation.Model> implements bisq.desktop.common.view.Controller {
+    protected static abstract class Controller<M extends Model, V extends View<?, ?>> implements bisq.desktop.common.view.Controller {
         @Getter
-        protected final View view;
+        protected final V view;
         protected final M model;
         private Subscription agePin, ageAsStringPin;
 
-        protected Controller() {
-            model = createModel();
-            view = new View(model, this);
-
-            model.getAge().set(0);
-            model.getAgeAsString().set("0");
+        protected Controller(int defaultAge, int ageSliderMin, int ageSliderMax) {
+            model = createModel(defaultAge, ageSliderMin, ageSliderMax);
+            view = createView(model);
         }
 
-        protected abstract   M createModel();
+
+        protected abstract M createModel(int defaultAge, int ageSliderMin, int ageSliderMax);
+
+        protected abstract V createView(M model);
 
         @Override
         public void onActivate() {
-            agePin = EasyBind.subscribe(model.getAge(), age -> model.getAgeAsString().set(String.valueOf(age)));
+            agePin = EasyBind.subscribe(model.getAge(), age -> {
+                model.getAgeAsString().set(String.valueOf(age));
+                calculateSimScore();
+            });
             ageAsStringPin = EasyBind.subscribe(model.getAgeAsString(), ageAsString -> {
                 try {
                     model.getAge().set(Integer.parseInt(ageAsString));
-                    calculateSimScore();
-                } catch (Exception e) {
+                } catch (Exception ignore) {
                 }
             });
         }
@@ -87,12 +89,21 @@ public abstract class ScoreSimulation {
 
     @Getter
     protected static class Model implements bisq.desktop.common.view.Model {
+        private final int ageSliderMin;
+        private final int ageSliderMax;
         private final IntegerProperty age = new SimpleIntegerProperty();
         private final StringProperty ageAsString = new SimpleStringProperty();
         private final StringProperty score = new SimpleStringProperty();
+
+        public Model(int defaultAge, int ageSliderMin, int ageSliderMax) {
+            this.ageSliderMin = ageSliderMin;
+            this.ageSliderMax = ageSliderMax;
+            age.set(defaultAge);
+            ageAsString.set(String.valueOf(defaultAge));
+        }
     }
 
-    protected static class View<M extends Model, C extends Controller<M>> extends bisq.desktop.common.view.View<VBox, M, C> {
+    protected static class View<M extends Model, C extends Controller<?, ?>> extends bisq.desktop.common.view.View<VBox, M, C> {
         private static final double MATERIAL_FIELD_WIDTH = 260;
 
 
@@ -108,7 +119,8 @@ public abstract class ScoreSimulation {
 
             score = getField(Res.get("reputation.sim.score"));
             ageField = getInputField("reputation.sim.age");
-            simAgeSlider = new AgeSlider(0, ProofOfBurnService.MAX_AGE_BOOST_DAYS, 0);
+            simAgeSlider = new AgeSlider(model.getAgeSliderMin(), model.getAgeSliderMax(), model.getAge().get());
+
             VBox.setMargin(simAgeSlider.getView().getRoot(), new Insets(15, 0, 0, 0));
             root.getChildren().addAll(simHeadline,
                     ageField,

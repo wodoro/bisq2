@@ -22,6 +22,7 @@ import bisq.desktop.components.controls.MaterialTextField;
 import bisq.desktop.main.content.reputation.build_reputation.ScoreSimulation;
 import bisq.presentation.parser.DoubleParser;
 import bisq.user.reputation.BondedReputationService;
+import bisq.user.reputation.ProofOfBurnService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
@@ -37,43 +38,53 @@ public class BondScoreSimulation extends ScoreSimulation {
     }
 
     @Override
-    protected ScoreSimulation.Controller<BondScoreSimulation.Model> createController() {
-        return new BondScoreSimulation.Controller();
+    protected Controller createController() {
+        return new Controller();
     }
 
     @Slf4j
-    public static class Controller extends ScoreSimulation.Controller<BondScoreSimulation.Model> {
+    public static class Controller extends ScoreSimulation.Controller<Model, View> {
         private Subscription amountPin;
 
         protected Controller() {
-            super();
+            super(0,
+                    0,
+                    ProofOfBurnService.MAX_AGE_BOOST_DAYS);
+
             model.getAmount().set("100");
         }
 
         @Override
-        protected Model createModel() {
-            return new Model();
+        protected Model createModel(int defaultAge, int ageSliderMin, int ageSliderMax) {
+            return new Model(defaultAge, ageSliderMin, ageSliderMax);
+        }
+
+        @Override
+        protected View createView(Model model) {
+            return new View(model, this);
         }
 
         @Override
         public void onActivate() {
             super.onActivate();
+
             amountPin = EasyBind.subscribe(model.getAmount(), amount -> calculateSimScore());
         }
 
         @Override
         public void onDeactivate() {
             super.onDeactivate();
+
             amountPin.unsubscribe();
         }
 
         @Override
         protected void calculateSimScore() {
             try {
-                // amountAsLong is the smallest unit of BSQ (100 = 1 BSQ)
-                long amountAsLong = Math.max(0, MathUtils.roundDoubleToLong(DoubleParser.parse(model.getAmount().get()) * 100));
                 long ageInDays = Math.max(0, model.getAge().get());
                 long age = TimeUnit.DAYS.toMillis(ageInDays);
+                // amountAsLong is the smallest unit of BSQ (100 = 1 BSQ)
+                long amountAsLong = Math.max(0, MathUtils.roundDoubleToLong(DoubleParser.parse(model.getAmount().get()) * 100));
                 long blockTime = System.currentTimeMillis() - age;
                 long totalScore = BondedReputationService.doCalculateScore(amountAsLong, blockTime);
                 String score = String.valueOf(totalScore);
@@ -87,9 +98,13 @@ public class BondScoreSimulation extends ScoreSimulation {
     @Getter
     protected static class Model extends ScoreSimulation.Model {
         private final StringProperty amount = new SimpleStringProperty();
+
+        public Model(int defaultAge, int ageSliderMin, int ageSliderMax) {
+            super(defaultAge, ageSliderMin, ageSliderMax);
+        }
     }
 
-    private static class View extends ScoreSimulation.View<Model, Controller> {
+    protected static class View extends ScoreSimulation.View<Model, Controller> {
         private final MaterialTextField amount;
 
         private View(Model model, Controller controller) {
@@ -102,12 +117,14 @@ public class BondScoreSimulation extends ScoreSimulation {
         @Override
         protected void onViewAttached() {
             super.onViewAttached();
+
             amount.textProperty().bindBidirectional(model.getAmount());
         }
 
         @Override
         protected void onViewDetached() {
             super.onViewDetached();
+
             amount.textProperty().unbindBidirectional(model.getAmount());
         }
     }
