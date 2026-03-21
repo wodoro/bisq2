@@ -30,8 +30,10 @@ import java.util.concurrent.CompletableFuture;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 class BannedUserServiceTest {
@@ -39,7 +41,8 @@ class BannedUserServiceTest {
 
     @Test
     void disabledRateLimitAlwaysReturnsNotExceeding() {
-        BannedUserService service = createService(false, new RateLimiter(1, 1, 1, 1));
+        RateLimiter rateLimiter = mock(RateLimiter.class);
+        BannedUserService service = createService(false, rateLimiter);
         long now = System.currentTimeMillis();
         for (int i = 0; i < 8; i++) {
             service.checkRateLimit(USER_PROFILE_ID, now + i);
@@ -47,12 +50,19 @@ class BannedUserServiceTest {
 
         assertFalse(service.isRateLimitExceeding(USER_PROFILE_ID));
         assertTrue(service.getExceedsLimitInfo(USER_PROFILE_ID).isEmpty());
+        verifyNoInteractions(rateLimiter);
     }
 
     @Test
     void enabledRateLimitMarksProfileAsExceeding() {
-        BannedUserService service = createService(true, new RateLimiter(1, 1, 1, 1));
-        long now = System.currentTimeMillis();
+        RateLimiter rateLimiter = mock(RateLimiter.class);
+        when(rateLimiter.exceedsLimit(eq(USER_PROFILE_ID), anyLong()))
+                .thenReturn(false)
+                .thenReturn(true);
+        when(rateLimiter.exceedsLimit(USER_PROFILE_ID)).thenReturn(true);
+
+        BannedUserService service = createService(true, rateLimiter);
+        long now = 1_000L;
         service.checkRateLimit(USER_PROFILE_ID, now);
         service.checkRateLimit(USER_PROFILE_ID, now);
 

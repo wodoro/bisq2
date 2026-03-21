@@ -38,4 +38,11 @@ class UserServiceConfigTest {
 
         assertFalse(config.isRateLimitEnabled());
     }
+
+    @Test
+    void fromDefaultsRateLimitEnabledWhenKeyIsMissing() {
+        UserService.Config config = UserService.Config.from(ConfigFactory.empty());
+
+        assertTrue(config.isRateLimitEnabled());
+    }
 }

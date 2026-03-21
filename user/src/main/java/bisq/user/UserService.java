@@ -45,7 +45,9 @@ public class UserService implements Service {
         }
 
         public static Config from(com.typesafe.config.Config config) {
-            return new Config(config.getBoolean("rateLimitEnabled"));
+            return new Config(config.hasPath("rateLimitEnabled")
+                    ? config.getBoolean("rateLimitEnabled")
+                    : true);
         }
     }
 
