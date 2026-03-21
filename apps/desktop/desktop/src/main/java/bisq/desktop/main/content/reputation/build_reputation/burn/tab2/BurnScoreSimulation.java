@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 public class BurnScoreSimulation extends ScoreSimulation {
     public BurnScoreSimulation() {
+        super();
     }
 
     @Override
@@ -75,16 +76,6 @@ public class BurnScoreSimulation extends ScoreSimulation {
     private static class View extends ScoreSimulation.View {
         private View(Model model, Controller controller) {
             super(model, controller);
-        }
-
-        @Override
-        protected void onViewAttached() {
-            super.onViewAttached();
-        }
-
-        @Override
-        protected void onViewDetached() {
-            super.onViewDetached();
         }
     }
 }
