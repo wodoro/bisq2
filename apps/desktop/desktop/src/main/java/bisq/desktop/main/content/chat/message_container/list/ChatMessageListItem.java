@@ -71,6 +71,7 @@ import bisq.user.profile.UserProfile;
 import bisq.user.profile.UserProfileService;
 import bisq.user.reputation.ReputationScore;
 import bisq.user.reputation.ReputationService;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -87,8 +88,6 @@ import java.util.stream.Collectors;
 
 import static bisq.chat.ChatMessageType.*;
 import static bisq.desktop.main.content.chat.message_container.ChatMessageContainerView.EDITED_POST_FIX;
-import static com.google.common.base.Preconditions.checkArgument;
-
 @Slf4j
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -416,26 +415,26 @@ public final class ChatMessageListItem<M extends ChatMessage, C extends ChatChan
         userReactionsPin = Optional.ofNullable(chatMessage.getChatMessageReactions().addObserver(new CollectionObserver<>() {
             @Override
             public void onAdded(ChatMessageReaction element) {
-                Reaction reaction = getReactionFromOrdinal(element.getReactionId());
-                UIThread.run(() -> {
-                    if (userReactions.containsKey(reaction)) {
-                        userProfileService.findUserProfile(element.getUserProfileId())
-                                .filter(profile -> !userProfileService.isChatUserIgnored(profile))
-                                .ifPresent(profile -> userReactions.get(reaction).addUser(element, profile));
-                    }
-                });
+                resolveReactionFromOrdinal(element.getReactionId()).ifPresent(reaction ->
+                        UIThread.run(() -> {
+                            if (userReactions.containsKey(reaction)) {
+                                userProfileService.findUserProfile(element.getUserProfileId())
+                                        .filter(profile -> !userProfileService.isChatUserIgnored(profile))
+                                        .ifPresent(profile -> userReactions.get(reaction).addUser(element, profile));
+                            }
+                        }));
             }
 
             @Override
             public void onRemoved(Object element) {
                 ChatMessageReaction chatMessageReaction = (ChatMessageReaction) element;
-                Reaction reaction = getReactionFromOrdinal(chatMessageReaction.getReactionId());
-                UIThread.run(() -> {
-                    if (userReactions.containsKey(reaction)) {
-                        userProfileService.findUserProfile(chatMessageReaction.getUserProfileId())
-                                .ifPresent(profile -> userReactions.get(reaction).removeUser(profile));
-                    }
-                });
+                resolveReactionFromOrdinal(chatMessageReaction.getReactionId()).ifPresent(reaction ->
+                        UIThread.run(() -> {
+                            if (userReactions.containsKey(reaction)) {
+                                userProfileService.findUserProfile(chatMessageReaction.getUserProfileId())
+                                        .ifPresent(profile -> userReactions.get(reaction).removeUser(profile));
+                            }
+                        }));
             }
 
             @Override
@@ -445,9 +444,9 @@ public final class ChatMessageListItem<M extends ChatMessage, C extends ChatChan
         }));
     }
 
-    private static Reaction getReactionFromOrdinal(int ordinal) {
-        checkArgument(ordinal >= 0 && ordinal < Reaction.values().length, "Invalid reaction id: " + ordinal);
-        return Reaction.values()[ordinal];
+    @VisibleForTesting
+    static Optional<Reaction> resolveReactionFromOrdinal(int ordinal) {
+        return Reaction.fromOrdinal(ordinal);
     }
 
     private void onUserIdentity() {
