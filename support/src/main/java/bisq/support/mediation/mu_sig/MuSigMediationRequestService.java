@@ -46,6 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
@@ -264,6 +265,10 @@ public class MuSigMediationRequestService implements Service, ConfidentialMessag
                                     pendingMuSigMediationStateChangeMessages.remove(message);
                                     return;
                                 }
+                                if (!hasValidMediatorSignature(channel, message)) {
+                                    pendingMuSigMediationStateChangeMessages.remove(message);
+                                    return;
+                                }
                                 // Closed mediation case still keeps mediator chat participation active.
                                 muSigOpenTradeChannelService.setIsInMediation(channel, true);
                             } else {
@@ -303,6 +308,34 @@ public class MuSigMediationRequestService implements Service, ConfidentialMessag
                                 });
                             }
                         });
+    }
+
+    private boolean hasValidMediatorSignature(MuSigOpenTradeChannel channel,
+                                              MuSigMediationStateChangeMessage message) {
+        try {
+            if (channel.getMediator().isEmpty()) {
+                log.warn("Ignoring MuSigMediationStateChangeMessage for trade {} because channel mediator is missing.",
+                        message.getTradeId());
+                return false;
+            }
+            if (message.getMediationResultSignature().isEmpty()) {
+                log.warn("Ignoring MuSigMediationStateChangeMessage for trade {} because mediator signature is missing.",
+                        message.getTradeId());
+                return false;
+            }
+            if (!MuSigMediationResultService.verifyMediationResult(message.getMuSigMediationResult().orElseThrow(),
+                    message.getMediationResultSignature().orElseThrow(),
+                    channel.getMediator().orElseThrow().getNetworkId().getPubKey().getPublicKey())) {
+                log.warn("Ignoring MuSigMediationStateChangeMessage for trade {} because mediator signature verification failed.",
+                        message.getTradeId());
+                return false;
+            }
+            return true;
+        } catch (GeneralSecurityException | IllegalArgumentException e) {
+            log.warn("Ignoring MuSigMediationStateChangeMessage for trade {} because mediator signature verification failed.",
+                    message.getTradeId(), e);
+            return false;
+        }
     }
 
     private void maybeProcessPendingMessages() {

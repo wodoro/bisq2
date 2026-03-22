@@ -20,11 +20,14 @@ package bisq.support.mediation.mu_sig;
 import bisq.account.accounts.AccountPayload;
 import bisq.common.observable.Observable;
 import bisq.common.proto.PersistableProto;
+import bisq.common.validation.NetworkDataValidation;
 import bisq.support.mediation.MediationCaseState;
+import com.google.protobuf.ByteString;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +41,7 @@ public class MuSigMediationCase implements PersistableProto {
     private final long requestDate;
     private final Observable<MediationCaseState> mediationCaseState = new Observable<>();
     private final Observable<Optional<MuSigMediationResult>> muSigMediationResult = new Observable<>();
+    private Optional<byte[]> mediationResultSignature = Optional.empty();
     private final Observable<Optional<AccountPayload<?>>> takerAccountPayload = new Observable<>(Optional.empty());
     private final Observable<Optional<AccountPayload<?>>> makerAccountPayload = new Observable<>(Optional.empty());
     private final Observable<List<MuSigMediationIssue>> issues = new Observable<>(List.of());
@@ -49,6 +53,7 @@ public class MuSigMediationCase implements PersistableProto {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 List.of());
     }
 
@@ -56,6 +61,7 @@ public class MuSigMediationCase implements PersistableProto {
                                long requestDate,
                                MediationCaseState mediationCaseState,
                                Optional<MuSigMediationResult> muSigMediationResult,
+                               Optional<byte[]> mediationResultSignature,
                                Optional<AccountPayload<?>> takerAccountPayload,
                                Optional<AccountPayload<?>> makerAccountPayload,
                                List<MuSigMediationIssue> issues) {
@@ -63,6 +69,7 @@ public class MuSigMediationCase implements PersistableProto {
         this.requestDate = requestDate;
         this.mediationCaseState.set(mediationCaseState);
         this.muSigMediationResult.set(muSigMediationResult);
+        this.mediationResultSignature = mediationResultSignature.map(byte[]::clone);
         this.takerAccountPayload.set(takerAccountPayload);
         this.makerAccountPayload.set(makerAccountPayload);
         this.issues.set(issues);
@@ -80,6 +87,7 @@ public class MuSigMediationCase implements PersistableProto {
                 .setMediationCaseState(mediationCaseState.get().toProtoEnum());
         muSigMediationResult.get().ifPresent(item ->
                 builder.setMuSigMediationResult(item.toProto(serializeForHash)));
+        mediationResultSignature.ifPresent(item -> builder.setMediationResultSignature(ByteString.copyFrom(item)));
         takerAccountPayload.get().ifPresent(item -> builder.setTakerAccountPayload(item.toProto(serializeForHash)));
         makerAccountPayload.get().ifPresent(item -> builder.setMakerAccountPayload(item.toProto(serializeForHash)));
         builder.addAllIssues(issues.get().stream()
@@ -100,6 +108,9 @@ public class MuSigMediationCase implements PersistableProto {
                 proto.hasMuSigMediationResult() ?
                         Optional.of(MuSigMediationResult.fromProto(proto.getMuSigMediationResult())) :
                         Optional.empty(),
+                proto.hasMediationResultSignature() ?
+                        Optional.of(proto.getMediationResultSignature().toByteArray()) :
+                        Optional.empty(),
                 proto.hasTakerAccountPayload() ?
                         Optional.of(AccountPayload.fromProto(proto.getTakerAccountPayload())) :
                         Optional.empty(),
@@ -119,16 +130,30 @@ public class MuSigMediationCase implements PersistableProto {
         return true;
     }
 
-    public boolean setMuSigMediationResult(MuSigMediationResult result) {
+    public Optional<byte[]> getMediationResultSignature() {
+        return mediationResultSignature.map(byte[]::clone);
+    }
+
+    public boolean setSignedMuSigMediationResult(MuSigMediationResult result, byte[] signature) {
+        NetworkDataValidation.validateECSignature(signature);
+        byte[] signatureCopy = signature.clone();
         Optional<MuSigMediationResult> currentResult = muSigMediationResult.get();
-        if (currentResult.isPresent() && !currentResult.get().equals(result)) {
+        if (currentResult.isPresent() && !currentResult.orElseThrow().equals(result)) {
             throw new IllegalArgumentException("MuSigMediationResult cannot be changed once set.");
         }
-        var newResult = Optional.of(result);
-        if (currentResult.equals(newResult)) {
+        Optional<byte[]> currentSignature = mediationResultSignature;
+        if (currentSignature.isPresent() && !Arrays.equals(currentSignature.orElseThrow(), signatureCopy)) {
+            throw new IllegalArgumentException("mediationResultSignature cannot be changed once set.");
+        }
+        if (currentResult.isPresent() && currentSignature.isPresent()) {
             return false;
         }
-        muSigMediationResult.set(newResult);
+        if (currentResult.isEmpty()) {
+            muSigMediationResult.set(Optional.of(result));
+        }
+        if (currentSignature.isEmpty()) {
+            mediationResultSignature = Optional.of(signatureCopy);
+        }
         return true;
     }
 

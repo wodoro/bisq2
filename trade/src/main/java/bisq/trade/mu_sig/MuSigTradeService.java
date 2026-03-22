@@ -55,6 +55,7 @@ import bisq.settings.SettingsService;
 import bisq.support.mediation.MediationCaseState;
 import bisq.support.mediation.mu_sig.MuSigMediationResult;
 import bisq.support.mediation.mu_sig.MuSigMediationResultAcceptanceMessage;
+import bisq.support.mediation.mu_sig.MuSigMediationResultService;
 import bisq.support.mediation.mu_sig.MuSigMediationStateChangeMessage;
 import bisq.support.mediation.mu_sig.MuSigMediatorsResponse;
 import bisq.support.mediation.mu_sig.MuSigPaymentDetailsRequest;
@@ -86,6 +87,7 @@ import io.grpc.stub.StreamObserver;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.security.GeneralSecurityException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -211,7 +213,7 @@ public final class MuSigTradeService extends RateLimitedPersistenceClient<MuSigT
                         @Override
                         public void onRemoved(Object element) {
                             if (element instanceof AuthorizedAlertData authorizedAlertData) {
-                                if (authorizedAlertData.getAlertType() == AlertType.EMERGENCY&& authorizedAlertData.getAppType() == appType ) {
+                                if (authorizedAlertData.getAlertType() == AlertType.EMERGENCY && authorizedAlertData.getAppType() == appType) {
                                     if (authorizedAlertData.isHaltTrading()) {
                                         haltTrading = false;
                                     }
@@ -744,6 +746,9 @@ public final class MuSigTradeService extends RateLimitedPersistenceClient<MuSigT
                 }
 
                 Optional<MuSigMediationResult> currentResult = trade.getMuSigMediationResult();
+                if (!isValidMediationResultMessage(trade.getContract(), message)) {
+                    return;
+                }
                 if (currentResult.isEmpty()) {
                     resultChanged = trade.setMuSigMediationResult(incomingResult.orElseThrow());
                 } else if (!currentResult.orElseThrow().equals(incomingResult.orElseThrow())) {
@@ -757,6 +762,35 @@ public final class MuSigTradeService extends RateLimitedPersistenceClient<MuSigT
                 persist();
             }
         });
+    }
+
+    private boolean isValidMediationResultMessage(MuSigContract contract,
+                                                  MuSigMediationStateChangeMessage message) {
+        try {
+            if (contract.getMediator().isEmpty()) {
+                log.warn("Ignoring MuSigMediationResult for trade {} because mediator is missing in contract.",
+                        message.getTradeId());
+                return false;
+            }
+            if (message.getMediationResultSignature().isEmpty()) {
+                log.warn("Ignoring MuSigMediationResult for trade {} because mediator signature is missing.",
+                        message.getTradeId());
+                return false;
+            }
+            if (!MuSigMediationResultService.verifyMediationResult(message.getMuSigMediationResult().orElseThrow(),
+                    message.getMediationResultSignature().orElseThrow(),
+                    contract,
+                    contract.getMediator().orElseThrow().getNetworkId().getPubKey().getPublicKey())) {
+                log.warn("Ignoring MuSigMediationResult for trade {} because mediator signature verification failed.",
+                        message.getTradeId());
+                return false;
+            }
+            return true;
+        } catch (GeneralSecurityException | IllegalArgumentException e) {
+            log.warn("Ignoring MuSigMediationResult for trade {} because mediator signature verification failed.",
+                    message.getTradeId(), e);
+            return false;
+        }
     }
 
     private void maybeApplyMediationResultAcceptanceMessage(MuSigMediationResultAcceptanceMessage message) {

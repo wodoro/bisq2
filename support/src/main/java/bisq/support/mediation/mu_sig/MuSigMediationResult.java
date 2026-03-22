@@ -22,20 +22,22 @@ import bisq.common.proto.PersistableProto;
 import bisq.common.validation.NetworkDataValidation;
 import bisq.support.mediation.MediationPayoutDistributionType;
 import bisq.support.mediation.MediationResultReason;
-import lombok.EqualsAndHashCode;
+import com.google.protobuf.ByteString;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.System.currentTimeMillis;
 
 @Getter
-@EqualsAndHashCode
 public class MuSigMediationResult implements NetworkProto, PersistableProto {
     public static final int MAX_SUMMARY_NOTES_LENGTH = 1_000;
 
     private final long date;
+    private final byte[] contractHash;
     private final MediationResultReason mediationResultReason;
     private final MediationPayoutDistributionType mediationPayoutDistributionType;
     private final Optional<Long> proposedBuyerPayoutAmount;
@@ -43,13 +45,15 @@ public class MuSigMediationResult implements NetworkProto, PersistableProto {
     private final Optional<Double> payoutAdjustmentPercentage;
     private final Optional<String> summaryNotes;
 
-    public MuSigMediationResult(MediationResultReason mediationResultReason,
+    public MuSigMediationResult(byte[] contractHash,
+                                MediationResultReason mediationResultReason,
                                 MediationPayoutDistributionType mediationPayoutDistributionType,
                                 Optional<Long> proposedBuyerPayoutAmount,
                                 Optional<Long> proposedSellerPayoutAmount,
                                 Optional<Double> payoutAdjustmentPercentage,
                                 Optional<String> summaryNotes) {
         this(currentTimeMillis(),
+                contractHash,
                 mediationResultReason,
                 mediationPayoutDistributionType,
                 proposedBuyerPayoutAmount,
@@ -59,6 +63,7 @@ public class MuSigMediationResult implements NetworkProto, PersistableProto {
     }
 
     private MuSigMediationResult(long date,
+                                 byte[] contractHash,
                                  MediationResultReason mediationResultReason,
                                  MediationPayoutDistributionType mediationPayoutDistributionType,
                                  Optional<Long> proposedBuyerPayoutAmount,
@@ -66,6 +71,7 @@ public class MuSigMediationResult implements NetworkProto, PersistableProto {
                                  Optional<Double> payoutAdjustmentPercentage,
                                  Optional<String> summaryNotes) {
         this.date = date;
+        this.contractHash = contractHash.clone();
         this.mediationResultReason = mediationResultReason;
         this.mediationPayoutDistributionType = mediationPayoutDistributionType;
         this.proposedBuyerPayoutAmount = proposedBuyerPayoutAmount;
@@ -79,6 +85,7 @@ public class MuSigMediationResult implements NetworkProto, PersistableProto {
     @Override
     public void verify() {
         NetworkDataValidation.validateDate(date);
+        NetworkDataValidation.validateHash(contractHash);
         checkArgument(mediationResultReason != null, "mediationResultReason must not be null");
         checkArgument(mediationPayoutDistributionType != null, "mediationPayoutDistributionType must not be null");
         boolean noPayout = mediationPayoutDistributionType == MediationPayoutDistributionType.NO_PAYOUT;
@@ -97,6 +104,7 @@ public class MuSigMediationResult implements NetworkProto, PersistableProto {
     public bisq.support.protobuf.MuSigMediationResult.Builder getBuilder(boolean serializeForHash) {
         var builder = bisq.support.protobuf.MuSigMediationResult.newBuilder()
                 .setDate(date)
+                .setContractHash(ByteString.copyFrom(contractHash))
                 .setMediationResultReason(mediationResultReason.toProtoEnum())
                 .setMediationPayoutDistributionType(mediationPayoutDistributionType.toProtoEnum());
         proposedBuyerPayoutAmount.ifPresent(builder::setProposedBuyerPayoutAmount);
@@ -106,7 +114,6 @@ public class MuSigMediationResult implements NetworkProto, PersistableProto {
         return builder;
     }
 
-
     @Override
     public bisq.support.protobuf.MuSigMediationResult toProto(boolean serializeForHash) {
         return unsafeToProto(serializeForHash);
@@ -115,11 +122,44 @@ public class MuSigMediationResult implements NetworkProto, PersistableProto {
     public static MuSigMediationResult fromProto(bisq.support.protobuf.MuSigMediationResult proto) {
         return new MuSigMediationResult(
                 proto.getDate(),
+                proto.getContractHash().toByteArray(),
                 MediationResultReason.fromProto(proto.getMediationResultReason()),
                 MediationPayoutDistributionType.fromProto(proto.getMediationPayoutDistributionType()),
                 proto.hasProposedBuyerPayoutAmount() ? Optional.of(proto.getProposedBuyerPayoutAmount()) : Optional.empty(),
                 proto.hasProposedSellerPayoutAmount() ? Optional.of(proto.getProposedSellerPayoutAmount()) : Optional.empty(),
                 proto.hasPayoutAdjustmentPercentage() ? Optional.of(proto.getPayoutAdjustmentPercentage()) : Optional.empty(),
                 proto.hasSummaryNotes() ? Optional.of(proto.getSummaryNotes()) : Optional.empty());
+    }
+
+    public byte[] getContractHash() {
+        return contractHash.clone();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof MuSigMediationResult that)) {
+            return false;
+        }
+        return date == that.date &&
+                Arrays.equals(contractHash, that.contractHash) &&
+                mediationResultReason == that.mediationResultReason &&
+                mediationPayoutDistributionType == that.mediationPayoutDistributionType &&
+                Objects.equals(proposedBuyerPayoutAmount, that.proposedBuyerPayoutAmount) &&
+                Objects.equals(proposedSellerPayoutAmount, that.proposedSellerPayoutAmount) &&
+                Objects.equals(payoutAdjustmentPercentage, that.payoutAdjustmentPercentage) &&
+                Objects.equals(summaryNotes, that.summaryNotes);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(date,
+                mediationResultReason,
+                mediationPayoutDistributionType,
+                proposedBuyerPayoutAmount,
+                proposedSellerPayoutAmount,
+                payoutAdjustmentPercentage,
+                summaryNotes);
+        result = 31 * result + Arrays.hashCode(contractHash);
+        return result;
     }
 }
