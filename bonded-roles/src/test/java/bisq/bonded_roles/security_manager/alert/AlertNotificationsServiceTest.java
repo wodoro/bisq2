@@ -27,12 +27,15 @@ class AlertNotificationsServiceTest {
 
         AuthorizedAlertData desktopAlert = createAlert("desktop-alert", AppType.DESKTOP, 1L);
         AuthorizedAlertData mobileAlert = createAlert("mobile-alert", AppType.MOBILE_CLIENT, 2L);
+        AuthorizedAlertData legacyAlert = createAlert("legacy-alert", AppType.UNSPECIFIED, 3L);
 
         authorizedAlerts.add(desktopAlert);
         authorizedAlerts.add(mobileAlert);
+        authorizedAlerts.add(legacyAlert);
 
-        assertThat(service.getUnconsumedAlerts()).containsExactlyInAnyOrder(desktopAlert, mobileAlert);
-        assertThat(service.getUnconsumedAlertsByAppType(AppType.MOBILE_CLIENT)).containsExactly(mobileAlert);
+        assertThat(service.getUnconsumedAlerts()).containsExactlyInAnyOrder(desktopAlert, mobileAlert, legacyAlert);
+        assertThat(service.getUnconsumedAlertsByAppType(AppType.DESKTOP)).containsExactlyInAnyOrder(desktopAlert, legacyAlert);
+        assertThat(service.getUnconsumedAlertsByAppType(AppType.MOBILE_CLIENT)).containsExactlyInAnyOrder(mobileAlert, legacyAlert);
     }
 
     private AuthorizedAlertData createAlert(String id, AppType appType, long date) {

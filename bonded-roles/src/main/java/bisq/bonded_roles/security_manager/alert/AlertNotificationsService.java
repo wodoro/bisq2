@@ -105,11 +105,17 @@ public class AlertNotificationsService implements Service {
 
     public Stream<AuthorizedAlertData> getUnconsumedAlertsByAppType(AppType appType) {
         return unconsumedAlerts.stream()
-                .filter(authorizedAlertData -> authorizedAlertData.getAppType() == appType);
+                .filter(authorizedAlertData -> matchesAppType(authorizedAlertData, appType));
     }
 
     private boolean matchesConfiguredAppType(AuthorizedAlertData authorizedAlertData) {
-        return appType == AppType.UNSPECIFIED || authorizedAlertData.getAppType() == appType;
+        return matchesAppType(authorizedAlertData, appType);
+    }
+
+    private boolean matchesAppType(AuthorizedAlertData authorizedAlertData, AppType appType) {
+        return appType == AppType.UNSPECIFIED
+                || authorizedAlertData.getAppType() == AppType.UNSPECIFIED
+                || authorizedAlertData.getAppType() == appType;
     }
 
     private boolean shouldProcessAlert(AuthorizedAlertData authorizedAlertData) {
