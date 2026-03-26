@@ -68,6 +68,16 @@ public class SecurityAlertsWebSocketService extends SimpleObservableWebSocketSer
     }
 
     @Override
+    public void validate(SubscriptionRequest request) {
+        parseAppType(Optional.ofNullable(request.getParameter()));
+    }
+
+    @Override
+    protected boolean usesSubscriberSpecificPayload() {
+        return true;
+    }
+
+    @Override
     public Optional<String> getJsonPayload(Subscriber subscriber) {
         return getJsonPayloadForParameter(subscriber.getParameter());
     }

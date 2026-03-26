@@ -45,6 +45,9 @@ public abstract class BaseWebSocketService implements Service {
 
     abstract public Optional<String> getJsonPayload();
 
+    public void validate(SubscriptionRequest request) {
+    }
+
     public Optional<String> getJsonPayload(Subscriber subscriber) {
         return getJsonPayload();
     }

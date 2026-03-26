@@ -128,9 +128,11 @@ public class SubscriptionService implements Service {
         log.info("Received subscription request: {}", request);
         findWebSocketService(request.getTopic())
                 .ifPresent(webSocketService -> {
+                    Subscriber subscriber = null;
                     try {
-                        Optional<String> jsonPayload = webSocketService.getJsonPayload(request);
-                        subscriberRepository.add(request, webSocket);
+                        webSocketService.validate(request);
+                        subscriber = subscriberRepository.add(request, webSocket);
+                        Optional<String> jsonPayload = webSocketService.getJsonPayload(subscriber);
                         jsonPayload
                                 .flatMap(json -> new SubscriptionResponse(request.getRequestId(), json, null).toJson())
                                 .ifPresent(json -> {
@@ -138,6 +140,9 @@ public class SubscriptionService implements Service {
                                     webSocket.send(json);
                                 });
                     } catch (IllegalArgumentException e) {
+                        if (subscriber != null) {
+                            subscriberRepository.remove(subscriber);
+                        }
                         new SubscriptionResponse(request.getRequestId(), null, e.getMessage()).toJson()
                                 .ifPresent(json -> {
                                     log.info("Send SubscriptionResponse error json: {}", json);
