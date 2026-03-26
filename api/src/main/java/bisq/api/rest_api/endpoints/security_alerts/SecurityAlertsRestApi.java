@@ -20,6 +20,7 @@ package bisq.api.rest_api.endpoints.security_alerts;
 import bisq.api.dto.DtoMappings;
 import bisq.api.dto.security.alert.SecurityAlertDto;
 import bisq.api.rest_api.endpoints.RestApiBase;
+import bisq.bonded_roles.release.AppType;
 import bisq.bonded_roles.security_manager.alert.AlertNotificationsService;
 import bisq.bonded_roles.security_manager.alert.AuthorizedAlertData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,16 +30,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Slf4j
@@ -46,6 +50,7 @@ import java.util.Optional;
 @Produces(MediaType.APPLICATION_JSON)
 @Tag(name = "Security Alerts API", description = "API for retrieving and dismissing visible security alerts")
 public class SecurityAlertsRestApi extends RestApiBase {
+    private static final AppType DEFAULT_APP_TYPE = AppType.MOBILE_CLIENT;
     private static final Comparator<AuthorizedAlertData> ALERT_RELEVANCE_COMPARATOR =
             Comparator.comparing(AuthorizedAlertData::getAlertType)
                     .thenComparing(AuthorizedAlertData::getDate)
@@ -67,12 +72,15 @@ public class SecurityAlertsRestApi extends RestApiBase {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
-    public Response getSecurityAlerts() {
+    public Response getSecurityAlerts(@QueryParam("appType") @DefaultValue("MOBILE_CLIENT") String appTypeParam) {
         try {
-            return buildOkResponse(getSortedSecurityAlerts());
+            AppType appType = parseAppType(appTypeParam);
+            return buildOkResponse(getSortedSecurityAlerts(appType));
+        } catch (IllegalArgumentException e) {
+            return buildErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             log.error("Error retrieving security alerts", e);
-            return buildErrorResponse("An unexpected error occurred: " + e.getMessage());
+            return buildErrorResponse("An unexpected error occurred");
         }
     }
 
@@ -87,9 +95,11 @@ public class SecurityAlertsRestApi extends RestApiBase {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
-    public Response dismissSecurityAlert(@PathParam("alertId") String alertId) {
+    public Response dismissSecurityAlert(@PathParam("alertId") String alertId,
+                                         @QueryParam("appType") @DefaultValue("MOBILE_CLIENT") String appTypeParam) {
         try {
-            Optional<AuthorizedAlertData> authorizedAlertData = alertNotificationsService.getUnconsumedAlerts().stream()
+            AppType appType = parseAppType(appTypeParam);
+            Optional<AuthorizedAlertData> authorizedAlertData = alertNotificationsService.getUnconsumedAlertsByAppType(appType)
                     .filter(alert -> alert.getId().equals(alertId))
                     .findFirst();
             if (authorizedAlertData.isEmpty()) {
@@ -98,16 +108,29 @@ public class SecurityAlertsRestApi extends RestApiBase {
 
             alertNotificationsService.dismissAlert(authorizedAlertData.get());
             return buildNoContentResponse();
+        } catch (IllegalArgumentException e) {
+            return buildErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             log.error("Error dismissing security alert {}", alertId, e);
             return buildErrorResponse("An unexpected error occurred: " + e.getMessage());
         }
     }
 
-    private List<SecurityAlertDto> getSortedSecurityAlerts() {
-        return alertNotificationsService.getUnconsumedAlerts().stream()
+    private List<SecurityAlertDto> getSortedSecurityAlerts(AppType appType) {
+        return alertNotificationsService.getUnconsumedAlertsByAppType(appType)
                 .sorted(ALERT_RELEVANCE_COMPARATOR)
                 .map(DtoMappings.SecurityAlertMapping::fromBisq2Model)
                 .toList();
+    }
+
+    private AppType parseAppType(String appTypeParam) {
+        String normalizedValue = appTypeParam == null || appTypeParam.isBlank()
+                ? DEFAULT_APP_TYPE.name()
+                : appTypeParam.trim().toUpperCase(Locale.ROOT);
+        try {
+            return AppType.valueOf(normalizedValue);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid appType: " + appTypeParam);
+        }
     }
 }
