@@ -21,6 +21,7 @@ import bisq.api.dto.DtoMappings;
 import bisq.api.dto.security.alert.SecurityAlertDto;
 import bisq.api.web_socket.domain.SimpleObservableWebSocketService;
 import bisq.api.web_socket.subscription.SubscriberRepository;
+import bisq.bonded_roles.release.AppType;
 import bisq.bonded_roles.security_manager.alert.AlertNotificationsService;
 import bisq.bonded_roles.security_manager.alert.AuthorizedAlertData;
 import bisq.common.observable.Pin;
@@ -34,6 +35,7 @@ import static bisq.api.web_socket.subscription.Topic.SECURITY_ALERTS;
 
 @Slf4j
 public class SecurityAlertsWebSocketService extends SimpleObservableWebSocketService<ObservableSet<AuthorizedAlertData>, List<SecurityAlertDto>> {
+    private static final AppType DEFAULT_APP_TYPE = AppType.MOBILE_CLIENT;
     private static final Comparator<AuthorizedAlertData> ALERT_RELEVANCE_COMPARATOR =
             Comparator.comparing(AuthorizedAlertData::getAlertType)
                     .thenComparing(AuthorizedAlertData::getDate)
@@ -54,7 +56,7 @@ public class SecurityAlertsWebSocketService extends SimpleObservableWebSocketSer
 
     @Override
     protected List<SecurityAlertDto> toPayload(ObservableSet<AuthorizedAlertData> observable) {
-        return observable.stream()
+        return alertNotificationsService.getUnconsumedAlertsByAppType(DEFAULT_APP_TYPE)
                 .sorted(ALERT_RELEVANCE_COMPARATOR)
                 .map(DtoMappings.SecurityAlertMapping::fromBisq2Model)
                 .toList();
