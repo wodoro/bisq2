@@ -126,13 +126,24 @@ public class SubscriptionService implements Service {
 
     private void subscribe(SubscriptionRequest request, WebSocket webSocket) {
         log.info("Received subscription request: {}", request);
-        subscriberRepository.add(request, webSocket);
         findWebSocketService(request.getTopic())
-                .flatMap(BaseWebSocketService::getJsonPayload)
-                .flatMap(json -> new SubscriptionResponse(request.getRequestId(), json, null).toJson())
-                .ifPresent(json -> {
-                    log.info("Send SubscriptionResponse json: {}", json);
-                    webSocket.send(json);
+                .ifPresent(webSocketService -> {
+                    try {
+                        Optional<String> jsonPayload = webSocketService.getJsonPayload(request);
+                        subscriberRepository.add(request, webSocket);
+                        jsonPayload
+                                .flatMap(json -> new SubscriptionResponse(request.getRequestId(), json, null).toJson())
+                                .ifPresent(json -> {
+                                    log.info("Send SubscriptionResponse json: {}", json);
+                                    webSocket.send(json);
+                                });
+                    } catch (IllegalArgumentException e) {
+                        new SubscriptionResponse(request.getRequestId(), null, e.getMessage()).toJson()
+                                .ifPresent(json -> {
+                                    log.info("Send SubscriptionResponse error json: {}", json);
+                                    webSocket.send(json);
+                                });
+                    }
                 });
     }
 

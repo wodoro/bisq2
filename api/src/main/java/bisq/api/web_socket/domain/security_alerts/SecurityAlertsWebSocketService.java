@@ -21,6 +21,8 @@ import bisq.api.dto.DtoMappings;
 import bisq.api.dto.security.alert.SecurityAlertDto;
 import bisq.api.web_socket.domain.SimpleObservableWebSocketService;
 import bisq.api.web_socket.subscription.SubscriberRepository;
+import bisq.api.web_socket.subscription.SubscriptionRequest;
+import bisq.api.web_socket.subscription.Subscriber;
 import bisq.bonded_roles.release.AppType;
 import bisq.bonded_roles.security_manager.alert.AlertNotificationsService;
 import bisq.bonded_roles.security_manager.alert.AuthorizedAlertData;
@@ -30,6 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 import static bisq.api.web_socket.subscription.Topic.SECURITY_ALERTS;
 
@@ -56,14 +60,48 @@ public class SecurityAlertsWebSocketService extends SimpleObservableWebSocketSer
 
     @Override
     protected List<SecurityAlertDto> toPayload(ObservableSet<AuthorizedAlertData> observable) {
-        return alertNotificationsService.getUnconsumedAlertsByAppType(DEFAULT_APP_TYPE)
+        return getPayload(DEFAULT_APP_TYPE)
                 .sorted(ALERT_RELEVANCE_COMPARATOR)
                 .map(DtoMappings.SecurityAlertMapping::fromBisq2Model)
                 .toList();
     }
 
     @Override
+    public Optional<String> getJsonPayload(Subscriber subscriber) {
+        return getJsonPayloadForParameter(subscriber.getParameter());
+    }
+
+    @Override
+    public Optional<String> getJsonPayload(SubscriptionRequest request) {
+        return getJsonPayloadForParameter(Optional.ofNullable(request.getParameter()));
+    }
+
+    @Override
     protected ObservableSet<AuthorizedAlertData> getObservable() {
         return alertNotificationsService.getUnconsumedAlerts();
+    }
+
+    private Optional<String> getJsonPayloadForParameter(Optional<String> parameter) {
+        AppType appType = parseAppType(parameter);
+        return toJson(getPayload(appType)
+                .sorted(ALERT_RELEVANCE_COMPARATOR)
+                .map(DtoMappings.SecurityAlertMapping::fromBisq2Model)
+                .toList());
+    }
+
+    private java.util.stream.Stream<AuthorizedAlertData> getPayload(AppType appType) {
+        return alertNotificationsService.getUnconsumedAlertsByAppType(appType);
+    }
+
+    private AppType parseAppType(Optional<String> appTypeParam) {
+        String normalizedValue = appTypeParam
+                .filter(value -> !value.isBlank())
+                .map(value -> value.trim().toUpperCase(Locale.ROOT))
+                .orElse(DEFAULT_APP_TYPE.name());
+        try {
+            return AppType.valueOf(normalizedValue);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid appType: " + appTypeParam.orElse(null));
+        }
     }
 }
