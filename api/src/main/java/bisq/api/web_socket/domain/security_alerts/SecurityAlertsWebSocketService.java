@@ -20,9 +20,9 @@ package bisq.api.web_socket.domain.security_alerts;
 import bisq.api.dto.DtoMappings;
 import bisq.api.dto.security.alert.SecurityAlertDto;
 import bisq.api.web_socket.domain.SimpleObservableWebSocketService;
+import bisq.api.web_socket.subscription.Subscriber;
 import bisq.api.web_socket.subscription.SubscriberRepository;
 import bisq.api.web_socket.subscription.SubscriptionRequest;
-import bisq.api.web_socket.subscription.Subscriber;
 import bisq.bonded_roles.release.AppType;
 import bisq.bonded_roles.security_manager.alert.AlertNotificationsService;
 import bisq.bonded_roles.security_manager.alert.AuthorizedAlertData;
@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static bisq.api.web_socket.subscription.Topic.SECURITY_ALERTS;
 
@@ -89,7 +90,7 @@ public class SecurityAlertsWebSocketService extends SimpleObservableWebSocketSer
                 .toList());
     }
 
-    private java.util.stream.Stream<AuthorizedAlertData> getPayload(AppType appType) {
+    private Stream<AuthorizedAlertData> getPayload(AppType appType) {
         return alertNotificationsService.getUnconsumedAlertsByAppType(appType);
     }
 
