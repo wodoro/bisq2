@@ -75,6 +75,7 @@ import bisq.api.dto.offer.price.spec.FixPriceSpecDto;
 import bisq.api.dto.offer.price.spec.FloatPriceSpecDto;
 import bisq.api.dto.offer.price.spec.MarketPriceSpecDto;
 import bisq.api.dto.offer.price.spec.PriceSpecDto;
+import bisq.api.dto.security.alert.SecurityAlertDto;
 import bisq.api.dto.security.keys.I2PKeyPairDto;
 import bisq.api.dto.security.keys.KeyBundleDto;
 import bisq.api.dto.security.keys.KeyPairDto;
@@ -92,6 +93,7 @@ import bisq.api.dto.trade.bisq_easy.protocol.BisqEasyTradeStateDto;
 import bisq.api.dto.user.identity.UserIdentityDto;
 import bisq.api.dto.user.profile.UserProfileDto;
 import bisq.api.dto.user.reputation.ReputationScoreDto;
+import bisq.bonded_roles.security_manager.alert.AuthorizedAlertData;
 import bisq.chat.ChatChannelDomain;
 import bisq.chat.ChatMessageType;
 import bisq.chat.Citation;
@@ -642,6 +644,26 @@ public class DtoMappings {
         public static NetworkIdDto fromBisq2Model(NetworkId value) {
             return new NetworkIdDto(AddressByTransportTypeMapMapping.fromBisq2Model(value.getAddressByTransportTypeMap()),
                     PubKeyMapping.fromBisq2Model(value.getPubKey()));
+        }
+    }
+
+
+    // security.alert
+
+    public static class SecurityAlertMapping {
+        public static SecurityAlertDto fromBisq2Model(AuthorizedAlertData value) {
+            return new SecurityAlertDto(
+                    value.getId(),
+                    value.getDate(),
+                    value.getAlertType(),
+                    value.getHeadline(),
+                    value.getMessage(),
+                    value.isHaltTrading(),
+                    value.isRequireVersionForTrading(),
+                    value.getMinVersion(),
+                    value.getSecurityManagerProfileId(),
+                    value.getAppType()
+            );
         }
     }
 
