@@ -1,6 +1,6 @@
-package bisq.api.rest_api.endpoints.security_alerts;
+package bisq.api.rest_api.endpoints.authorized_alerts;
 
-import bisq.api.dto.security.alert.SecurityAlertDto;
+import bisq.api.dto.security.alert.AuthorizedAlertDataDto;
 import bisq.bonded_roles.release.AppType;
 import bisq.bonded_roles.security_manager.alert.AlertNotificationsService;
 import bisq.bonded_roles.security_manager.alert.AlertType;
@@ -18,49 +18,49 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class SecurityAlertsRestApiTest {
+class AuthorizedAlertsRestApiTest {
 
     @Test
-    void getSecurityAlertsDefaultsToMobileClient() {
+    void getAuthorizedAlertsDefaultsToMobileClient() {
         AlertNotificationsService alertNotificationsService = mock(AlertNotificationsService.class);
         AuthorizedAlertData mobileAlert = createAlert("mobile-alert", AppType.MOBILE_CLIENT, 10L);
         when(alertNotificationsService.getUnconsumedAlertsByAppType(AppType.MOBILE_CLIENT))
                 .thenReturn(Stream.of(mobileAlert));
 
-        SecurityAlertsRestApi restApi = new SecurityAlertsRestApi(alertNotificationsService);
+        AuthorizedAlertsRestApi restApi = new AuthorizedAlertsRestApi(alertNotificationsService);
 
-        Response response = restApi.getSecurityAlerts(null);
+        Response response = restApi.getAuthorizedAlerts(null);
 
         assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         assertThat(response.getEntity()).isInstanceOf(List.class);
         @SuppressWarnings("unchecked")
-        List<SecurityAlertDto> securityAlerts = (List<SecurityAlertDto>) response.getEntity();
-        assertThat(securityAlerts).hasSize(1);
-        assertThat(securityAlerts.getFirst().appType()).isEqualTo(AppType.MOBILE_CLIENT);
+        List<AuthorizedAlertDataDto> authorizedAlerts = (List<AuthorizedAlertDataDto>) response.getEntity();
+        assertThat(authorizedAlerts).hasSize(1);
+        assertThat(authorizedAlerts.getFirst().appType()).isEqualTo(AppType.MOBILE_CLIENT);
         verify(alertNotificationsService).getUnconsumedAlertsByAppType(AppType.MOBILE_CLIENT);
     }
 
     @Test
-    void dismissSecurityAlertUsesRequestedAppType() {
+    void dismissAuthorizedAlertUsesRequestedAppType() {
         AlertNotificationsService alertNotificationsService = mock(AlertNotificationsService.class);
         AuthorizedAlertData desktopAlert = createAlert("desktop-alert", AppType.DESKTOP, 20L);
         when(alertNotificationsService.getUnconsumedAlertsByAppType(AppType.DESKTOP))
                 .thenReturn(Stream.of(desktopAlert));
 
-        SecurityAlertsRestApi restApi = new SecurityAlertsRestApi(alertNotificationsService);
+        AuthorizedAlertsRestApi restApi = new AuthorizedAlertsRestApi(alertNotificationsService);
 
-        Response response = restApi.dismissSecurityAlert("desktop-alert", "desktop");
+        Response response = restApi.dismissAuthorizedAlert("desktop-alert", "desktop");
 
         assertThat(response.getStatus()).isEqualTo(Response.Status.NO_CONTENT.getStatusCode());
         verify(alertNotificationsService).dismissAlert(desktopAlert);
     }
 
     @Test
-    void getSecurityAlertsReturnsBadRequestForInvalidAppType() {
+    void getAuthorizedAlertsReturnsBadRequestForInvalidAppType() {
         AlertNotificationsService alertNotificationsService = mock(AlertNotificationsService.class);
-        SecurityAlertsRestApi restApi = new SecurityAlertsRestApi(alertNotificationsService);
+        AuthorizedAlertsRestApi restApi = new AuthorizedAlertsRestApi(alertNotificationsService);
 
-        Response response = restApi.getSecurityAlerts("invalid");
+        Response response = restApi.getAuthorizedAlerts("invalid");
 
         assertThat(response.getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
         assertThat(response.getEntity()).isEqualTo(Map.of("error", "Invalid appType: invalid"));

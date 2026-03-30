@@ -15,10 +15,10 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.api.web_socket.domain.security_alerts;
+package bisq.api.web_socket.domain.authorized_alerts;
 
 import bisq.api.dto.DtoMappings;
-import bisq.api.dto.security.alert.SecurityAlertDto;
+import bisq.api.dto.security.alert.AuthorizedAlertDataDto;
 import bisq.api.web_socket.domain.SimpleObservableWebSocketService;
 import bisq.api.web_socket.subscription.Subscriber;
 import bisq.api.web_socket.subscription.SubscriberRepository;
@@ -36,10 +36,10 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static bisq.api.web_socket.subscription.Topic.SECURITY_ALERTS;
+import static bisq.api.web_socket.subscription.Topic.AUTHORIZED_ALERTS;
 
 @Slf4j
-public class SecurityAlertsWebSocketService extends SimpleObservableWebSocketService<ObservableSet<AuthorizedAlertData>, List<SecurityAlertDto>> {
+public class AuthorizedAlertsWebSocketService extends SimpleObservableWebSocketService<ObservableSet<AuthorizedAlertData>, List<AuthorizedAlertDataDto>> {
     private static final AppType DEFAULT_APP_TYPE = AppType.MOBILE_CLIENT;
     private static final Comparator<AuthorizedAlertData> ALERT_RELEVANCE_COMPARATOR =
             Comparator.comparing(AuthorizedAlertData::getAlertType)
@@ -48,9 +48,9 @@ public class SecurityAlertsWebSocketService extends SimpleObservableWebSocketSer
 
     private final AlertNotificationsService alertNotificationsService;
 
-    public SecurityAlertsWebSocketService(SubscriberRepository subscriberRepository,
-                                          AlertNotificationsService alertNotificationsService) {
-        super(subscriberRepository, SECURITY_ALERTS);
+    public AuthorizedAlertsWebSocketService(SubscriberRepository subscriberRepository,
+                                            AlertNotificationsService alertNotificationsService) {
+        super(subscriberRepository, AUTHORIZED_ALERTS);
         this.alertNotificationsService = alertNotificationsService;
     }
 
@@ -60,10 +60,10 @@ public class SecurityAlertsWebSocketService extends SimpleObservableWebSocketSer
     }
 
     @Override
-    protected List<SecurityAlertDto> toPayload(ObservableSet<AuthorizedAlertData> observable) {
+    protected List<AuthorizedAlertDataDto> toPayload(ObservableSet<AuthorizedAlertData> observable) {
         return getPayload(DEFAULT_APP_TYPE)
                 .sorted(ALERT_RELEVANCE_COMPARATOR)
-                .map(DtoMappings.SecurityAlertMapping::fromBisq2Model)
+                .map(DtoMappings.AuthorizedAlertDataMapping::fromBisq2Model)
                 .toList();
     }
 
@@ -96,7 +96,7 @@ public class SecurityAlertsWebSocketService extends SimpleObservableWebSocketSer
         AppType appType = parseAppType(parameter);
         return toJson(getPayload(appType)
                 .sorted(ALERT_RELEVANCE_COMPARATOR)
-                .map(DtoMappings.SecurityAlertMapping::fromBisq2Model)
+                .map(DtoMappings.AuthorizedAlertDataMapping::fromBisq2Model)
                 .toList());
     }
 

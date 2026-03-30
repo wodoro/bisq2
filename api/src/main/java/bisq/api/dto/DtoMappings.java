@@ -75,7 +75,7 @@ import bisq.api.dto.offer.price.spec.FixPriceSpecDto;
 import bisq.api.dto.offer.price.spec.FloatPriceSpecDto;
 import bisq.api.dto.offer.price.spec.MarketPriceSpecDto;
 import bisq.api.dto.offer.price.spec.PriceSpecDto;
-import bisq.api.dto.security.alert.SecurityAlertDto;
+import bisq.api.dto.security.alert.AuthorizedAlertDataDto;
 import bisq.api.dto.security.keys.I2PKeyPairDto;
 import bisq.api.dto.security.keys.KeyBundleDto;
 import bisq.api.dto.security.keys.KeyPairDto;
@@ -650,9 +650,9 @@ public class DtoMappings {
 
     // security.alert
 
-    public static class SecurityAlertMapping {
-        public static SecurityAlertDto fromBisq2Model(AuthorizedAlertData value) {
-            return new SecurityAlertDto(
+    public static class AuthorizedAlertDataMapping {
+        public static AuthorizedAlertDataDto fromBisq2Model(AuthorizedAlertData value) {
+            return new AuthorizedAlertDataDto(
                     value.getId(),
                     value.getDate(),
                     value.getAlertType(),
