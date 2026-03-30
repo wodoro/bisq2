@@ -40,7 +40,7 @@ import bisq.api.rest_api.endpoints.offers.OfferbookRestApi;
 import bisq.api.rest_api.endpoints.payment_accounts.FiatPaymentAccountsRestApi;
 import bisq.api.rest_api.endpoints.payment_accounts.PaymentAccountsRestApi;
 import bisq.api.rest_api.endpoints.reputation.ReputationRestApi;
-import bisq.api.rest_api.endpoints.security_alerts.SecurityAlertsRestApi;
+import bisq.api.rest_api.endpoints.authorized_alerts.AuthorizedAlertsRestApi;
 import bisq.api.rest_api.endpoints.settings.SettingsRestApi;
 import bisq.api.rest_api.endpoints.trades.TradeRestApi;
 import bisq.api.rest_api.endpoints.user_identity.UserIdentityRestApi;
@@ -168,7 +168,7 @@ public class ApiService implements Service {
         UserIdentityRestApi userIdentityRestApi = new UserIdentityRestApi(securityService, userService.getUserIdentityService(), bisqEasyService);
         MarketPriceRestApi marketPriceRestApi = new MarketPriceRestApi(bondedRolesService.getMarketPriceService());
         SettingsRestApi settingsRestApi = new SettingsRestApi(settingsService);
-        SecurityAlertsRestApi securityAlertsRestApi = new SecurityAlertsRestApi(alertNotificationsService);
+        AuthorizedAlertsRestApi authorizedAlertsRestApi = new AuthorizedAlertsRestApi(alertNotificationsService);
         PaymentAccountsRestApi paymentAccountsRestApi = new PaymentAccountsRestApi(accountService);
         FiatPaymentAccountsRestApi fiatPaymentAccountsRestApi = new FiatPaymentAccountsRestApi(accountService);
         UserProfileRestApi userProfileRestApi = new UserProfileRestApi(
@@ -193,7 +193,7 @@ public class ApiService implements Service {
                     userIdentityRestApi,
                     marketPriceRestApi,
                     settingsRestApi,
-                    securityAlertsRestApi,
+                    authorizedAlertsRestApi,
                     explorerRestApi,
                     paymentAccountsRestApi,
                     fiatPaymentAccountsRestApi,

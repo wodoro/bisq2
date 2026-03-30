@@ -22,14 +22,14 @@ import bisq.bonded_roles.security_manager.alert.AlertType;
 
 import java.util.Optional;
 
-public record SecurityAlertDto(String id,
-                               long date,
-                               AlertType alertType,
-                               Optional<String> headline,
-                               Optional<String> message,
-                               boolean haltTrading,
-                               boolean requireVersionForTrading,
-                               Optional<String> minVersion,
-                               String securityManagerProfileId,
-                               AppType appType) {
+public record AuthorizedAlertDataDto(String id,
+                                     long date,
+                                     AlertType alertType,
+                                     Optional<String> headline,
+                                     Optional<String> message,
+                                     boolean haltTrading,
+                                     boolean requireVersionForTrading,
+                                     Optional<String> minVersion,
+                                     String securityManagerProfileId,
+                                     AppType appType) {
 }

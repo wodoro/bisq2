@@ -1,6 +1,6 @@
-package bisq.api.web_socket.domain.security_alerts;
+package bisq.api.web_socket.domain.authorized_alerts;
 
-import bisq.api.dto.security.alert.SecurityAlertDto;
+import bisq.api.dto.security.alert.AuthorizedAlertDataDto;
 import bisq.api.web_socket.subscription.Subscriber;
 import bisq.api.web_socket.subscription.SubscriberRepository;
 import bisq.api.web_socket.subscription.SubscriptionRequest;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class SecurityAlertsWebSocketServiceTest {
+class AuthorizedAlertsWebSocketServiceTest {
 
     @Test
     void getJsonPayloadUsesSubscriberAppTypeParameter() throws Exception {
@@ -32,12 +32,12 @@ class SecurityAlertsWebSocketServiceTest {
         when(alertNotificationsService.getUnconsumedAlertsByAppType(AppType.DESKTOP))
                 .thenReturn(Stream.of(desktopAlert));
 
-        SecurityAlertsWebSocketService service = new SecurityAlertsWebSocketService(new SubscriberRepository(), alertNotificationsService);
-        Subscriber subscriber = new Subscriber(Topic.SECURITY_ALERTS, Optional.of("desktop"), "sub-1", mock(WebSocket.class));
+        AuthorizedAlertsWebSocketService service = new AuthorizedAlertsWebSocketService(new SubscriberRepository(), alertNotificationsService);
+        Subscriber subscriber = new Subscriber(Topic.AUTHORIZED_ALERTS, Optional.of("desktop"), "sub-1", mock(WebSocket.class));
 
         String json = service.getJsonPayload(subscriber).orElseThrow();
 
-        List<SecurityAlertDto> payload = JsonMapperProvider.get().readerForListOf(SecurityAlertDto.class).readValue(json);
+        List<AuthorizedAlertDataDto> payload = JsonMapperProvider.get().readerForListOf(AuthorizedAlertDataDto.class).readValue(json);
         assertThat(payload).hasSize(1);
         assertThat(payload.getFirst().appType()).isEqualTo(AppType.DESKTOP);
         verify(alertNotificationsService).getUnconsumedAlertsByAppType(AppType.DESKTOP);
@@ -50,12 +50,12 @@ class SecurityAlertsWebSocketServiceTest {
         when(alertNotificationsService.getUnconsumedAlertsByAppType(AppType.MOBILE_CLIENT))
                 .thenReturn(Stream.of(mobileAlert));
 
-        SecurityAlertsWebSocketService service = new SecurityAlertsWebSocketService(new SubscriberRepository(), alertNotificationsService);
-        SubscriptionRequest request = SubscriptionRequest.fromJson("{\"type\":\"SubscriptionRequest\",\"requestId\":\"r1\",\"topic\":\"SECURITY_ALERTS\"}").orElseThrow();
+        AuthorizedAlertsWebSocketService service = new AuthorizedAlertsWebSocketService(new SubscriberRepository(), alertNotificationsService);
+        SubscriptionRequest request = SubscriptionRequest.fromJson("{\"type\":\"SubscriptionRequest\",\"requestId\":\"r1\",\"topic\":\"AUTHORIZED_ALERTS\"}").orElseThrow();
 
         String json = service.getJsonPayload(request).orElseThrow();
 
-        List<SecurityAlertDto> payload = JsonMapperProvider.get().readerForListOf(SecurityAlertDto.class).readValue(json);
+        List<AuthorizedAlertDataDto> payload = JsonMapperProvider.get().readerForListOf(AuthorizedAlertDataDto.class).readValue(json);
         assertThat(payload).hasSize(1);
         assertThat(payload.getFirst().appType()).isEqualTo(AppType.MOBILE_CLIENT);
         verify(alertNotificationsService).getUnconsumedAlertsByAppType(AppType.MOBILE_CLIENT);
@@ -64,8 +64,8 @@ class SecurityAlertsWebSocketServiceTest {
     @Test
     void getJsonPayloadRejectsInvalidAppType() {
         AlertNotificationsService alertNotificationsService = mock(AlertNotificationsService.class);
-        SecurityAlertsWebSocketService service = new SecurityAlertsWebSocketService(new SubscriberRepository(), alertNotificationsService);
-        Subscriber subscriber = new Subscriber(Topic.SECURITY_ALERTS, Optional.of("invalid"), "sub-1", mock(WebSocket.class));
+        AuthorizedAlertsWebSocketService service = new AuthorizedAlertsWebSocketService(new SubscriberRepository(), alertNotificationsService);
+        Subscriber subscriber = new Subscriber(Topic.AUTHORIZED_ALERTS, Optional.of("invalid"), "sub-1", mock(WebSocket.class));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> service.getJsonPayload(subscriber));
 

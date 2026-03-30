@@ -26,7 +26,7 @@ import bisq.api.web_socket.domain.market_price.MarketPriceWebSocketService;
 import bisq.api.web_socket.domain.offers.NumOffersWebSocketService;
 import bisq.api.web_socket.domain.offers.OffersWebSocketService;
 import bisq.api.web_socket.domain.reputation.ReputationWebSocketService;
-import bisq.api.web_socket.domain.security_alerts.SecurityAlertsWebSocketService;
+import bisq.api.web_socket.domain.authorized_alerts.AuthorizedAlertsWebSocketService;
 import bisq.api.web_socket.domain.trades.TradePropertiesWebSocketService;
 import bisq.api.web_socket.domain.trades.TradesWebSocketService;
 import bisq.api.web_socket.domain.user_profile.NumUserProfilesWebSocketService;
@@ -56,7 +56,7 @@ public class SubscriptionService implements Service {
     private final ChatReactionsWebSocketService chatReactionsWebSocketService;
     private final ReputationWebSocketService reputationWebSocketService;
     private final NumUserProfilesWebSocketService numUserProfilesWebSocketService;
-    private final SecurityAlertsWebSocketService securityAlertsWebSocketService;
+    private final AuthorizedAlertsWebSocketService authorizedAlertsWebSocketService;
 
     public SubscriptionService(BondedRolesService bondedRolesService,
                                AlertNotificationsService alertNotificationsService,
@@ -79,7 +79,7 @@ public class SubscriptionService implements Service {
                 chatService.getBisqEasyOpenTradeChannelService());
         reputationWebSocketService = new ReputationWebSocketService(subscriberRepository, userService.getReputationService());
         numUserProfilesWebSocketService = new NumUserProfilesWebSocketService(subscriberRepository, userService);
-        securityAlertsWebSocketService = new SecurityAlertsWebSocketService(subscriberRepository, alertNotificationsService);
+        authorizedAlertsWebSocketService = new AuthorizedAlertsWebSocketService(subscriberRepository, alertNotificationsService);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class SubscriptionService implements Service {
                 .thenCompose(e -> chatReactionsWebSocketService.initialize())
                 .thenCompose(e -> reputationWebSocketService.initialize())
                 .thenCompose(e -> numUserProfilesWebSocketService.initialize())
-                .thenCompose(e -> securityAlertsWebSocketService.initialize());
+                .thenCompose(e -> authorizedAlertsWebSocketService.initialize());
     }
 
     @Override
@@ -107,7 +107,7 @@ public class SubscriptionService implements Service {
                 .thenCompose(e -> chatReactionsWebSocketService.shutdown())
                 .thenCompose(e -> reputationWebSocketService.shutdown())
                 .thenCompose(e -> numUserProfilesWebSocketService.shutdown())
-                .thenCompose(e -> securityAlertsWebSocketService.shutdown());
+                .thenCompose(e -> authorizedAlertsWebSocketService.shutdown());
     }
 
     public void onConnectionClosed(WebSocket webSocket) {
@@ -185,8 +185,8 @@ public class SubscriptionService implements Service {
             case NUM_USER_PROFILES -> {
                 return Optional.of(numUserProfilesWebSocketService);
             }
-            case SECURITY_ALERTS -> {
-                return Optional.of(securityAlertsWebSocketService);
+            case AUTHORIZED_ALERTS -> {
+                return Optional.of(authorizedAlertsWebSocketService);
             }
         }
         log.warn("No WebSocketService for topic {} found", topic);

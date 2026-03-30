@@ -15,10 +15,10 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.api.rest_api.endpoints.security_alerts;
+package bisq.api.rest_api.endpoints.authorized_alerts;
 
 import bisq.api.dto.DtoMappings;
-import bisq.api.dto.security.alert.SecurityAlertDto;
+import bisq.api.dto.security.alert.AuthorizedAlertDataDto;
 import bisq.api.rest_api.endpoints.RestApiBase;
 import bisq.bonded_roles.release.AppType;
 import bisq.bonded_roles.security_manager.alert.AlertNotificationsService;
@@ -46,10 +46,10 @@ import java.util.Locale;
 import java.util.Optional;
 
 @Slf4j
-@Path("/security-alerts")
+@Path("/authorized-alerts")
 @Produces(MediaType.APPLICATION_JSON)
-@Tag(name = "Security Alerts API", description = "API for retrieving and dismissing visible security alerts")
-public class SecurityAlertsRestApi extends RestApiBase {
+@Tag(name = "Authorized Alerts API", description = "API for retrieving and dismissing visible authorized alerts")
+public class AuthorizedAlertsRestApi extends RestApiBase {
     private static final AppType DEFAULT_APP_TYPE = AppType.MOBILE_CLIENT;
     private static final Comparator<AuthorizedAlertData> ALERT_RELEVANCE_COMPARATOR =
             Comparator.comparing(AuthorizedAlertData::getAlertType)
@@ -58,28 +58,28 @@ public class SecurityAlertsRestApi extends RestApiBase {
 
     private final AlertNotificationsService alertNotificationsService;
 
-    public SecurityAlertsRestApi(AlertNotificationsService alertNotificationsService) {
+    public AuthorizedAlertsRestApi(AlertNotificationsService alertNotificationsService) {
         this.alertNotificationsService = alertNotificationsService;
     }
 
     @GET
     @Operation(
-            summary = "Get visible security alerts",
-            description = "Returns the currently visible, undismissed security alerts in display order.",
+            summary = "Get visible authorized alerts",
+            description = "Returns the currently visible, undismissed authorized alerts in display order.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Security alerts retrieved successfully",
-                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = SecurityAlertDto.class)))),
+                    @ApiResponse(responseCode = "200", description = "Authorized alerts retrieved successfully",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = AuthorizedAlertDataDto.class)))),
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
-    public Response getSecurityAlerts(@QueryParam("appType") @DefaultValue("MOBILE_CLIENT") String appTypeParam) {
+    public Response getAuthorizedAlerts(@QueryParam("appType") @DefaultValue("MOBILE_CLIENT") String appTypeParam) {
         try {
             AppType appType = parseAppType(appTypeParam);
-            return buildOkResponse(getSortedSecurityAlerts(appType));
+            return buildOkResponse(getSortedAuthorizedAlerts(appType));
         } catch (IllegalArgumentException e) {
             return buildErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
-            log.error("Error retrieving security alerts", e);
+            log.error("Error retrieving authorized alerts", e);
             return buildErrorResponse("An unexpected error occurred");
         }
     }
@@ -87,23 +87,23 @@ public class SecurityAlertsRestApi extends RestApiBase {
     @DELETE
     @Path("/{alertId}")
     @Operation(
-            summary = "Dismiss a visible security alert",
-            description = "Dismisses a currently visible security alert for the local client state.",
+            summary = "Dismiss a visible authorized alert",
+            description = "Dismisses a currently visible authorized alert for the local client state.",
             responses = {
-                    @ApiResponse(responseCode = "204", description = "Security alert dismissed successfully"),
-                    @ApiResponse(responseCode = "404", description = "Security alert not found"),
+                    @ApiResponse(responseCode = "204", description = "Authorized alert dismissed successfully"),
+                    @ApiResponse(responseCode = "404", description = "Authorized alert not found"),
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
-    public Response dismissSecurityAlert(@PathParam("alertId") String alertId,
-                                         @QueryParam("appType") @DefaultValue("MOBILE_CLIENT") String appTypeParam) {
+    public Response dismissAuthorizedAlert(@PathParam("alertId") String alertId,
+                                           @QueryParam("appType") @DefaultValue("MOBILE_CLIENT") String appTypeParam) {
         try {
             AppType appType = parseAppType(appTypeParam);
             Optional<AuthorizedAlertData> authorizedAlertData = alertNotificationsService.getUnconsumedAlertsByAppType(appType)
                     .filter(alert -> alert.getId().equals(alertId))
                     .findFirst();
             if (authorizedAlertData.isEmpty()) {
-                return buildNotFoundResponse("Security alert not found with ID: " + alertId);
+                return buildNotFoundResponse("Authorized alert not found with ID: " + alertId);
             }
 
             alertNotificationsService.dismissAlert(authorizedAlertData.get());
@@ -111,15 +111,15 @@ public class SecurityAlertsRestApi extends RestApiBase {
         } catch (IllegalArgumentException e) {
             return buildErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
-            log.error("Error dismissing security alert {}", alertId, e);
+            log.error("Error dismissing authorized alert {}", alertId, e);
             return buildErrorResponse("An unexpected error occurred: " + e.getMessage());
         }
     }
 
-    private List<SecurityAlertDto> getSortedSecurityAlerts(AppType appType) {
+    private List<AuthorizedAlertDataDto> getSortedAuthorizedAlerts(AppType appType) {
         return alertNotificationsService.getUnconsumedAlertsByAppType(appType)
                 .sorted(ALERT_RELEVANCE_COMPARATOR)
-                .map(DtoMappings.SecurityAlertMapping::fromBisq2Model)
+                .map(DtoMappings.AuthorizedAlertDataMapping::fromBisq2Model)
                 .toList();
     }
 
