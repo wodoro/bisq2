@@ -27,8 +27,10 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -70,13 +72,17 @@ public class TorTransportConfig implements TransportConfig {
         return allDirectoryAuthorities;
     }
 
-    private static Map<String, String> parseTorrcOverrideConfig(com.typesafe.config.Config torrcOverrides) {
-        Map<String, String> torrcOverrideConfigMap = new HashMap<>();
-        torrcOverrides.entrySet()
-                .forEach(entry -> torrcOverrideConfigMap.put(
-                        entry.getKey(), (String) entry.getValue().unwrapped()
-                ));
-        return torrcOverrideConfigMap;
+    private static List<Map.Entry<String, String>> parseTorrcOverrideConfig(com.typesafe.config.Config torrcOverrides) {
+        List<Map.Entry<String, String>> torrcOverrideList = new ArrayList<>();
+        torrcOverrides.entrySet().forEach(entry -> {
+            Object unwrapped = entry.getValue().unwrapped();
+            if (unwrapped instanceof List<?> values) {
+                values.forEach(v -> torrcOverrideList.add(new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), String.valueOf(v))));
+            } else {
+                torrcOverrideList.add(new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), String.valueOf(unwrapped)));
+            }
+        });
+        return torrcOverrideList;
     }
 
     private static String getStringFromConfigValue(ConfigValue configValue, String key) {
@@ -94,7 +100,7 @@ public class TorTransportConfig implements TransportConfig {
     private final int socketTimeout; // in ms
     private final boolean isTestNetwork;
     private final Set<DirectoryAuthority> directoryAuthorities;
-    private final Map<String, String> torrcOverrides;
+    private final List<Map.Entry<String, String>> torrcOverrides;
     private final int sendMessageThrottleTime;
     private final int receiveMessageThrottleTime;
     private final boolean useExternalTor;
@@ -106,7 +112,7 @@ public class TorTransportConfig implements TransportConfig {
                               int socketTimeout,
                               boolean isTestNetwork,
                               Set<DirectoryAuthority> directoryAuthorities,
-                              Map<String, String> torrcOverrides,
+                              List<Map.Entry<String, String>> torrcOverrides,
                               int sendMessageThrottleTime,
                               int receiveMessageThrottleTime,
                               boolean useExternalTor) {

@@ -437,12 +437,12 @@ public class TorService implements Service {
                 .hashedControlPassword(hashedControlPassword)
                 .build();
 
-        Map<String, String> torrcOverrideConfigs = transportConfig.getTorrcOverrides();
-        Map<String, String> torrcConfigMap = torrcClientConfigFactory.torrcClientConfigMap(torrcOverrideConfigs);
+        Map<String, String> torrcConfigMap = torrcClientConfigFactory.torrcClientConfigMap();
 
         Path torrcPath = dataDirPath.resolve("torrc");
         var torrcFileGenerator = new TorrcFileGenerator(torrcPath,
                 torrcConfigMap,
+                transportConfig.getTorrcOverrides(),
                 transportConfig.getDirectoryAuthorities());
         torrcFileGenerator.generate();
         return torrcConfigMap;

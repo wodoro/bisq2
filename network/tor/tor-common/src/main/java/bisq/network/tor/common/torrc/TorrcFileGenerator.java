@@ -21,28 +21,53 @@ import bisq.common.file.FileMutatorUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TorrcFileGenerator {
     private final Path torrcPath;
     private final Map<String, String> torrcConfigMap;
+    private final List<Map.Entry<String, String>> torrcOverrides;
     private final Set<DirectoryAuthority> customDirectoryAuthorities;
 
     public TorrcFileGenerator(Path torrcPath,
                               Map<String, String> torrcConfigMap,
                               Set<DirectoryAuthority> customDirectoryAuthorities) {
+        this(torrcPath, torrcConfigMap, Collections.emptyList(), customDirectoryAuthorities);
+    }
+
+    public TorrcFileGenerator(Path torrcPath,
+                              Map<String, String> torrcConfigMap,
+                              List<Map.Entry<String, String>> torrcOverrides,
+                              Set<DirectoryAuthority> customDirectoryAuthorities) {
         this.torrcPath = torrcPath;
         this.torrcConfigMap = torrcConfigMap;
+        this.torrcOverrides = torrcOverrides;
         this.customDirectoryAuthorities = customDirectoryAuthorities;
     }
 
     public void generate() {
+        Set<String> overriddenKeys = torrcOverrides.stream()
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+
         StringBuilder torrcStringBuilder = new StringBuilder();
-        torrcConfigMap.forEach((key, value) ->
+        torrcConfigMap.forEach((key, value) -> {
+            if (!overriddenKeys.contains(key)) {
                 torrcStringBuilder.append(key)
                         .append(" ")
                         .append(value)
+                        .append("\n");
+            }
+        });
+
+        torrcOverrides.forEach(entry ->
+                torrcStringBuilder.append(entry.getKey())
+                        .append(" ")
+                        .append(entry.getValue())
                         .append("\n")
         );
 

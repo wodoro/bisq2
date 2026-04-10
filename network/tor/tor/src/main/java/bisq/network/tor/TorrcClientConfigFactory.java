@@ -29,6 +29,7 @@ import java.util.Map;
 
 import static bisq.network.tor.common.torrc.Torrc.Keys.DISABLE_NETWORK;
 
+
 @Builder
 public class TorrcClientConfigFactory {
     private final boolean isTestNetwork;
@@ -43,9 +44,8 @@ public class TorrcClientConfigFactory {
         this.hashedControlPassword = hashedControlPassword;
     }
 
-    public Map<String, String> torrcClientConfigMap(Map<String, String> torrcOverrides) {
+    public Map<String, String> torrcClientConfigMap() {
         Map<String, String> torrcClientConfig = clientTorrcGenerator().generate();
-        torrcClientConfig.putAll(torrcOverrides);
         torrcClientConfig.put(DISABLE_NETWORK, "1");
         return torrcClientConfig;
     }
