@@ -15,19 +15,15 @@
  * along with Bisq. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bisq.api.web_socket.subscription;
+package bisq.api.rest_api.pagination;
 
-public enum Topic {
-    MARKET_PRICE,
-    NUM_OFFERS,
-    OFFERS,
-    TRADES,
-    CLOSED_TRADES,
-    TRADE_PROPERTIES,
-    TRADE_CHAT_MESSAGES,
-    CHAT_REACTIONS,
-    REPUTATION,
-    NUM_USER_PROFILES,
-    ALERT_NOTIFICATIONS,
-    TRADE_RESTRICTING_ALERT,
+import java.util.List;
+
+public record PaginatedResponse<T>(
+        List<T> items,
+        int page,
+        int pageSize,
+        long totalItems,
+        int totalPages
+) {
 }
