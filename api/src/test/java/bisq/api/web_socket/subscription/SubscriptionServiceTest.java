@@ -17,7 +17,6 @@
 
 package bisq.api.web_socket.subscription;
 
-import bisq.api.web_socket.domain.ClosedTradeItemsService;
 import bisq.api.web_socket.domain.OpenTradeItemsService;
 import bisq.api.web_socket.domain.market_price.MarketPriceWebSocketService;
 import bisq.bisq_easy.BisqEasyService;
@@ -67,8 +66,7 @@ class SubscriptionServiceTest {
                 mock(TradeService.class, RETURNS_DEEP_STUBS),
                 mock(UserService.class, RETURNS_DEEP_STUBS),
                 mock(BisqEasyService.class, RETURNS_DEEP_STUBS),
-                mock(OpenTradeItemsService.class, RETURNS_DEEP_STUBS),
-                mock(ClosedTradeItemsService.class, RETURNS_DEEP_STUBS)
+                mock(OpenTradeItemsService.class, RETURNS_DEEP_STUBS)
         );
 
         WebSocket webSocket = mock(WebSocket.class);
@@ -93,8 +91,7 @@ class SubscriptionServiceTest {
                 mock(TradeService.class, RETURNS_DEEP_STUBS),
                 mock(UserService.class, RETURNS_DEEP_STUBS),
                 mock(BisqEasyService.class, RETURNS_DEEP_STUBS),
-                mock(OpenTradeItemsService.class, RETURNS_DEEP_STUBS),
-                mock(ClosedTradeItemsService.class, RETURNS_DEEP_STUBS)
+                mock(OpenTradeItemsService.class, RETURNS_DEEP_STUBS)
         );
         SubscriberRepository subscriberRepository = getSubscriberRepository(service);
         replaceWebSocketService(service, "marketPriceWebSocketService", new TestMarketPriceWebSocketService(subscriberRepository));
@@ -135,8 +132,7 @@ class SubscriptionServiceTest {
                 mock(TradeService.class, RETURNS_DEEP_STUBS),
                 mock(UserService.class, RETURNS_DEEP_STUBS),
                 mock(BisqEasyService.class, RETURNS_DEEP_STUBS),
-                mock(OpenTradeItemsService.class, RETURNS_DEEP_STUBS),
-                mock(ClosedTradeItemsService.class, RETURNS_DEEP_STUBS)
+                mock(OpenTradeItemsService.class, RETURNS_DEEP_STUBS)
         );
 
         service.onMessage(subscriptionJson("r1", "OFFERS", "eur"), mock(WebSocket.class, RETURNS_DEEP_STUBS));

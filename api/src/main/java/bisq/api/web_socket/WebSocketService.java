@@ -19,7 +19,6 @@ package bisq.api.web_socket;
 
 import bisq.api.ApiConfig;
 import bisq.api.access.transport.TlsContextService;
-import bisq.api.web_socket.domain.ClosedTradeItemsService;
 import bisq.api.web_socket.domain.OpenTradeItemsService;
 import bisq.api.web_socket.rest_api_proxy.WebSocketRestApiService;
 import bisq.api.web_socket.subscription.SubscriptionService;
@@ -67,8 +66,7 @@ public class WebSocketService implements Service {
                             TradeService tradeService,
                             UserService userService,
                             BisqEasyService bisqEasyService,
-                            OpenTradeItemsService openTradeItemsService,
-                            ClosedTradeItemsService closedTradeItemsService) {
+                            OpenTradeItemsService openTradeItemsService) {
         this.apiConfig = apiConfig;
         subscriptionService = new SubscriptionService(bondedRolesService,
                 alertNotificationsService,
@@ -76,8 +74,7 @@ public class WebSocketService implements Service {
                 tradeService,
                 userService,
                 bisqEasyService,
-                openTradeItemsService,
-                closedTradeItemsService);
+                openTradeItemsService);
         webSocketRestApiService = new WebSocketRestApiService(apiConfig, tlsContextService);
         webSocketConnectionHandler = new WebSocketConnectionHandler(subscriptionService, webSocketRestApiService);
     }
