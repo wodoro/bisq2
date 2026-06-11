@@ -19,16 +19,23 @@ package bisq.webcam.service.capture;
 
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.OpenCVFrameConverter;
+import org.bytedeco.opencv.opencv_core.Mat;
 
 import java.nio.ByteBuffer;
+
+import static org.bytedeco.opencv.global.opencv_core.CV_8UC3;
 
 /**
  * A JavaCV {@link FrameGrabber} backed by the Windows WinRT camera shim ({@link WinRtCamera}) instead of OpenCV's
  * {@code VideoCapture}/MSMF, which cannot open the camera inside the Windows AppContainer sandbox.
  *
- * <p>It produces the same 3-channel BGR {@link Frame} the OpenCV grabber produces on the other platforms, so the
- * downstream pipeline (preview rendering and ZXing QR decoding) is unchanged. The native shim writes each frame
- * directly into the {@link Frame}'s native image buffer, avoiding a copy across the JNI boundary.
+ * <p>The native shim writes each captured frame as tightly packed 24-bit BGR directly into the native data buffer of a
+ * reused OpenCV {@link Mat}, which is then wrapped into a {@link Frame} via {@link OpenCVFrameConverter.ToMat} - the
+ * same Mat-backed frame the OpenCV grabber produces on the other platforms. This matters: the resulting frame carries
+ * the {@code Mat} as its {@code opaque} payload, so the downstream {@code FrameToMatConverter} returns it via the
+ * opaque fast-path instead of trying to rebuild a Mat from a hand-constructed frame buffer (which fails). Preview
+ * rendering and ZXing QR decoding are therefore unchanged.
  */
 public class WinRtFrameGrabber extends FrameGrabber {
     private static final int DEFAULT_WIDTH = 640;
@@ -38,7 +45,9 @@ public class WinRtFrameGrabber extends FrameGrabber {
 
     private final int deviceIndex;
     private WinRtCamera camera;
-    private Frame frame;
+    private OpenCVFrameConverter.ToMat matConverter;
+    private Mat bgrMat;
+    private ByteBuffer matBuffer;
 
     public WinRtFrameGrabber(int deviceIndex) {
         this.deviceIndex = deviceIndex;
@@ -60,25 +69,29 @@ public class WinRtFrameGrabber extends FrameGrabber {
             // The camera may negotiate a different resolution than requested; adopt the actual one.
             imageWidth = camera.getWidth();
             imageHeight = camera.getHeight();
-            frame = new Frame(imageWidth, imageHeight, Frame.DEPTH_UBYTE, 3);
+
+            // A contiguous BGR Mat; the shim writes straight into its native buffer, so there is no copy across JNI
+            // and the converted Frame is Mat-backed (opaque), which the decode/preview pipeline expects.
+            bgrMat = new Mat(imageHeight, imageWidth, CV_8UC3);
+            matBuffer = bgrMat.createBuffer();
+            matConverter = new OpenCVFrameConverter.ToMat();
         } catch (RuntimeException e) {
-            close();
+            release();
             throw new Exception("Starting WinRT frame grabber for device index " + deviceIndex + " failed", e);
         }
     }
 
     @Override
     public Frame grab() throws Exception {
-        if (camera == null || frame == null) {
+        if (camera == null || bgrMat == null || matConverter == null) {
             throw new Exception("WinRT frame grabber is not started");
         }
-        ByteBuffer buffer = (ByteBuffer) frame.image[0];
-        buffer.clear();
-        int result = camera.grab(buffer, GRAB_TIMEOUT_MILLIS);
+        matBuffer.clear();
+        int result = camera.grab(matBuffer, GRAB_TIMEOUT_MILLIS);
         if (result != 0) {
             throw new Exception("WinRT frame grab failed with native error code " + result);
         }
-        return frame;
+        return matConverter.convert(bgrMat);
     }
 
     @Override
@@ -96,6 +109,14 @@ public class WinRtFrameGrabber extends FrameGrabber {
             camera.close();
             camera = null;
         }
-        frame = null;
+        if (matConverter != null) {
+            matConverter.close();
+            matConverter = null;
+        }
+        if (bgrMat != null) {
+            bgrMat.close();
+            bgrMat = null;
+        }
+        matBuffer = null;
     }
 }
