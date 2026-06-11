@@ -44,7 +44,9 @@
 #include <chrono>
 #include <condition_variable>
 #include <cstdint>
+#include <cstdio>
 #include <cstring>
+#include <exception>
 #include <mutex>
 #include <vector>
 
@@ -188,6 +190,34 @@ CaptureContext* asContext(jlong handle) {
     return reinterpret_cast<CaptureContext*>(handle);
 }
 
+// Diagnostics for the open path: a single failure means "no camera" to Java, so the actual stage + HRESULT are
+// printed to stderr (forwarded to the console / launcher log) to distinguish a fundamental AppContainer block from a
+// consent/identity denial (E_ACCESSDENIED 0x80070005) or a no-frames timeout.
+void logFailStage(const wchar_t* stage) {
+    fwprintf(stderr, L"winrt_open_fail stage=%ls\n", stage);
+    fflush(stderr);
+}
+
+void logFailHresult(const wchar_t* stage, hresult_error const& e) {
+    fwprintf(stderr, L"winrt_open_fail stage=%ls hr=0x%08X msg=%ls\n",
+             stage, static_cast<unsigned int>(e.code()), e.message().c_str());
+    fflush(stderr);
+}
+
+void cleanupContextOnError(CaptureContext* context) {
+    if (context == nullptr) {
+        return;
+    }
+    try {
+        if (context->frameReader) {
+            context->frameReader.StopAsync().get();
+        }
+    } catch (...) {
+        // Ignore cleanup failures.
+    }
+    delete context;
+}
+
 } // namespace
 
 extern "C" {
@@ -215,6 +245,7 @@ Java_bisq_webcam_service_capture_WinRtCamera_nativeOpen(JNIEnv*, jclass,
 
         hstring deviceId = deviceIdAt(deviceIndex);
         if (deviceId.empty()) {
+            logFailStage(L"device_enum_empty");
             return 0;
         }
 
@@ -230,6 +261,7 @@ Java_bisq_webcam_service_capture_WinRtCamera_nativeOpen(JNIEnv*, jclass,
 
         MediaFrameSource source = findColorSource(context->mediaCapture);
         if (!source) {
+            logFailStage(L"no_color_source");
             delete context;
             return 0;
         }
@@ -263,6 +295,8 @@ Java_bisq_webcam_service_capture_WinRtCamera_nativeOpen(JNIEnv*, jclass,
 
         MediaFrameReaderStartStatus startStatus = context->frameReader.StartAsync().get();
         if (startStatus != MediaFrameReaderStartStatus::Success) {
+            fwprintf(stderr, L"winrt_open_fail stage=reader_start status=%d\n", static_cast<int>(startStatus));
+            fflush(stderr);
             context->frameReader.FrameArrived(context->frameArrivedToken);
             context->frameReader.StopAsync().get();
             delete context;
@@ -277,6 +311,7 @@ Java_bisq_webcam_service_capture_WinRtCamera_nativeOpen(JNIEnv*, jclass,
                     std::chrono::milliseconds(OPEN_FIRST_FRAME_TIMEOUT_MILLIS),
                     [context] { return context->firstFrameReceived; });
             if (!received) {
+                logFailStage(L"first_frame_timeout");
                 lock.unlock();
                 context->frameReader.FrameArrived(context->frameArrivedToken);
                 context->frameReader.StopAsync().get();
@@ -286,17 +321,21 @@ Java_bisq_webcam_service_capture_WinRtCamera_nativeOpen(JNIEnv*, jclass,
         }
 
         return reinterpret_cast<jlong>(context);
+    } catch (hresult_error const& e) {
+        // Most diagnostic case: MediaCapture.InitializeAsync throwing E_ACCESSDENIED (0x80070005) here means the
+        // camera consent broker denied the capture - typically because this synthetic AppContainer has no real MSIX
+        // package identity - rather than WinRT being unable to run in a sandbox at all.
+        logFailHresult(L"exception", e);
+        cleanupContextOnError(context);
+        return 0;
+    } catch (std::exception const& e) {
+        fprintf(stderr, "winrt_open_fail stage=exception std=%s\n", e.what());
+        fflush(stderr);
+        cleanupContextOnError(context);
+        return 0;
     } catch (...) {
-        if (context != nullptr) {
-            try {
-                if (context->frameReader) {
-                    context->frameReader.StopAsync().get();
-                }
-            } catch (...) {
-                // Ignore cleanup failures.
-            }
-            delete context;
-        }
+        logFailStage(L"exception_unknown");
+        cleanupContextOnError(context);
         return 0;
     }
 }
