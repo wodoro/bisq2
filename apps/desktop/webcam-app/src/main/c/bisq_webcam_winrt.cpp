@@ -62,11 +62,12 @@ struct __declspec(uuid("5B0D3235-4DBA-4D44-865E-8F1D0E4FD04D")) IMemoryBufferByt
 
 namespace {
 
-constexpr int32_t ERROR_INVALID_HANDLE = -1;
-constexpr int32_t ERROR_TIMEOUT = -2;
-constexpr int32_t ERROR_NO_DESTINATION = -3;
-constexpr int32_t ERROR_DESTINATION_TOO_SMALL = -4;
-constexpr int32_t ERROR_EXCEPTION = -10;
+// Prefixed to avoid colliding with the ERROR_* macros from <winerror.h> (e.g. CAPTURE_ERR_INVALID_HANDLE, CAPTURE_ERR_TIMEOUT).
+constexpr int32_t CAPTURE_ERR_INVALID_HANDLE = -1;
+constexpr int32_t CAPTURE_ERR_TIMEOUT = -2;
+constexpr int32_t CAPTURE_ERR_NO_DESTINATION = -3;
+constexpr int32_t CAPTURE_ERR_DESTINATION_TOO_SMALL = -4;
+constexpr int32_t CAPTURE_ERR_EXCEPTION = -10;
 
 constexpr int OPEN_FIRST_FRAME_TIMEOUT_MILLIS = 5000;
 
@@ -124,7 +125,8 @@ struct CaptureContext {
 
         BitmapBuffer bitmapBuffer = converted.LockBuffer(BitmapBufferAccessMode::Read);
         BitmapPlaneDescription plane = bitmapBuffer.GetPlaneDescription(0);
-        IMemoryBufferReference memoryReference = bitmapBuffer.CreateReference();
+        // auto avoids naming winrt::Windows::Foundation::IMemoryBufferReference (that namespace is not imported here).
+        auto memoryReference = bitmapBuffer.CreateReference();
 
         auto byteAccess = memoryReference.as<IMemoryBufferByteAccess>();
         uint8_t* data = nullptr;
@@ -326,12 +328,12 @@ Java_bisq_webcam_service_capture_WinRtCamera_nativeGrab(JNIEnv* env, jclass,
                                                         jint timeoutMillis) {
     CaptureContext* context = asContext(handle);
     if (context == nullptr) {
-        return ERROR_INVALID_HANDLE;
+        return CAPTURE_ERR_INVALID_HANDLE;
     }
 
     auto* destination = static_cast<uint8_t*>(env->GetDirectBufferAddress(directDestination));
     if (destination == nullptr) {
-        return ERROR_NO_DESTINATION;
+        return CAPTURE_ERR_NO_DESTINATION;
     }
     jlong destinationCapacity = env->GetDirectBufferCapacity(directDestination);
 
@@ -343,18 +345,18 @@ Java_bisq_webcam_service_capture_WinRtCamera_nativeGrab(JNIEnv* env, jclass,
                 std::chrono::milliseconds(timeoutMillis),
                 [context] { return context->frameSequence > context->lastConsumedSequence; });
         if (!received) {
-            return ERROR_TIMEOUT;
+            return CAPTURE_ERR_TIMEOUT;
         }
 
         const size_t required = static_cast<size_t>(context->width) * context->height * 3;
         if (destinationCapacity < static_cast<jlong>(required)) {
-            return ERROR_DESTINATION_TOO_SMALL;
+            return CAPTURE_ERR_DESTINATION_TOO_SMALL;
         }
         std::memcpy(destination, context->bgr.data(), required);
         context->lastConsumedSequence = context->frameSequence;
         return 0;
     } catch (...) {
-        return ERROR_EXCEPTION;
+        return CAPTURE_ERR_EXCEPTION;
     }
 }
 
