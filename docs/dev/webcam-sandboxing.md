@@ -164,10 +164,26 @@ Security note: capture, decode, and preview all remain inside the AppContainer w
 capability, no network capability, and no Bisq data-folder access — identical isolation goals to the
 other platforms, with no trusted broker introduced.
 
-> Status: the WinRT shim, Java bindings, and packaging wiring are in place. The
-> `MediaCapture`-inside-AppContainer assumption still needs validation on real Windows hardware/CI
-> (see the probe harness under `tools/webcam-windows-msix-appcontainer/`); the OpenCV/MSMF failure
-> above is what motivated the switch.
+> Status: VALIDATED on Windows 11. The probe harness
+> (`tools/webcam-windows-msix-appcontainer/Run-WebcamWindowsMsixAppContainerTest.ps1 -Probe winrt`)
+> ran `WinRtCaptureProbe` across four modes:
+>
+> | Mode | TokenIsAppContainer | WinRT capture |
+> |---|---|---|
+> | Direct desktop | false | frames flow |
+> | Full-trust MSIX package | false | frames flow |
+> | Synthetic AppContainer (custom launcher, no package identity) | true | `E_ACCESSDENIED` at `InitializeAsync` |
+> | **Real MSIX `packagedClassicApp` AppContainer** | **true** | **frames flow** |
+>
+> Conclusion: WinRT `MediaCapture` captures successfully inside an AppContainer **when the process has
+> real MSIX package identity** plus the `webcam` capability. The synthetic AppContainer launcher
+> (`bisq-webcam-appcontainer-launcher.exe`) is denied camera consent because it has no package
+> identity - the same identity gating that blocks OpenCV/MSMF. Compare: under the *same* real MSIX
+> identity, OpenCV/MSMF was still denied (table above), whereas WinRT succeeds.
+>
+> Delivery consequence: the Windows webcam helper must ship as a **real MSIX package** declaring the
+> `webcam` capability (not the synthetic-AppContainer launcher path). That packaging work is the
+> remaining Windows task; the capture code itself is done.
 
 ## macOS status
 
