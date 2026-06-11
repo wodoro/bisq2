@@ -23,6 +23,9 @@ import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.OpenCVFrameGrabber;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
@@ -76,12 +79,14 @@ public final class QrDecodeProbe {
         System.out.println("negotiated=" + grabber.getImageWidth() + "x" + grabber.getImageHeight());
 
         QrCodeProcessor processor = new QrCodeProcessor(new FrameToBitmapConverter());
+        FrameToBitmapConverter diagnosticConverter = new FrameToBitmapConverter();
 
         int decodedCount = 0;
         long totalDecodeNanos = 0;
         long totalMeanByte = 0;
         int processed = 0;
         String firstPayload = null;
+        boolean diagnosed = false;
 
         try {
             for (int frameIndex = 0; frameIndex < options.frames; frameIndex++) {
@@ -90,6 +95,32 @@ public final class QrDecodeProbe {
                     System.out.println("grab[" + frameIndex + "]=null");
                     continue;
                 }
+
+                // One-time diagnostics on the first real frame: does the BGR->Mat->grayscale conversion that ZXing
+                // depends on actually succeed (QrCodeProcessor swallows exceptions, hiding a malformed-frame bug), and
+                // dump the frame so the captured image can be inspected visually.
+                if (!diagnosed) {
+                    diagnosed = true;
+                    System.out.println("frame_meta stride=" + frame.imageStride
+                            + " channels=" + frame.imageChannels
+                            + " depth=" + frame.imageDepth
+                            + " bufferCapacity=" + ((ByteBuffer) frame.image[0]).capacity());
+                    try {
+                        diagnosticConverter.convert(frame);
+                        System.out.println("convert_status=ok");
+                    } catch (Throwable t) {
+                        System.out.println("convert_error=" + t);
+                    }
+                    if (options.savePath != null) {
+                        try {
+                            saveFrameBmp(frame, options.savePath);
+                            System.out.println("saved_frame=" + options.savePath);
+                        } catch (Exception e) {
+                            System.out.println("save_error=" + e);
+                        }
+                    }
+                }
+
                 long meanByte = meanByte(frame);
                 long startNanos = System.nanoTime();
                 Optional<String> qrCode = processor.process(frame);
@@ -139,6 +170,54 @@ public final class QrDecodeProbe {
         };
     }
 
+    // Writes the BGR frame as a 24-bit BMP (Windows opens it natively) for visual inspection - no image library
+    // needed. BMP rows are bottom-up and already in BGR order, matching the frame buffer; only 4-byte row padding and
+    // the little-endian headers are added. A correct, sharp image here confirms the WinRT capture is not malformed.
+    private static void saveFrameBmp(Frame frame, String path) throws Exception {
+        int width = frame.imageWidth;
+        int height = frame.imageHeight;
+        int stride = frame.imageStride;
+        ByteBuffer buffer = (ByteBuffer) frame.image[0];
+
+        int rowSize = ((width * 3 + 3) / 4) * 4; // Padded to a 4-byte boundary.
+        int pixelDataSize = rowSize * height;
+        int fileSize = 54 + pixelDataSize;
+
+        try (OutputStream out = new BufferedOutputStream(new FileOutputStream(path))) {
+            byte[] header = new byte[54];
+            header[0] = 'B';
+            header[1] = 'M';
+            putLittleEndianInt(header, 2, fileSize);
+            putLittleEndianInt(header, 10, 54);   // Pixel data offset.
+            putLittleEndianInt(header, 14, 40);   // BITMAPINFOHEADER size.
+            putLittleEndianInt(header, 18, width);
+            putLittleEndianInt(header, 22, height); // Positive => bottom-up.
+            header[26] = 1;                        // Planes (little-endian short).
+            header[28] = 24;                       // Bits per pixel.
+            putLittleEndianInt(header, 34, pixelDataSize);
+            out.write(header);
+
+            byte[] row = new byte[rowSize];
+            for (int y = height - 1; y >= 0; y--) { // Bottom-up.
+                int rowStart = y * stride;
+                for (int x = 0; x < width; x++) {
+                    int src = rowStart + x * 3;
+                    row[x * 3] = buffer.get(src);         // B
+                    row[x * 3 + 1] = buffer.get(src + 1); // G
+                    row[x * 3 + 2] = buffer.get(src + 2); // R
+                }
+                out.write(row);
+            }
+        }
+    }
+
+    private static void putLittleEndianInt(byte[] target, int offset, int value) {
+        target[offset] = (byte) (value & 0xFF);
+        target[offset + 1] = (byte) ((value >> 8) & 0xFF);
+        target[offset + 2] = (byte) ((value >> 16) & 0xFF);
+        target[offset + 3] = (byte) ((value >> 24) & 0xFF);
+    }
+
     private static long meanByte(Frame frame) {
         ByteBuffer buffer = (ByteBuffer) frame.image[0];
         buffer.clear();
@@ -156,13 +235,14 @@ public final class QrDecodeProbe {
         return count == 0 ? 0 : sum / count;
     }
 
-    private record Options(String backend, int device, int width, int height, int frames) {
+    private record Options(String backend, int device, int width, int height, int frames, String savePath) {
         private static Options parse(String[] args) {
             String backend = "winrt";
             int device = 0;
             int width = 640;
             int height = 480;
             int frames = 60;
+            String savePath = null;
 
             for (int index = 0; index < args.length; index++) {
                 switch (args[index]) {
@@ -171,6 +251,7 @@ public final class QrDecodeProbe {
                     case "--width" -> width = parseInt(args, ++index, "--width");
                     case "--height" -> height = parseInt(args, ++index, "--height");
                     case "--frames" -> frames = parseInt(args, ++index, "--frames");
+                    case "--save" -> savePath = parseString(args, ++index, "--save");
                     default -> throw new IllegalArgumentException("Unsupported argument: " + args[index]);
                 }
             }
@@ -183,7 +264,7 @@ public final class QrDecodeProbe {
             if (width < 1 || height < 1) {
                 throw new IllegalArgumentException("--width and --height must be positive");
             }
-            return new Options(backend, device, width, height, frames);
+            return new Options(backend, device, width, height, frames, savePath);
         }
 
         private static int parseInt(String[] args, int index, String name) {
