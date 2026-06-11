@@ -82,10 +82,16 @@ if (-not $SkipInstall) {
     Install-WingetPackage 'Microsoft.VisualStudio.2022.BuildTools' `
         '--quiet --wait --norestart --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended'
     if ($InstallObs) { Install-WingetPackage 'OBSProject.OBSStudio' }
+}
 
-    # Refresh PATH for this session so freshly installed git is usable.
-    $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' +
-        [System.Environment]::GetEnvironmentVariable('Path', 'User')
+# Refresh PATH from the persisted machine+user values so freshly installed tools (git) are usable in this session,
+# even on the -SkipInstall path (where a prior run installed them). Also add git's well-known install dir as a
+# fallback in case winget recorded it only after this process started.
+$env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' +
+    [System.Environment]::GetEnvironmentVariable('Path', 'User')
+$gitCmdDir = 'C:\Program Files\Git\cmd'
+if ((Test-Path $gitCmdDir) -and ($env:Path -notlike "*$gitCmdDir*")) {
+    $env:Path = "$gitCmdDir;$env:Path"
 }
 
 # --- 2. JAVA_HOME ---
